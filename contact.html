@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Spire Constructors | Book a Free Consultation</title>
+<meta name="description" content="Tell us about your project and book a free, no-obligation consultation with Spire Constructors. Serving all of Florida.">
+<link rel="stylesheet" href="styles.css"></head><body>
+<header><div class="nav"><a class="logo" href="index.html"><img src="https://imagedelivery.net/xaKlCos5cTg_1RWzIu_h-A/4494cfaf-227f-4d25-b6b1-f1562ad6ea00/public" alt="Spire Constructors"></a><nav class="nav-links"><a href="about.html">About</a><a href="commercial.html">Commercial</a><a href="residential.html">Residential</a><a href="adu.html">ADUs</a><a href="projects.html">Projects</a><a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a><a class="pill" href="contact.html">Book a Consultation</a></nav><button class="menu-btn">&#9776;</button></div></header>
+<section style="background:#F7F9FB"><div class="wrap contact-grid">
+  <div class="info">
+    <div class="eyebrow">Contact</div>
+    <h1>Let's build something to a <span class="gold">higher standard.</span></h1>
+    <p style="font-size:17px">Tell us about your project and book a free, no-obligation consultation. You'll talk to someone who has actually built what you're planning.</p>
+    <div class="line"><div class="l">Call</div><div class="v">(844) SPIRE-GC</div></div>
+    <div class="line"><div class="l">Email</div><div class="v">info@spireconstructors.com</div></div>
+    <div class="line"><div class="l">Service Area</div><div class="v">All of Florida</div></div>
+    <div class="line"><div class="l">Hours</div><div class="v">Mon–Fri · 7AM – 6PM</div></div>
+  </div>
+  <form class="form" id="leadForm">
+    <div class="field"><label>Full Name</label><input name="fullName" type="text" placeholder="Your name" required></div>
+    <div class="row2">
+      <div class="field"><label>Email</label><input name="email" type="email" placeholder="you@email.com" required></div>
+      <div class="field"><label>Phone</label><input name="phone" type="tel" placeholder="(555) 555-5555"></div>
+    </div>
+    <div class="field"><label>Service Category</label><select name="service"><option value="">Select a service</option><option>Commercial Ground-Up</option><option>Commercial Fit-Out / Build-Out</option><option>ADU (Accessory Dwelling Unit)</option><option>Custom Home</option><option>Design-Build</option><option>Pre-Construction / Consulting</option><option>Renovation</option><option>Other</option></select></div>
+    <div class="field"><label>Estimated Budget</label><select name="budget"><option value="">Select a range</option><option>Under $100k</option><option>$100k–$250k</option><option>$250k–$500k</option><option>$500k–$1M</option><option>$1M–$5M</option><option>$5M+</option><option>Not sure yet</option></select></div>
+    <div class="field"><label>Project Details</label><textarea name="details" placeholder="Tell us about your project…"></textarea></div>
+    <button class="btn btn-blue" type="submit">Book My Free Consultation <span>&rarr;</span></button>
+    <div id="formMsg" role="status" style="display:none;margin-top:14px;font-weight:600"></div>
+  </form>
+</div></section>
+<footer><div class="wrap"><div class="foot-grid"><div class="foot"><div class="bm"><span class="y">SPIRE</span> <span class="w">CONSTRUCTORS</span></div><p>Built to a Higher Standard. Serving all of Florida.</p></div><div class="foot"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li></ul></div><div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-Up</a></li><li><a href="commercial.html">Fit-Outs</a></li><li><a href="residential.html">Custom Homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="contact.html">Design-Build</a></li><li><a href="contact.html">Pre-Construction</a></li></ul></div><div class="foot"><h4>Get in Touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Serving All of Florida</li><li>Mon–Fri: 7AM – 6PM</li></ul></div></div><div class="foot-bottom"><span>Licensed &amp; Insured · FL CGC1539625</span><span>© 2025 Spire Constructors. All rights reserved.</span></div></div></footer>
+<div class="mobilecall"><a class="call" href="tel:18447747342">&#9742; Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<script>
+document.getElementById('leadForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var f=this, btn=f.querySelector('button[type=submit]'), msg=document.getElementById('formMsg');
+  var data={
+    fullName:f.fullName.value.trim(), email:f.email.value.trim(), phone:f.phone.value.trim(),
+    service:f.service.value, budget:f.budget.value, details:f.details.value.trim(),
+    source:'spireconstructors.com contact form'
+  };
+  var orig=btn.innerHTML; btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
+  try{
+    var r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(!r.ok) throw new Error('request failed');
+    f.reset(); msg.style.display='block'; msg.style.color='#0a7f3f';
+    msg.textContent='Thanks — we got your request and will reach out shortly.';
+  }catch(err){
+    msg.style.display='block'; msg.style.color='#b00020';
+    msg.innerHTML='Something went wrong. Please call <a href="tel:18447747342" style="color:inherit;text-decoration:underline">(844) SPIRE-GC</a>.';
+  }finally{ btn.disabled=false; btn.innerHTML=orig; }
+});
+</script>
+</body></html>
