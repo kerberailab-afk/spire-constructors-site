@@ -33,7 +33,7 @@ p{color:var(--grey)}
 .link .c{font-size:1.3em;line-height:0}
 /* header */
 header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;max-width:1360px;margin:0 auto}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;max-width:1360px;margin:0 auto;position:relative}
 .logo img{height:58px}
 .nav-links{display:flex;align-items:center;gap:30px}
 .nav-links a:not(.pill){font-weight:500;font-size:16px;color:#4a525e}
@@ -125,7 +125,11 @@ footer{background:#0B1D38;color:#B4C2D4;padding:64px 0 36px}
   .mobilecall .call{background:linear-gradient(120deg,#0057B8,#1E7BE0);color:#fff}
   .mobilecall .book{background:linear-gradient(120deg,#F0CE78,#BC882C);color:#1c1402}
   body{padding-bottom:56px}
-  .nav-links{display:none}.callbtn{display:none}.menu-btn{display:block;font-size:26px;background:none;border:none;color:var(--navy)}
+  .nav-links{display:none}.callbtn{display:none}.menu-btn{display:block;font-size:26px;background:none;border:none;color:var(--navy);cursor:pointer}
+  .nav-links.open{display:flex;flex-direction:column;align-items:stretch;gap:14px;position:absolute;top:100%;left:0;right:0;background:rgba(255,255,255,.98);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:18px 22px;box-shadow:0 16px 32px -12px rgba(13,40,80,.18);z-index:55}
+  .nav-links.open a:not(.pill):not(.callbtn){font-size:17px;color:var(--navy);padding:4px 0}
+  .nav-links.open .callbtn{display:inline-flex;align-self:flex-start}
+  .nav-links.open .pill{text-align:center}
   .hero-grid,.adu-grid{grid-template-columns:1fr;gap:40px}.adu-grid img{max-width:520px}
   .two,.three,.tiles,.feat-row{grid-template-columns:1fr}
   .feat-row{gap:28px}.stat+.stat{border-left:none}
@@ -283,6 +287,7 @@ footer{background:#0B1D38;color:#B4C2D4;padding:64px 0 36px}
     <div class="foot-bottom"><span>Licensed &amp; Insured · FL CGC1539625</span><span>© 2025 Spire Constructors. All rights reserved.</span></div>
   </div>
 </footer>
-<div class="mobilecall"><a class="call" href="tel:18447747342">&#9742; Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<script src="app.js"></script>
 </body>
 </html>
