@@ -1,0 +1,171 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>201 SW 2nd — Three-Story Modern Residence + ADU, Delray Beach | Spire Constructors</title>
+<meta name="description" content="An upcoming Spire Constructors project: a three-story modern single-family residence with a detached rear ADU on SW 2nd Ave in Downtown Delray Beach — a second-story waterfall into the pool, a covered rooftop balcony with hot tub and wet bar, steps from Sundy Village.">
+<link rel="stylesheet" href="styles.css">
+<style>
+.cs-hero{position:relative;min-height:66vh;display:flex;align-items:flex-end;background:#0B1D38 center/cover no-repeat;background-image:linear-gradient(180deg,rgba(8,20,40,.15) 0%,rgba(8,20,40,.82) 100%),url('images/projects/delray-201/hero.jpg')}
+.cs-hero .wrap{padding-top:120px;padding-bottom:54px}
+.cs-hero .tag{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#F4D27E,#C0902F);color:#231701;font-weight:700;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;padding:7px 15px;border-radius:999px}
+.cs-hero .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,.5);color:#fff;font-weight:700;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;padding:6px 13px;border-radius:999px;margin-left:9px}
+.cs-hero .chip .dot{width:7px;height:7px;border-radius:50%;background:#7CE0A3;box-shadow:0 0 0 3px rgba(124,224,163,.25)}
+.cs-hero h1{color:#fff;font-size:clamp(34px,5vw,58px);margin:18px 0 10px;max-width:900px}
+.cs-hero p{color:#D9E4F3;font-size:clamp(16px,2vw,20px);font-weight:500;max-width:700px}
+.crumb{font-size:13px;color:#9fb2cc;font-weight:600;letter-spacing:.04em}
+.crumb a{color:#9fb2cc}.crumb a:hover{color:#fff}
+.intro{padding:84px 0 20px}
+.intro-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:56px;align-items:center}
+.intro h2{margin-bottom:16px}
+.intro p{font-size:17px;line-height:1.7;margin-bottom:14px}
+.intro .scopes{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 18px;margin-top:22px}
+.intro .scopes li{display:flex;gap:9px;align-items:flex-start;color:var(--navy);font-weight:500;font-size:14.5px;line-height:1.35}
+.intro .scopes li::before{content:"\2713";font-weight:800;color:var(--gold2);flex:0 0 auto}
+.intro-img img{width:100%;border-radius:20px;box-shadow:0 24px 50px -12px rgba(10,30,60,.25)}
+.feat-list{list-style:none;display:grid;gap:14px;margin-top:6px}
+.feat-list li{display:flex;gap:14px;align-items:flex-start}
+.feat-list .ic{flex:0 0 auto;width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#F4D27E,#C0902F);display:flex;align-items:center;justify-content:center;color:#231701;font-weight:800;font-size:18px}
+.feat-list b{display:block;color:var(--navy);font-size:16px;font-weight:800;margin-bottom:2px}
+.feat-list span{color:var(--grey);font-size:14.5px;line-height:1.55}
+.renders{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.renders img{width:100%;height:360px;object-fit:cover;border-radius:18px;box-shadow:0 18px 40px -14px rgba(13,40,80,.28);cursor:zoom-in;transition:transform .25s,box-shadow .25s}
+.renders img:hover{transform:translateY(-3px);box-shadow:0 26px 50px -14px rgba(13,40,80,.36)}
+.plan-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 16px 12px;box-shadow:0 14px 34px -16px rgba(13,40,80,.22)}
+.plan-card img{width:100%;object-fit:contain;background:#fff;cursor:zoom-in;border-radius:6px}
+.site-card img{height:560px}
+.plans2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.plans2 .plan-card img{height:430px}
+.plans3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.plans3 .plan-card img{height:250px}
+.plan-card .cap{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:11px;padding:0 4px}
+.plan-card .cap b{color:var(--navy);font-size:15px;font-weight:800;letter-spacing:-.01em}
+.plan-card .cap span{color:var(--grey);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+.spec{background:#F7F9FB;border:1px solid var(--line);border-radius:14px;padding:20px 18px}
+.spec b{display:block;color:var(--navy);font-size:15px;font-weight:800;margin-bottom:5px}
+.spec span{color:var(--grey);font-size:14px;line-height:1.5}
+.lb{position:fixed;inset:0;background:rgba(7,16,32,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:30px;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-width:94vw;max-height:90vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.lb .x{position:absolute;top:22px;right:30px;color:#fff;font-size:34px;font-weight:300;cursor:pointer;line-height:1}
+.sec-head .eyebrow{margin-bottom:6px}
+@media(max-width:900px){
+  .cs-hero{min-height:58vh}
+  .intro-grid{grid-template-columns:1fr;gap:34px}.intro{padding:56px 0 8px}
+  .intro .scopes{grid-template-columns:1fr}
+  .renders{grid-template-columns:1fr}.renders img{height:240px}
+  .plans2,.plans3{grid-template-columns:1fr}
+  .plans2 .plan-card img,.plans3 .plan-card img{height:320px}
+  .site-card img{height:380px}
+  .specs{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){.specs{grid-template-columns:1fr}.site-card img{height:300px}.plans2 .plan-card img,.plans3 .plan-card img{height:240px}}
+</style>
+</head><body>
+<header><div class="nav"><a class="logo" href="index.html"><img src="https://imagedelivery.net/xaKlCos5cTg_1RWzIu_h-A/4494cfaf-227f-4d25-b6b1-f1562ad6ea00/public" alt="Spire Constructors"></a><nav class="nav-links"><a href="about.html">About</a><a href="commercial.html">Commercial</a><a href="residential.html">Residential</a><a href="adu.html">ADUs</a><a href="projects.html">Projects</a><a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a><a class="pill" href="contact.html">Book a Consultation</a></nav><button class="menu-btn">&#9776;</button></div></header>
+
+<section class="cs-hero"><div class="wrap">
+  <div class="crumb"><a href="projects.html">Projects</a> &nbsp;/&nbsp; 201 SW 2nd &middot; Delray Beach</div>
+  <div style="margin-top:14px"><span class="tag">Delray Beach, Florida</span><span class="chip"><span class="dot"></span>Upcoming Build</span></div>
+  <h1>Three modern stories, steps from <span class="gold">Sundy Village.</span></h1>
+  <p>A ground-up modern residence with a detached rear ADU — a second-story waterfall into the pool and a covered rooftop balcony with hot tub and wet bar, around the corner from Delray's marquee new development.</p>
+</div></section>
+
+<section class="stats"><div class="wrap"><div class="stats-row">
+  <div class="stat"><b class="gold">3</b><span>Stories of Modern Living</span></div>
+  <div class="stat"><b class="gold">5</b><span>Bedrooms + Rear ADU</span></div>
+  <div class="stat"><b class="gold">2nd&#8209;Story</b><span>Waterfall Into the Pool</span></div>
+  <div class="stat"><b class="gold">Steps</b><span>From Sundy Village</span></div>
+</div></div></section>
+
+<section class="intro sec" style="padding-bottom:30px"><div class="wrap"><div class="intro-grid">
+  <div>
+    <div class="eyebrow">The Project</div>
+    <h2>A statement home in the heart of Delray.</h2>
+    <p>On a deep infill lot on <strong>SW 2nd Avenue</strong> — just around the corner from <strong>Sundy Village</strong>, the crown jewel of Delray's current downtown renaissance — Spire is building a three-story modern single-family residence with a detached rear accessory dwelling.</p>
+    <p>The design leans into a warm, modern material palette: crisp white stucco, wood-clad accents, vertical louvers, and rooftop greenery. Inside, five bedrooms stack across three levels, topped by a rooftop entertainment floor that opens to the downtown skyline. A complete ground-up build — main house and ADU — self-managed by Spire as general contractor.</p>
+    <ul class="scopes">
+      <li>Ground-up new construction</li>
+      <li>Detached rear ADU</li>
+      <li>Three-story structure &amp; framing</li>
+      <li>Full MEP across both buildings</li>
+      <li>Pool with 2nd-story waterfall feature</li>
+      <li>Rooftop balcony, hot tub &amp; wet bar</li>
+      <li>Stucco envelope &amp; wood cladding</li>
+      <li>Impact glass &amp; modern glazing</li>
+      <li>Landscape, hardscape &amp; site walls</li>
+    </ul>
+  </div>
+  <div class="intro-img"><img src="images/projects/delray-201/rendering-front.jpg" alt="Front rendering of the 201 SW 2nd three-story modern residence" loading="lazy"></div>
+</div></div></section>
+
+<section class="sec" style="padding-top:30px"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">The Headline Features</div><h2>What sets this one apart.</h2></div>
+  <ul class="feat-list" style="grid-template-columns:1fr 1fr;display:grid;gap:18px 40px">
+    <li><span class="ic">&#9776;</span><div><b>A second-story waterfall</b><span>Water spills from the second floor straight into the pool below &mdash; the centerpiece of the rear yard.</span></div></li>
+    <li><span class="ic">&#9719;</span><div><b>Rooftop balcony lounge</b><span>An expansive covered third-floor terrace with a hot tub and wet bar, overlooking the downtown scene.</span></div></li>
+    <li><span class="ic">&#8962;</span><div><b>Detached rear ADU</b><span>A separate accessory dwelling over the garage &mdash; guest suite, income unit, or private studio.</span></div></li>
+    <li><span class="ic">&#9733;</span><div><b>The Sundy Village address</b><span>Around the corner from Delray's most talked-about new development, in the walkable heart of downtown.</span></div></li>
+  </ul>
+</div></section>
+
+<section class="sec gallery-sec" style="background:#F7F9FB"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">The Vision</div><h2>What we're building.</h2><p style="margin-top:10px">Architectural renderings of the finished residence &mdash; street approach and rear elevation with the pool and ADU.</p></div>
+  <div class="renders">
+    <img src="images/projects/delray-201/rendering-front.jpg" alt="Front street view rendering" loading="lazy">
+    <img src="images/projects/delray-201/rendering-side.jpg" alt="Rear rendering with waterfall, pool, and ADU" loading="lazy">
+  </div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">The Site</div><h2>A long downtown lot, fully planned.</h2><p style="margin-top:10px">The landscape and site plan &mdash; main residence to the street, pool and terrace at center, ADU and garage to the rear.</p></div>
+  <div class="plan-card site-card">
+    <img src="images/projects/delray-201/landscape.jpg" alt="Landscape and site plan for 201 SW 2nd Ave" loading="lazy">
+    <div class="cap"><b>Landscape &amp; Site Plan</b><span>Cala Design Studio</span></div>
+  </div>
+</div></section>
+
+<section class="sec gallery-sec" style="background:#F7F9FB"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">From the Drawings</div><h2>Designed down to the detail.</h2><p style="margin-top:10px">Straight from the permitted set &mdash; elevations for both structures and all three floor plans.</p></div>
+  <div class="plans2">
+    <div class="plan-card"><img src="images/projects/delray-201/elevation-main.jpg" alt="Front elevation, main house" loading="lazy"><div class="cap"><b>Front Elevation</b><span>Main House</span></div></div>
+    <div class="plan-card"><img src="images/projects/delray-201/elevation-adu.jpg" alt="Front elevation, accessory dwelling" loading="lazy"><div class="cap"><b>Front Elevation</b><span>Rear ADU</span></div></div>
+  </div>
+  <div class="plans3">
+    <div class="plan-card"><img src="images/projects/delray-201/plan-first.jpg" alt="First floor plan" loading="lazy"><div class="cap"><b>First Floor</b><span>Living &middot; Kitchen</span></div></div>
+    <div class="plan-card"><img src="images/projects/delray-201/plan-second.jpg" alt="Second floor plan" loading="lazy"><div class="cap"><b>Second Floor</b><span>Bedrooms</span></div></div>
+    <div class="plan-card"><img src="images/projects/delray-201/plan-third.jpg" alt="Third floor plan" loading="lazy"><div class="cap"><b>Third Floor</b><span>Lounge &middot; Balcony</span></div></div>
+  </div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">By the Numbers</div><h2>The program at a glance.</h2></div>
+  <div class="specs">
+    <div class="spec"><b>Main House</b><span>Three stories, five bedrooms, rooftop entertainment level</span></div>
+    <div class="spec"><b>Rear ADU</b><span>Detached accessory dwelling above the garage</span></div>
+    <div class="spec"><b>The Lot</b><span>Deep R-1-A infill site on SW 2nd Ave, Downtown Delray</span></div>
+    <div class="spec"><b>Delivery</b><span>Ground-up, both buildings self-managed by Spire</span></div>
+  </div>
+</div></section>
+
+<section class="cta"><div class="wrap">
+  <h2>Building something custom in South Florida?</h2>
+  <p>From a vacant lot to a finished modern estate, Spire self-manages every phase of ground-up residential construction &mdash; design coordination, permitting, structure, pools, and finishes.</p>
+  <div><a class="btn btn-gold" href="contact.html">Start Your Project <span>&rarr;</span></a></div>
+  <small>Custom Homes &middot; Ground-Up &middot; Modern Residential &middot; ADUs &middot; Delray Beach</small>
+</div></section>
+
+<footer><div class="wrap"><div class="foot-grid"><div class="foot"><div class="bm"><span class="y">SPIRE</span> <span class="w">CONSTRUCTORS</span></div><p>Built to a Higher Standard. Serving all of Florida.</p></div><div class="foot"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li></ul></div><div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-Up</a></li><li><a href="commercial.html">Fit-Outs</a></li><li><a href="residential.html">Custom Homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="contact.html">Design-Build</a></li><li><a href="contact.html">Pre-Construction</a></li></ul></div><div class="foot"><h4>Get in Touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Serving All of Florida</li><li>Mon&ndash;Fri: 7AM &ndash; 6PM</li></ul></div></div><div class="foot-bottom"><span>Licensed &amp; Insured &middot; FL CGC1539625</span><span>&copy; 2025 Spire Constructors. All rights reserved.</span></div></div></footer>
+<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<div class="lb" id="lb"><span class="x">&times;</span><img id="lbimg" src="" alt="Enlarged project image"></div>
+<script src="app.js"></script>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), lbimg=document.getElementById('lbimg');
+  document.querySelectorAll('.renders img, .plan-card img').forEach(function(im){
+    im.addEventListener('click', function(){ lbimg.src=im.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', function(){ lb.classList.remove('open'); lbimg.src=''; });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ lb.classList.remove('open'); } });
+})();
+</script>
+</body></html>
