@@ -40,6 +40,12 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 .hero-visual{position:relative}
 .hero-visual img{width:100%;border-radius:6px}
 .hero-visual.card-img img{border-radius:22px;box-shadow:0 24px 50px -12px rgba(10,30,60,.25)}
+.precon-graphic{position:relative;aspect-ratio:4/3;border-radius:22px;overflow:hidden;background:#F3F6FB;border:1px solid #DBE3EE;box-shadow:0 24px 50px -12px rgba(10,30,60,.25)}
+.precon-plan{position:absolute;right:0;top:0;width:64%;height:100%;opacity:.16}
+.precon-steps{position:absolute;left:8%;top:50%;transform:translateY(-50%);margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:18px}
+.precon-steps li{display:flex;align-items:center;gap:14px;font-size:16px;font-weight:600;color:var(--navy)}
+.precon-steps .ic{flex:0 0 auto;width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#DDB05A,#BC882C);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px -8px rgba(150,110,20,.6)}
+.precon-steps .ic svg{width:24px;height:24px}
 .badge{position:absolute;left:-14px;bottom:36px;background:linear-gradient(135deg,#F4D27E,#C0902F);border-radius:18px;padding:16px 22px;box-shadow:0 16px 34px -8px rgba(150,110,20,.5)}
 .badge b{display:block;font-size:30px;color:#231701;font-weight:800;letter-spacing:-.02em}
 .badge span{font-size:13px;color:#3a2a06;font-weight:500}
