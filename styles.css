@@ -40,6 +40,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdro
 .hero-visual{position:relative}
 .hero-visual img{width:100%;border-radius:6px}
 .hero-visual.card-img img{border-radius:22px;box-shadow:0 24px 50px -12px rgba(10,30,60,.25)}
+.videoband{background:#F7F9FB}
+.video-wrap{position:relative;max-width:960px;margin:34px auto 0;aspect-ratio:16/9;border-radius:18px;overflow:hidden;box-shadow:0 28px 56px -16px rgba(10,30,60,.32);background:#0B1D38}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .badge{position:absolute;left:-14px;bottom:36px;background:linear-gradient(135deg,#F4D27E,#C0902F);border-radius:18px;padding:16px 22px;box-shadow:0 16px 34px -8px rgba(150,110,20,.5)}
 .badge b{display:block;font-size:30px;color:#231701;font-weight:800;letter-spacing:-.02em}
 .badge span{font-size:13px;color:#3a2a06;font-weight:500}
