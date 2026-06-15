@@ -37,6 +37,15 @@
 .gallery-full{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .gallery-full img{width:100%;height:190px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .2s,box-shadow .2s}
 .gallery-full img:hover{transform:translateY(-3px);box-shadow:0 18px 36px -12px rgba(13,40,80,.3)}
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.ba-card{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:0 18px 40px -18px rgba(13,40,80,.18)}
+.ba-card .ba-shot{position:relative}
+.ba-card img{width:100%;height:230px;object-fit:cover;border-radius:12px;cursor:zoom-in}
+.ba-card .ba-tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:999px;color:#fff}
+.ba-card .ba-tag.before{background:rgba(11,29,56,.86)}
+.ba-card .ba-tag.after{background:linear-gradient(135deg,#F4D27E,#C0902F);color:#231701}
+.ba-cap{grid-column:1/-1;text-align:center;font-weight:700;color:var(--navy);font-size:14px;margin-top:2px}
+@media(max-width:900px){.ba-grid{grid-template-columns:1fr;gap:20px}.ba-card img{height:180px}}
 .result{background:linear-gradient(100deg,#0B1D38,#16395F);color:#fff}
 .result .wrap{padding:60px 0;text-align:center}
 .result h2{color:#fff}
@@ -91,62 +100,55 @@
       <li>Turnkey, listing-ready handover</li>
     </ul>
   </div>
-  <div class="intro-img"><img src="images/projects/delray-str/pool-mural-script.jpg" alt="Delray STR pool and signature mural at dusk" loading="lazy"></div>
+  <div class="intro-img"><img src="images/projects/delray-str/standout-pool.jpg" alt="Delray STR resort pool and signature mural" loading="lazy"></div>
 </div></div></section>
 
-<section class="sec" style="padding-top:24px"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">How It Came Together</div><h2>From ordinary house to top-tier rental.</h2></div>
-
-  <div class="phase" style="border-top:none">
-    <div class="ph-head"><span class="step">01 — Before</span><h3>An ordinary block house</h3></div>
-    <p>The property started as a dated single-story home with a plain backyard — solid bones, but nothing that would ever stop a scroll. We saw the upside and got to work.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/delray-str/con-before.jpg" alt="The home before transformation" loading="lazy">
-      <img src="images/projects/delray-str/con-pool-rough.jpg" alt="Backyard before landscaping, new pool roughed in" loading="lazy">
+<section class="sec gallery-sec" style="padding-top:40px;padding-bottom:40px"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Before &amp; After</div><h2>The transformation.</h2><p style="margin-top:10px">A dated block house with a bare backyard — reimagined as a design-forward rental built to book.</p></div>
+  <div class="ba-grid">
+    <div class="ba-card">
+      <div class="ba-shot"><span class="ba-tag before">Before</span><img src="images/projects/delray-str/ba-house-before.jpg" alt="The home before — dated single-story exterior" loading="lazy"></div>
+      <div class="ba-shot"><span class="ba-tag after">After</span><img src="images/projects/delray-str/ba-house-after.jpg" alt="The home after — fully renovated exterior" loading="lazy"></div>
+      <div class="ba-cap">The House</div>
     </div>
-  </div>
-
-  <div class="phase">
-    <div class="ph-head"><span class="step">02 — The Build</span><h3>A backyard worth booking for</h3></div>
-    <p>The centerpiece: a brand-new custom pool. We excavated, formed and shot the shell, and tied it into new structure and decking — engineering the wow factor in from the ground up.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/delray-str/con-excavation.jpg" alt="Pool excavation" loading="lazy">
-      <img src="images/projects/delray-str/con-shell.jpg" alt="Gunite pool shell" loading="lazy">
-      <img src="images/projects/delray-str/con-cmu.jpg" alt="New CMU and site structure" loading="lazy">
-    </div>
-  </div>
-
-  <div class="phase">
-    <div class="ph-head"><span class="step">03 — Inside</span><h3>Bright, modern, photo-ready</h3></div>
-    <p>We took the interior down and rebuilt it as a light, coastal, design-forward space — an open great room, a waterfall-island kitchen, and spa-style baths that photograph as well as they live.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/delray-str/con-interior.jpg" alt="Interior gutted and re-framed" loading="lazy">
-      <img src="images/projects/delray-str/kitchen.jpg" alt="Finished waterfall-island kitchen" loading="lazy">
-      <img src="images/projects/delray-str/living.jpg" alt="Finished open great room" loading="lazy">
-    </div>
-  </div>
-
-  <div class="phase">
-    <div class="ph-head"><span class="step">04 — The Standout</span><h3>The details that get it booked</h3></div>
-    <p>This is what sets the property apart: commissioned large-scale murals, a pergola lounge, color-changing pool and landscape lighting, turf, and outdoor games — an outdoor experience that turns guests into five-star reviews and repeat stays.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/delray-str/pool-mural-color.jpg" alt="Pool with bold artist mural" loading="lazy">
-      <img src="images/projects/delray-str/pergola.jpg" alt="Pergola lounge and turf backyard" loading="lazy">
-      <img src="images/projects/delray-str/pool-magenta.jpg" alt="Color-changing pool lighting at night" loading="lazy">
+    <div class="ba-card">
+      <div class="ba-shot"><span class="ba-tag before">Before</span><img src="images/projects/delray-str/ba-yard-before.jpg" alt="The backyard before — bare lot during construction" loading="lazy"></div>
+      <div class="ba-shot"><span class="ba-tag after">After</span><img src="images/projects/delray-str/ba-yard-after.jpg" alt="The backyard after — resort pool, mural and turf" loading="lazy"></div>
+      <div class="ba-cap">The Backyard</div>
     </div>
   </div>
 </div></section>
 
-<section class="sec gallery-sec"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">The Finished Rental</div><h2>The listing that stands out.</h2></div>
-  <div class="gallery">
-    <img class="tall" src="images/projects/delray-str/pool-dusk.jpg" alt="Resort pool at dusk" loading="lazy">
-    <img src="images/projects/delray-str/bedroom.jpg" alt="Designer primary bedroom" loading="lazy">
-    <img src="images/projects/delray-str/bath.jpg" alt="Spa-style bathroom" loading="lazy">
-    <img src="images/projects/delray-str/backyard-lounge.jpg" alt="Backyard lounge and mural" loading="lazy">
-    <img class="tall" src="images/projects/delray-str/pool-green.jpg" alt="Pool with color lighting at night" loading="lazy">
-    <img src="images/projects/delray-str/bunkroom.jpg" alt="Guest bedroom with beach art" loading="lazy">
-    <img src="images/projects/delray-str/beach.jpg" alt="Steps from the beach" loading="lazy">
+<section class="sec" style="padding-top:40px"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">How It Came Together</div><h2>From ordinary house to top-tier rental.</h2></div>
+
+  <div class="phase" style="border-top:none">
+    <div class="ph-head"><span class="step">01 — The Build</span><h3>A backyard worth booking for</h3></div>
+    <p>The centerpiece: a brand-new custom pool. We excavated, formed and shot the shell, and tied it into new structure and decking — engineering the wow factor in from the ground up.</p>
+    <div class="grid-imgs g3">
+      <img src="images/projects/delray-str/build-excavation.jpg" alt="Pool excavation and steel" loading="lazy">
+      <img src="images/projects/delray-str/build-shell.jpg" alt="Pool shell with murals going up" loading="lazy">
+      <img src="images/projects/delray-str/build-exterior.jpg" alt="Exterior renovation in progress" loading="lazy">
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="ph-head"><span class="step">02 — Inside</span><h3>Bright, modern, photo-ready</h3></div>
+    <p>We rebuilt the interior as a light, coastal, design-forward space — an open great room, a clean designer kitchen, and comfortable bedrooms that photograph as well as they live.</p>
+    <div class="grid-imgs g3">
+      <img src="images/projects/delray-str/kitchen.jpg" alt="Finished designer kitchen" loading="lazy">
+      <img src="images/projects/delray-str/living.jpg" alt="Finished open great room" loading="lazy">
+      <img src="images/projects/delray-str/bedroom.jpg" alt="Designer bedroom" loading="lazy">
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="ph-head"><span class="step">03 — The Standout</span><h3>The details that get it booked</h3></div>
+    <p>This is what sets the property apart: commissioned large-scale murals, a resort pool, color-changing pool and landscape lighting, turf, and outdoor games — an outdoor experience that turns guests into five-star reviews and repeat stays.</p>
+    <div class="grid-imgs g2">
+      <img src="images/projects/delray-str/standout-pool.jpg" alt="Resort pool with bold artist murals" loading="lazy">
+      <img src="images/projects/delray-str/standout-night.jpg" alt="Color-changing pool lighting at night" loading="lazy">
+    </div>
   </div>
 </div></section>
 
@@ -182,37 +184,6 @@
     <img src="images/projects/delray-str/g27.jpg" alt="Delray Beach STR build and finish — photo 27" loading="lazy">
     <img src="images/projects/delray-str/g28.jpg" alt="Delray Beach STR build and finish — photo 28" loading="lazy">
     <img src="images/projects/delray-str/g29.jpg" alt="Delray Beach STR build and finish — photo 29" loading="lazy">
-    <img src="images/projects/delray-str/g30.jpg" alt="Delray Beach STR build and finish — photo 30" loading="lazy">
-    <img src="images/projects/delray-str/g31.jpg" alt="Delray Beach STR build and finish — photo 31" loading="lazy">
-    <img src="images/projects/delray-str/g32.jpg" alt="Delray Beach STR build and finish — photo 32" loading="lazy">
-    <img src="images/projects/delray-str/g33.jpg" alt="Delray Beach STR build and finish — photo 33" loading="lazy">
-    <img src="images/projects/delray-str/g34.jpg" alt="Delray Beach STR build and finish — photo 34" loading="lazy">
-    <img src="images/projects/delray-str/g35.jpg" alt="Delray Beach STR build and finish — photo 35" loading="lazy">
-    <img src="images/projects/delray-str/g36.jpg" alt="Delray Beach STR build and finish — photo 36" loading="lazy">
-    <img src="images/projects/delray-str/g37.jpg" alt="Delray Beach STR build and finish — photo 37" loading="lazy">
-    <img src="images/projects/delray-str/g38.jpg" alt="Delray Beach STR build and finish — photo 38" loading="lazy">
-    <img src="images/projects/delray-str/g39.jpg" alt="Delray Beach STR build and finish — photo 39" loading="lazy">
-    <img src="images/projects/delray-str/g40.jpg" alt="Delray Beach STR build and finish — photo 40" loading="lazy">
-    <img src="images/projects/delray-str/g41.jpg" alt="Delray Beach STR build and finish — photo 41" loading="lazy">
-    <img src="images/projects/delray-str/g42.jpg" alt="Delray Beach STR build and finish — photo 42" loading="lazy">
-    <img src="images/projects/delray-str/g43.jpg" alt="Delray Beach STR build and finish — photo 43" loading="lazy">
-    <img src="images/projects/delray-str/g44.jpg" alt="Delray Beach STR build and finish — photo 44" loading="lazy">
-    <img src="images/projects/delray-str/g45.jpg" alt="Delray Beach STR build and finish — photo 45" loading="lazy">
-    <img src="images/projects/delray-str/g46.jpg" alt="Delray Beach STR build and finish — photo 46" loading="lazy">
-    <img src="images/projects/delray-str/g47.jpg" alt="Delray Beach STR build and finish — photo 47" loading="lazy">
-    <img src="images/projects/delray-str/g48.jpg" alt="Delray Beach STR build and finish — photo 48" loading="lazy">
-    <img src="images/projects/delray-str/g49.jpg" alt="Delray Beach STR build and finish — photo 49" loading="lazy">
-    <img src="images/projects/delray-str/g50.jpg" alt="Delray Beach STR build and finish — photo 50" loading="lazy">
-    <img src="images/projects/delray-str/g51.jpg" alt="Delray Beach STR build and finish — photo 51" loading="lazy">
-    <img src="images/projects/delray-str/g52.jpg" alt="Delray Beach STR build and finish — photo 52" loading="lazy">
-    <img src="images/projects/delray-str/g53.jpg" alt="Delray Beach STR build and finish — photo 53" loading="lazy">
-    <img src="images/projects/delray-str/g54.jpg" alt="Delray Beach STR build and finish — photo 54" loading="lazy">
-    <img src="images/projects/delray-str/g55.jpg" alt="Delray Beach STR build and finish — photo 55" loading="lazy">
-    <img src="images/projects/delray-str/g56.jpg" alt="Delray Beach STR build and finish — photo 56" loading="lazy">
-    <img src="images/projects/delray-str/g57.jpg" alt="Delray Beach STR build and finish — photo 57" loading="lazy">
-    <img src="images/projects/delray-str/g58.jpg" alt="Delray Beach STR build and finish — photo 58" loading="lazy">
-    <img src="images/projects/delray-str/g59.jpg" alt="Delray Beach STR build and finish — photo 59" loading="lazy">
-    <img src="images/projects/delray-str/g60.jpg" alt="Delray Beach STR build and finish — photo 60" loading="lazy">
   </div>
 </div></section>
 
