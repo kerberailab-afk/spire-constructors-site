@@ -1,0 +1,5 @@
+# Always revalidate these so updates aren't served stale from cache.
+/app.js
+  Cache-Control: no-cache
+/scope.html
+  Cache-Control: no-cache
