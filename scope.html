@@ -84,6 +84,12 @@ mark{background:#fff1a8;padding:0 1px}.hidden{display:none!important}
 .pcard .pbar{height:8px;background:#e6ebf2;border-radius:5px;overflow:hidden;margin-bottom:6px}
 .pcard .pbar>i{display:block;height:100%;background:linear-gradient(90deg,#3fa06a,#2e7d32)}
 .pcard .ps{font-size:12px;color:var(--mut);font-weight:600}
+
+.lgd{padding:12px 16px}.lgdh{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:9px}
+.legendgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:7px 18px}
+.legitem{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink)}
+.legitem .sw{width:11px;height:11px;border-radius:3px;flex:none}
+.legitem code{font-weight:800;color:var(--navy);font-family:inherit;min-width:24px}
 </style></head><body>
 <div id="gate"><div class="box">
 <div class="lock">🔒</div>
@@ -128,6 +134,7 @@ const TABS=[['overview','Overview'],['scope','Scope by Trade'],['index','Drawing
 const nav=document.getElementById('nav');
 TABS.forEach(([id,lbl],i)=>{const b=document.createElement('button');b.textContent=lbl;b.className=i==0?'active':'';b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);};nav.appendChild(b);});
 
+function legendHTML(){return '<div class="panel lgd"><div class="lgdh">Trade codes &mdash; what the prefixes mean</div><div class="legendgrid">'+D.trades.map(function(t,i){return '<span class="legitem"><span class="sw" style="background:'+t.color+'"></span><code>'+(t.code||PREFIX[i])+'</code> '+esc(t.name)+'</span>';}).join('')+'</div></div>';}
 function buildAll(){
  TOTAL=Object.values(D.counts).reduce((a,b)=>a+b,0);
  const ui=D.ui||{};
@@ -147,7 +154,7 @@ function buildAll(){
  new Chart(document.getElementById('chart'),{type:'bar',data:{labels:D.trades.map((t,i)=>SHORT[i]),datasets:[{data:D.trades.map(t=>t.count),backgroundColor:D.trades.map(t=>t.color)}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef'}},y:{ticks:{font:{size:11}}}}}});
  // SCOPE
  document.getElementById('scope').innerHTML=`<div class="progress"><div class="bar"><i id="pbar"></i></div><span class="pct" id="ptxt">0 / ${TOTAL}</span><button class="btnlite" id="clr">Clear all</button><span class="who" id="who"></span></div>
- <div class="submenu" id="submenu"></div>
+ ${legendHTML()}<div class="submenu" id="submenu"></div>
  <div class="controls"><input id="q" placeholder="Search all scope tasks…">
  <select id="ff"><option value="">All items</option><option value="open">Open (unchecked)</option><option value="done">Completed</option><option value="flg-o">NIC / by others</option><option value="flg-r">Allowances / verify</option></select>
  <span id="rc" class="note"></span></div><div id="trades"></div>`;
