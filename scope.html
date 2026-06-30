@@ -137,6 +137,7 @@ td.prio,th.prio{width:46px;text-align:center}
 #toast .tundo{background:var(--gold);border:none;color:#1c2530;font-weight:800;border-radius:7px;padding:6px 12px;font-size:12.5px;cursor:pointer}
 #toast .tclose{background:none;border:none;color:rgba(255,255,255,.7);font-size:16px;cursor:pointer;line-height:1;padding:0 2px}
 @media(max-width:520px){#toast{left:10px;right:10px;transform:none}}
+.sresult{padding:9px 11px;border-bottom:1px solid var(--line);cursor:pointer}.sresult:hover{background:#f0f4f9}.sresult.done .srdesc{text-decoration:line-through;color:#a4afba}.srtrade{font-size:11px;color:var(--mut);font-weight:600;margin-left:8px}.srdesc{font-size:13px;margin-top:3px}tr.flash td{animation:flashrow 1.6s ease}@keyframes flashrow{0%,100%{background:inherit}25%{background:#fff3a8}}
 </style></head><body>
 <div id="gate"><div class="box">
 <div class="lock">🔒</div>
@@ -152,6 +153,7 @@ td.prio,th.prio{width:46px;text-align:center}
 <nav id="nav"></nav>
 <main>
 <section id="todo" class="view active"></section>
+<section id="search" class="view"></section>
 <section id="overview" class="view"></section>
 <section id="scope" class="view"></section>
 <section id="index" class="view"></section>
@@ -193,9 +195,24 @@ async function apiGet(init){const r=await fetch(API+'?job='+encodeURIComponent(J
 async function apiPost(body){body.job=JOB;const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-pass':PASS},body:JSON.stringify(body)});if(!r.ok)throw r.status;return r.json();}
 
 // nav (static)
-const TABS=[['todo','🔥 To-Do'],['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
+const TABS=[['todo','🔥 To-Do'],['search','🔎 Search'],['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
 const nav=document.getElementById('nav');
-TABS.forEach(([id,lbl],i)=>{const b=document.createElement('button');b.textContent=lbl;b.className=i==0?'active':'';b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);};nav.appendChild(b);});
+function activateTab(id){document.querySelectorAll('nav button').forEach(function(x){x.classList.toggle('active',x.dataset.tab===id);});document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('active',v.id===id);});window.scrollTo(0,0);}
+TABS.forEach(([id,lbl])=>{const b=document.createElement('button');b.textContent=lbl;b.dataset.tab=id;b.onclick=()=>activateTab(id);nav.appendChild(b);});
+document.querySelector('nav button').classList.add('active');
+function renderSearch(q){q=(q||'').toLowerCase().trim();var box=document.getElementById('sresults');var cnt=document.getElementById('scount');if(!box)return;
+ if(!q){box.innerHTML='<div class="note" style="padding:14px">Type to search every scope item, manual item, and inspection across all trades.</div>';if(cnt)cnt.textContent='';return;}
+ var rows=document.querySelectorAll('#trades tr[data-id], #manualtrades tr[data-id], #inspect tr[data-id]');var out=[],seen={},n=0,shown=0;
+ rows.forEach(function(tr){var id=tr.dataset.id;if(!id||seen[id])return;if(tr.textContent.toLowerCase().indexOf(q)<0)return;seen[id]=1;n++;if(shown>=300)return;shown++;
+  var det=tr.closest('details.trade');var trade=det?det.querySelector('summary').textContent.replace(/\s*\d+\s*\/\s*\d+.*$/,'').trim():(id.indexOf('INS-')===0?'Inspection':'');
+  var label=tr.getAttribute('data-label')||tr.textContent.slice(0,120);
+  var fc=tr.querySelector('.flg-o')?'flg-o':(tr.querySelector('.flg-r')?'flg-r':'');
+  var hl=esc(label).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig'),'<mark>$1</mark>');
+  out.push('<div class="sresult'+(tr.classList.contains('done')?' done':'')+'" data-go="'+id+'"><span class="tag">'+esc(id)+'</span><span class="srtrade">'+esc(trade)+'</span><div class="srdesc '+fc+'">'+hl+'</div></div>');});
+ if(cnt)cnt.textContent=n+(n>300?' (showing first 300)':'')+' result'+(n===1?'':'s');
+ box.innerHTML=out.join('')||'<div class="note" style="padding:14px">No matches.</div>';}
+function openResult(id){var tr=document.querySelector('#trades tr[data-id="'+id+'"], #manualtrades tr[data-id="'+id+'"], #inspect tr[data-id="'+id+'"]');if(!tr)return;var tab=tr.closest('#inspect')?'inspect':'scope';activateTab(tab);var det=tr.closest('details');if(det)det.open=true;setTimeout(function(){tr.scrollIntoView({behavior:'smooth',block:'center'});tr.classList.add('flash');setTimeout(function(){tr.classList.remove('flash');},1700);},80);}
+document.addEventListener('click',function(e){var r=e.target.closest&&e.target.closest('.sresult');if(r)openResult(r.getAttribute('data-go'));});
 
 function tcode(t,i){return t.code||PREFIX[i];}
 function allTrades(){var base=D.trades.map(function(t,i){return {code:tcode(t,i),name:t.name,color:t.color,count:t.count,manual:false};});var man=(ADD.trades||[]).map(function(t){return {code:t.code,name:t.name,color:t.color,count:0,manual:true};});return base.concat(man);}
@@ -225,6 +242,8 @@ var toastT=null;
 function showToast(label,onUndo){var el=document.getElementById('toast');if(!el)return;el.querySelector('.tmsg').textContent=label+' — ';var ub=el.querySelector('.tundo');var nb=ub.cloneNode(true);ub.parentNode.replaceChild(nb,ub);nb.onclick=function(){onUndo();};el.querySelector('.tclose').onclick=hideToast;el.style.display='flex';if(toastT)clearTimeout(toastT);toastT=setTimeout(hideToast,8000);}
 function hideToast(){var el=document.getElementById('toast');if(el)el.style.display='none';if(toastT){clearTimeout(toastT);toastT=null;}}
 function buildAll(){
+ document.getElementById('search').innerHTML='<div class="controls" style="position:sticky;top:46px;background:var(--bg);z-index:10;padding:10px 0"><input id="gsearch" placeholder="Search all scope items — ID, description, sheet, flag…" autocomplete="off"><span class="note" id="scount"></span></div><div id="sresults" class="panel" style="padding:4px"></div>';
+ document.getElementById('gsearch').addEventListener('input',function(e){renderSearch(e.target.value);});renderSearch('');
  TOTAL=Object.values(D.counts).reduce((a,b)=>a+b,0);
  const ui=D.ui||{};
  document.getElementById('htitle').textContent=ui.title||'Scope Tracker';
