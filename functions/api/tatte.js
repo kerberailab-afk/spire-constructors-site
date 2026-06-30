@@ -47,7 +47,8 @@ export async function onRequest(context){
     const state=(await kv.get("state:"+id,"json"))||{};
     const log=(await kv.get("log:"+id,"json"))||[];
     const add=(await kv.get("add:"+id,"json"))||{trades:[],tasks:[]};
-    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,now:Date.now()};
+    const prio=(await kv.get("prio:"+id,"json"))||{};
+    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,now:Date.now()};
     if(url.searchParams.get("init")) out.data=JOBS[id].data;
     return json(out);
   }
@@ -62,8 +63,16 @@ export async function onRequest(context){
     let state=(await kv.get("state:"+id,"json"))||{};
     let log=(await kv.get("log:"+id,"json"))||[];
     let add=(await kv.get("add:"+id,"json"))||{trades:[],tasks:[]};
+    let prio=(await kv.get("prio:"+id,"json"))||{};
 
-    if(b.action==="toggle"){
+    if(b.action==="setprio"){
+      const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
+      let v=Math.round(Number(b.value)); if(!isFinite(v)) v=0;
+      v=Math.max(0,Math.min(100,v));
+      if(v<=0) delete prio[tid]; else prio[tid]=v;
+      await kv.put("prio:"+id,JSON.stringify(prio));
+      return json({ok:true});
+    } else if(b.action==="toggle"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
       if(b.done) state[tid]={done:true,by:user,at:ts}; else delete state[tid];
       log.push({ts,user,id:tid,label:(b.label||"").toString().slice(0,90),action:b.done?"checked":"unchecked"});
@@ -80,7 +89,7 @@ export async function onRequest(context){
       const tr={code,name,color,by:user,at:ts};
       add.trades.push(tr);
       log.push({ts,user,action:"added trade",label:name+" ("+code+")"});
-      await kv.put("add:"+id,JSON.stringify(add));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
       return json({ok:true,trade:tr});
     } else if(b.action==="addtask"){
       const code=(b.code||"").toString();
@@ -95,8 +104,40 @@ export async function onRequest(context){
       const item={code,id:tid,desc,location:(b.location||"").toString().slice(0,120),flag:(b.flag||"").toString().slice(0,40),by:user,at:ts};
       add.tasks.push(item);
       log.push({ts,user,action:"added task",id:tid,label:desc});
-      await kv.put("add:"+id,JSON.stringify(add));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
       return json({ok:true,item});
+    } else if(b.action==="renametask"){
+      const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
+      const item=add.tasks.find(t=>t.id===tid); if(!item) return json({error:"unknown task"},400);
+      const desc=(b.desc||"").toString().trim().slice(0,300); if(!desc) return json({error:"missing description"},400);
+      item.desc=desc;
+      item.location=(b.location||"").toString().slice(0,120);
+      item.flag=(b.flag||"").toString().slice(0,40);
+      log.push({ts,user,action:"renamed task",id:tid,label:desc});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
+      return json({ok:true,item});
+    } else if(b.action==="renametrade"){
+      const code=(b.code||"").toString(); if(!code) return json({error:"missing code"},400);
+      const tr=add.trades.find(t=>t.code===code); if(!tr) return json({error:"unknown trade"},400);
+      const name=(b.name||"").toString().trim().slice(0,60); if(!name) return json({error:"missing name"},400);
+      tr.name=name;
+      log.push({ts,user,action:"renamed trade",label:name+" ("+code+")"});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
+      return json({ok:true,trade:tr});
+    } else if(b.action==="restoretask"){
+      const item=b.item; if(!item||!item.id) return json({error:"missing item"},400);
+      if(!add.tasks.some(t=>t.id===item.id)){ add.tasks.push(item); }
+      log.push({ts,user,action:"restored task",id:item.id});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
+      return json({ok:true,add});
+    } else if(b.action==="restoretrade"){
+      const tr=b.trade; if(!tr||!tr.code) return json({error:"missing trade"},400);
+      const tasks=Array.isArray(b.tasks)?b.tasks:[];
+      if(!add.trades.some(t=>t.code===tr.code)){ add.trades.push(tr); }
+      tasks.forEach(function(tk){ if(tk&&tk.id&&!add.tasks.some(t=>t.id===tk.id)) add.tasks.push(tk); });
+      log.push({ts,user,action:"restored trade",label:tr.code});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
+      return json({ok:true,add});
     } else if(b.action==="deladd"){
       const tid=(b.taskId||"").toString();
       const tcode=(b.code||"").toString();
@@ -109,7 +150,7 @@ export async function onRequest(context){
         log.push({ts,user,action:"removed trade",label:tcode});
         await kv.put("state:"+id,JSON.stringify(state)); }
       else return json({error:"nothing to remove"},400);
-      await kv.put("add:"+id,JSON.stringify(add));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
       return json({ok:true,add});
     } else return json({error:"unknown action"},400);
 
