@@ -102,6 +102,41 @@ mark{background:#fff1a8;padding:0 1px}.hidden{display:none!important}
 .delx.tradedel{font-size:11.5px;border:1px solid #f0d2d0;border-radius:6px;padding:4px 8px;margin-left:auto}
 code.tc{font-size:11px;font-weight:800;color:var(--steel);margin-left:8px}
 .byc{font-size:11.5px;color:var(--mut)}
+/* priority */
+td.prio,th.prio{width:46px;text-align:center}
+.pchip{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line);border-radius:14px;padding:2px 7px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;line-height:1.4;user-select:none}
+.pchip .pem{font-size:12px}
+.pchip.set{color:#fff;border-color:transparent}
+.pchip.unset{color:var(--mut)}
+.priopop{position:fixed;z-index:120;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(13,40,80,.28);padding:12px 10px 10px;width:96px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.priopop .pe{font-size:18px;line-height:1}
+.priopop .pval{font-size:12px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+.vrange{-webkit-appearance:none;appearance:none;writing-mode:vertical-lr;direction:rtl;width:26px;height:150px;border-radius:13px;outline:none;cursor:pointer;background:linear-gradient(to top,#2a7db1,#7fb3d5 45%,#e8a36a 55%,#b3322e)}
+.vrange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:16px;border-radius:6px;background:#fff;border:2px solid var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+.vrange::-moz-range-thumb{width:24px;height:16px;border-radius:6px;background:#fff;border:2px solid var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+.priopop .pclr{border:none;background:none;color:var(--mut);font-size:11px;cursor:pointer;text-decoration:underline}
+.priopop .pclr:hover{color:var(--red)}
+/* to-do tab */
+#todo .todorow{display:grid;grid-template-columns:64px 78px 1fr auto auto 30px;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line)}
+#todo .todorow:nth-child(even){background:#fafbfd}
+#todo .todorow.done .tdesc,#todo .todorow.done .tid{text-decoration:line-through;color:#a4afba}
+#todo .pbar2{height:8px;border-radius:5px;width:48px}
+#todo .tid{font-weight:700;color:var(--steel);font-size:11px}
+#todo .tdesc{font-size:12.5px}
+#todo .ttrade{font-size:10.5px;font-weight:700;color:var(--navy);background:#eef2f7;border-radius:4px;padding:2px 6px;white-space:nowrap}
+#todo .todohdr{display:grid;grid-template-columns:64px 78px 1fr auto auto 30px;gap:10px;padding:7px 12px;font-size:11px;font-weight:700;color:var(--navy);background:#eef2f7;border-radius:8px 8px 0 0}
+#todo .tempty{color:var(--mut);font-style:italic;padding:18px 4px}
+/* rename + undo */
+.editx{background:none;border:none;color:var(--steel);cursor:pointer;font-size:13px;font-weight:700;margin-right:2px}
+.editx.tradeedit{font-size:11.5px;border:1px solid #cfe0ef;border-radius:6px;padding:4px 8px;margin-left:8px;color:var(--steel)}
+.editform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0;width:100%}
+.editform input{padding:8px 10px;border:1px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit}
+.editform .efd{flex:2;min-width:200px}.editform .efl,.editform .eff{flex:1;min-width:110px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:300;background:var(--navy);color:#fff;border-radius:10px;padding:11px 14px;font-size:13px;box-shadow:0 14px 40px rgba(13,40,80,.35);display:none;align-items:center;gap:14px;max-width:92vw}
+#toast .tmsg{font-weight:600}
+#toast .tundo{background:var(--gold);border:none;color:#1c2530;font-weight:800;border-radius:7px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+#toast .tclose{background:none;border:none;color:rgba(255,255,255,.7);font-size:16px;cursor:pointer;line-height:1;padding:0 2px}
+@media(max-width:520px){#toast{left:10px;right:10px;transform:none}}
 </style></head><body>
 <div id="gate"><div class="box">
 <div class="lock">🔒</div>
@@ -116,7 +151,8 @@ code.tc{font-size:11px;font-weight:800;color:var(--steel);margin-left:8px}
 <div id="banner"></div>
 <nav id="nav"></nav>
 <main>
-<section id="overview" class="view active"></section>
+<section id="todo" class="view active"></section>
+<section id="overview" class="view"></section>
 <section id="scope" class="view"></section>
 <section id="index" class="view"></section>
 <section id="inspect" class="view"></section>
@@ -125,6 +161,7 @@ code.tc{font-size:11px;font-weight:800;color:var(--steel);margin-left:8px}
 </main>
 <div class="foot">Confidential — internal use only. Check-offs &amp; activity log sync live across the team. Scope reflects the 09/17/25 Bid Set unless noted.</div>
 </div>
+<div id="toast"><span class="tmsg"></span><button class="tundo">Undo</button><button class="tclose" title="Dismiss">✕</button></div>
 <script>
 const API="/api/tatte";
 const PREFIX=["AD","AF","MW","ME","EL","PL","FA","FS","ST"];
@@ -135,14 +172,28 @@ const first=s=>(s||'').split(' ')[0];
 function flagClass(v){const u=(v||'').toUpperCase();
  if(/NIC|BY OTHER|BY OWNER|BY LANDLORD|BY TENANT|SEPARATE|N\.I\.C|OWNER-FURNISH|VENDOR/.test(u))return'flg-o';
  if(/ALLOW|ALTERNATE|\bADD\b|HOLD|VERIFY|CONFLICT|TBD/.test(u))return'flg-r';return'';}
-let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]};
+let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]}, PRIO={}, IDX={};
+// ---- priority helpers ----
+// value 0-100: high=🔥 hot red (urgent), low=🐧 ice blue. Returns css color for a given value.
+function prioColor(v){v=Math.max(0,Math.min(100,v||0));
+ // blend ice-blue (#2a7db1) -> red (#b3322e) across 0..100
+ const a=[42,125,177],b=[179,50,46];const t=v/100;
+ const r=Math.round(a[0]+(b[0]-a[0])*t),g=Math.round(a[1]+(b[1]-a[1])*t),bl=Math.round(a[2]+(b[2]-a[2])*t);
+ return 'rgb('+r+','+g+','+bl+')';}
+function prioEmoji(v){return (v||0)>=50?'🔥':'🐧';}
+function prioChipHTML(id){const v=PRIO[id];
+ if(v==null) return '<span class="pchip unset" data-prio="'+esc(id)+'" title="Set importance">⚖ —</span>';
+ return '<span class="pchip set" data-prio="'+esc(id)+'" style="background:'+prioColor(v)+'" title="Importance '+v+'">'+
+   '<span class="pem">'+prioEmoji(v)+'</span>'+v+'</span>';}
+function reflectPrioChip(id){document.querySelectorAll('.pchip[data-prio="'+CSS.escape(id)+'"]').forEach(function(c){
+ var tmp=document.createElement('div');tmp.innerHTML=prioChipHTML(id);var nw=tmp.firstChild;c.replaceWith(nw);});}
 const banner=m=>{const b=document.getElementById('banner');b.textContent=m;b.style.display=m?'block':'none';};
 async function apiList(){const r=await fetch(API+'?list=1',{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
 async function apiGet(init){const r=await fetch(API+'?job='+encodeURIComponent(JOB)+(init?'&init=1':''),{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
 async function apiPost(body){body.job=JOB;const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-pass':PASS},body:JSON.stringify(body)});if(!r.ok)throw r.status;return r.json();}
 
 // nav (static)
-const TABS=[['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
+const TABS=[['todo','🔥 To-Do'],['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
 const nav=document.getElementById('nav');
 TABS.forEach(([id,lbl],i)=>{const b=document.createElement('button');b.textContent=lbl;b.className=i==0?'active':'';b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);};nav.appendChild(b);});
 
@@ -151,17 +202,28 @@ function allTrades(){var base=D.trades.map(function(t,i){return {code:tcode(t,i)
 function manualCount(code){return (ADD.tasks||[]).filter(function(t){return t.code===code;}).length;}
 function legendHTML(){return '<div class="panel lgd"><div class="lgdh">Trade codes &mdash; what the prefixes mean</div><div class="legendgrid" id="legendgrid"></div></div>';}
 function renderLegend(){var g=document.getElementById('legendgrid');if(!g)return;g.innerHTML=allTrades().map(function(t){return '<span class="legitem"><span class="sw" style="background:'+t.color+'"></span><code>'+esc(t.code)+'</code> '+esc(t.name)+(t.manual?' <span class="mtag">manual</span>':'')+'</span>';}).join('');}
-function manualRowsHTML(code){var rows=(ADD.tasks||[]).filter(function(t){return t.code===code;});if(!rows.length)return '';return '<table><thead><tr><th class="cbx">✓</th><th class="num">#</th><th>Manually added task</th><th>Location</th><th>Added by</th><th></th></tr></thead><tbody>'+rows.map(function(t){return '<tr data-id="'+t.id+'" data-label="'+esc(t.desc)+'"><td class="cbx"><input type="checkbox" class="chk" data-id="'+t.id+'"></td><td class="num"><span class="idl">'+t.id+'</span></td><td>'+esc(t.desc)+' <span class="mtag">manual</span></td><td>'+esc(t.location||'')+'</td><td class="byc">'+esc(first(t.by))+'</td><td><button class="delx" data-del="'+t.id+'" title="Remove this added task">✕</button></td></tr>';}).join('')+'</tbody></table>';}
+function manualRowsHTML(code){var rows=(ADD.tasks||[]).filter(function(t){return t.code===code;});if(!rows.length)return '';return '<table><thead><tr><th class="cbx">✓</th><th class="num">#</th><th class="prio">⚖</th><th>Manually added task</th><th>Location</th><th>Added by</th><th></th></tr></thead><tbody>'+rows.map(function(t){return '<tr data-id="'+t.id+'" data-label="'+esc(t.desc)+'"><td class="cbx"><input type="checkbox" class="chk" data-id="'+t.id+'"></td><td class="num"><span class="idl">'+t.id+'</span></td><td class="prio">'+prioChipHTML(t.id)+'</td><td>'+esc(t.desc)+' <span class="mtag">manual</span></td><td>'+esc(t.location||'')+'</td><td class="byc">'+esc(first(t.by))+'</td><td style="white-space:nowrap"><button class="editx" data-edit="'+t.id+'" title="Rename this added task">✎</button><button class="delx" data-del="'+t.id+'" title="Remove this added task">✕</button></td></tr>';}).join('')+'</tbody></table>';}
 function renderManualTasks(code){var w=document.querySelector('.manualsec[data-code="'+code+'"]');if(w)w.innerHTML=manualRowsHTML(code);}
-function tradeBlock(code,name,color){var d=document.createElement('details');d.className='trade';d.id='tr-'+code;d.innerHTML='<summary><span class="dot" style="background:'+color+'"></span>'+esc(name)+' <code class="tc">'+esc(code)+'</code><span class="cnt" id="cnt-'+code+'">0 / 0</span></summary><div class="manualsec" data-code="'+code+'"></div><div class="addrow"><button class="btnlite addtask" data-code="'+code+'">+ Add task</button><button class="delx tradedel" data-deltrade="'+code+'" title="Remove this trade">✕ remove trade</button></div>';return d;}
+function tradeBlock(code,name,color){var d=document.createElement('details');d.className='trade';d.id='tr-'+code;d.innerHTML='<summary><span class="dot" style="background:'+color+'"></span>'+esc(name)+' <code class="tc">'+esc(code)+'</code><span class="cnt" id="cnt-'+code+'">0 / 0</span></summary><div class="manualsec" data-code="'+code+'"></div><div class="addrow"><button class="btnlite addtask" data-code="'+code+'">+ Add task</button><button class="editx tradeedit" data-edittrade="'+code+'" data-name="'+esc(name)+'" title="Rename this trade">✎ rename</button><button class="delx tradedel" data-deltrade="'+code+'" title="Remove this trade">✕ remove trade</button></div>';return d;}
 function renderManualTrades(){var host=document.getElementById('manualtrades');if(!host)return;host.innerHTML='';document.querySelectorAll('.tchip[data-manual]').forEach(function(c){c.remove();});var menu=document.getElementById('submenu');(ADD.trades||[]).forEach(function(tr){var d=tradeBlock(tr.code,tr.name,tr.color);host.appendChild(d);renderManualTasks(tr.code);if(menu){var chip=document.createElement('div');chip.className='tchip';chip.setAttribute('data-manual','1');chip.innerHTML='<span class="sw" style="background:'+tr.color+'"></span><b>'+esc(tr.code)+'</b> '+esc(tr.name)+'<span class="pc" id="chip-'+tr.code+'">0/0</span>';chip.onclick=function(){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});};menu.appendChild(chip);}});}
 function renderAllManual(){allTrades().forEach(function(t){if(!t.manual)renderManualTasks(t.code);});renderManualTrades();renderLegend();updateCounts();reflectAll();}
 function openAddTaskForm(code,btn){if(btn.parentNode.querySelector('.addform'))return;var f=document.createElement('div');f.className='addform';f.innerHTML='<input class="afd" placeholder="Task description (required)"><input class="afl" placeholder="Location (optional)"><input class="aff" placeholder="Flag e.g. NIC (optional)"><button class="btnlite afsave">Save</button><button class="btnlite afcancel">Cancel</button> <span class="afmsg note"></span>';btn.parentNode.appendChild(f);f.querySelector('.afd').focus();f.querySelector('.afcancel').onclick=function(){f.remove();};f.querySelector('.afsave').onclick=function(){submitAddTask(code,f);};f.querySelector('.afd').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddTask(code,f);});}
 async function submitAddTask(code,f){var desc=f.querySelector('.afd').value.trim();var msg=f.querySelector('.afmsg');if(!desc){msg.textContent='Description required';return;}var location=f.querySelector('.afl').value.trim();var flag=f.querySelector('.aff').value.trim();f.querySelectorAll('button').forEach(function(b){b.disabled=true;});try{var res=await apiPost({action:'addtask',code:code,desc:desc,location:location,flag:flag});ADD.tasks.push(res.item);LOG.unshift({ts:Date.now(),user:USER,action:'added task',id:res.item.id,label:desc});}catch(e){msg.textContent='Save failed';f.querySelectorAll('button').forEach(function(b){b.disabled=false;});return;}f.remove();renderManualTasks(code);renderLegend();updateCounts();reflectAll();renderLog();}
 function openAddTradeForm(btn){if(document.getElementById('addtradeform'))return;var f=document.createElement('div');f.id='addtradeform';f.className='addform';f.innerHTML='<input class="afd" placeholder="New trade name (e.g. Site Utilities)"><button class="btnlite afsave">Add trade</button><button class="btnlite afcancel">Cancel</button> <span class="afmsg note"></span>';btn.parentNode.insertBefore(f,btn.nextSibling);f.querySelector('.afd').focus();f.querySelector('.afcancel').onclick=function(){f.remove();};f.querySelector('.afsave').onclick=function(){submitAddTrade(f);};f.querySelector('.afd').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddTrade(f);});}
 async function submitAddTrade(f){var name=f.querySelector('.afd').value.trim();var msg=f.querySelector('.afmsg');if(!name){msg.textContent='Name required';return;}f.querySelectorAll('button').forEach(function(b){b.disabled=true;});try{var res=await apiPost({action:'addtrade',name:name});ADD.trades.push(res.trade);LOG.unshift({ts:Date.now(),user:USER,action:'added trade',label:name+' ('+res.trade.code+')'});}catch(e){msg.textContent='Add failed';f.querySelectorAll('button').forEach(function(b){b.disabled=false;});return;}f.remove();renderManualTrades();renderLegend();updateCounts();reflectAll();renderLog();}
-async function delTask(id){if(!confirm('Remove added task '+id+'?'))return;var arr=(ADD.tasks||[]).filter(function(x){return x.id===id;});var code=arr.length?arr[0].code:null;try{await apiPost({action:'deladd',taskId:id});}catch(e){banner('Remove failed');return;}ADD.tasks=(ADD.tasks||[]).filter(function(x){return x.id!==id;});delete STATE[id];if(code)renderManualTasks(code);renderLegend();updateCounts();reflectAll();LOG.unshift({ts:Date.now(),user:USER,action:'removed task',id:id});renderLog();}
-async function delTrade(code){if(!confirm('Remove trade '+code+' and its added tasks?'))return;try{await apiPost({action:'deladd',code:code});}catch(e){banner('Remove failed');return;}(ADD.tasks||[]).filter(function(x){return x.code===code;}).forEach(function(x){delete STATE[x.id];});ADD.tasks=(ADD.tasks||[]).filter(function(x){return x.code!==code;});ADD.trades=(ADD.trades||[]).filter(function(x){return x.code!==code;});renderManualTrades();renderLegend();updateCounts();reflectAll();LOG.unshift({ts:Date.now(),user:USER,action:'removed trade',label:code});renderLog();}
+async function delTask(id){if(!confirm('Remove added task '+id+'?'))return;var arr=(ADD.tasks||[]).filter(function(x){return x.id===id;});var code=arr.length?arr[0].code:null;var removed=arr.length?JSON.parse(JSON.stringify(arr[0])):null;try{await apiPost({action:'deladd',taskId:id});}catch(e){banner('Remove failed');return;}ADD.tasks=(ADD.tasks||[]).filter(function(x){return x.id!==id;});delete STATE[id];if(code)renderManualTasks(code);renderLegend();updateCounts();reflectAll();buildIndex();renderTodo();LOG.unshift({ts:Date.now(),user:USER,action:'removed task',id:id});renderLog();if(removed)showToast('Removed '+id,function(){restoreTask(removed);});}
+async function delTrade(code){if(!confirm('Remove trade '+code+' and its added tasks?'))return;var tradeArr=(ADD.trades||[]).filter(function(x){return x.code===code;});var removedTrade=tradeArr.length?JSON.parse(JSON.stringify(tradeArr[0])):null;var removedTasks=JSON.parse(JSON.stringify((ADD.tasks||[]).filter(function(x){return x.code===code;})));try{await apiPost({action:'deladd',code:code});}catch(e){banner('Remove failed');return;}(ADD.tasks||[]).filter(function(x){return x.code===code;}).forEach(function(x){delete STATE[x.id];});ADD.tasks=(ADD.tasks||[]).filter(function(x){return x.code!==code;});ADD.trades=(ADD.trades||[]).filter(function(x){return x.code!==code;});renderManualTrades();renderLegend();updateCounts();reflectAll();buildIndex();renderTodo();LOG.unshift({ts:Date.now(),user:USER,action:'removed trade',label:code});renderLog();if(removedTrade)showToast('Removed '+(removedTrade.name||code),function(){restoreTrade(removedTrade,removedTasks);});}
+// ---- rename (inline edit) ----
+function openEditTaskForm(id,btn){var tr=btn.closest('tr');if(!tr)return;if(tr.nextSibling&&tr.nextSibling.classList&&tr.nextSibling.classList.contains('editrow'))return;var arr=(ADD.tasks||[]).filter(function(x){return x.id===id;});if(!arr.length)return;var t=arr[0];var colspan=tr.children.length;var er=document.createElement('tr');er.className='editrow';er.innerHTML='<td colspan="'+colspan+'"><div class="editform"><input class="efd" placeholder="Task description (required)"><input class="efl" placeholder="Location (optional)"><input class="eff" placeholder="Flag e.g. NIC (optional)"><button class="btnlite efsave">Save</button><button class="btnlite efcancel">Cancel</button> <span class="efmsg note"></span></div></td>';tr.parentNode.insertBefore(er,tr.nextSibling);er.querySelector('.efd').value=t.desc||'';er.querySelector('.efl').value=t.location||'';er.querySelector('.eff').value=t.flag||'';er.querySelector('.efd').focus();er.querySelector('.efcancel').onclick=function(){er.remove();};er.querySelector('.efsave').onclick=function(){submitEditTask(id,er);};er.querySelector('.efd').addEventListener('keydown',function(e){if(e.key==='Enter')submitEditTask(id,er);});}
+async function submitEditTask(id,er){var desc=er.querySelector('.efd').value.trim();var msg=er.querySelector('.efmsg');if(!desc){msg.textContent='Description required';return;}var location=er.querySelector('.efl').value.trim();var flag=er.querySelector('.eff').value.trim();er.querySelectorAll('button').forEach(function(b){b.disabled=true;});var code=null;try{var res=await apiPost({action:'renametask',taskId:id,desc:desc,location:location,flag:flag});var arr=(ADD.tasks||[]).filter(function(x){return x.id===id;});if(arr.length){arr[0].desc=res.item.desc;arr[0].location=res.item.location;arr[0].flag=res.item.flag;code=arr[0].code;}LOG.unshift({ts:Date.now(),user:USER,action:'renamed task',id:id,label:desc});}catch(e){msg.textContent='Save failed';er.querySelectorAll('button').forEach(function(b){b.disabled=false;});return;}er.remove();if(code)renderManualTasks(code);buildIndex();renderTodo();updateCounts();reflectAll();renderLog();}
+function openEditTradeForm(code,btn){var row=btn.parentNode;if(row.querySelector('.editform'))return;var arr=(ADD.trades||[]).filter(function(x){return x.code===code;});if(!arr.length)return;var f=document.createElement('div');f.className='editform';f.innerHTML='<input class="efd" placeholder="Trade name (required)"><button class="btnlite efsave">Save</button><button class="btnlite efcancel">Cancel</button> <span class="efmsg note"></span>';row.appendChild(f);f.querySelector('.efd').value=arr[0].name||'';f.querySelector('.efd').focus();f.querySelector('.efcancel').onclick=function(){f.remove();};f.querySelector('.efsave').onclick=function(){submitEditTrade(code,f);};f.querySelector('.efd').addEventListener('keydown',function(e){if(e.key==='Enter')submitEditTrade(code,f);});}
+async function submitEditTrade(code,f){var name=f.querySelector('.efd').value.trim();var msg=f.querySelector('.efmsg');if(!name){msg.textContent='Name required';return;}f.querySelectorAll('button').forEach(function(b){b.disabled=true;});try{var res=await apiPost({action:'renametrade',code:code,name:name});var arr=(ADD.trades||[]).filter(function(x){return x.code===code;});if(arr.length)arr[0].name=res.trade.name;LOG.unshift({ts:Date.now(),user:USER,action:'renamed trade',label:name+' ('+code+')'});}catch(e){msg.textContent='Save failed';f.querySelectorAll('button').forEach(function(b){b.disabled=false;});return;}renderManualTrades();renderLegend();buildIndex();renderTodo();updateCounts();reflectAll();renderLog();}
+async function restoreTask(item){try{await apiPost({action:'restoretask',item:item});}catch(e){banner('Undo failed');return;}if(!(ADD.tasks||[]).some(function(x){return x.id===item.id;}))ADD.tasks.push(item);renderManualTasks(item.code);renderLegend();updateCounts();reflectAll();buildIndex();renderTodo();LOG.unshift({ts:Date.now(),user:USER,action:'restored task',id:item.id});renderLog();hideToast();}
+async function restoreTrade(trade,tasks){try{await apiPost({action:'restoretrade',trade:trade,tasks:tasks});}catch(e){banner('Undo failed');return;}if(!(ADD.trades||[]).some(function(x){return x.code===trade.code;}))ADD.trades.push(trade);(tasks||[]).forEach(function(tk){if(tk&&tk.id&&!(ADD.tasks||[]).some(function(x){return x.id===tk.id;}))ADD.tasks.push(tk);});renderManualTrades();renderLegend();updateCounts();reflectAll();buildIndex();renderTodo();LOG.unshift({ts:Date.now(),user:USER,action:'restored trade',label:trade.code});renderLog();hideToast();}
+// ---- undo toast ----
+var toastT=null;
+function showToast(label,onUndo){var el=document.getElementById('toast');if(!el)return;el.querySelector('.tmsg').textContent=label+' — ';var ub=el.querySelector('.tundo');var nb=ub.cloneNode(true);ub.parentNode.replaceChild(nb,ub);nb.onclick=function(){onUndo();};el.querySelector('.tclose').onclick=hideToast;el.style.display='flex';if(toastT)clearTimeout(toastT);toastT=setTimeout(hideToast,8000);}
+function hideToast(){var el=document.getElementById('toast');if(el)el.style.display='none';if(toastT){clearTimeout(toastT);toastT=null;}}
 function buildAll(){
  TOTAL=Object.values(D.counts).reduce((a,b)=>a+b,0);
  const ui=D.ui||{};
@@ -190,12 +252,12 @@ function buildAll(){
   const d=document.createElement('details');d.className='trade';d.id='tr-'+code;if(ti==0)d.open=true;
   let inner=`<summary><span class="dot" style="background:${t.color}"></span>${esc(t.name)} <code class="tc">${code}</code><span class="cnt" id="cnt-${code}">0 / ${t.count}</span></summary>`;
   t.sections.forEach(sec=>{let body='';sec.tables.forEach(tab=>{
-    body+=`<table><thead><tr><th class="cbx">✓</th><th class="num">#</th>`+tab.header.map(h=>`<th>${esc(h)}</th>`).join('')+`</tr></thead><tbody>`;
+    body+=`<table><thead><tr><th class="cbx">✓</th><th class="num">#</th><th class="prio">⚖</th>`+tab.header.map(h=>`<th>${esc(h)}</th>`).join('')+`</tr></thead><tbody>`;
     tab.rows.forEach(r=>{const ne=r.filter(x=>x.trim());
-      if(ne.length===1&&r.length>1){body+=`<tr class="srow"><td colspan="${tab.header.length+2}" style="background:#eef2f7;font-weight:700;color:var(--navy)">${esc(ne[0])}</td></tr>`;return;}
+      if(ne.length===1&&r.length>1){body+=`<tr class="srow"><td colspan="${tab.header.length+3}" style="background:#eef2f7;font-weight:700;color:var(--navy)">${esc(ne[0])}</td></tr>`;return;}
       n++;const id=code+'-'+String(n).padStart(3,'0');const lab=(r[1]||r[0]||'').slice(0,80);
       const last=r[r.length-1]||'';const fc=flagClass(last);
-      body+=`<tr data-id="${id}" data-label="${esc(lab)}"><td class="cbx"><input type="checkbox" class="chk" data-id="${id}"></td><td class="num"><span class="idl">${id}</span></td>`+
+      body+=`<tr data-id="${id}" data-label="${esc(lab)}"><td class="cbx"><input type="checkbox" class="chk" data-id="${id}"></td><td class="num"><span class="idl">${id}</span></td><td class="prio">${prioChipHTML(id)}</td>`+
         tab.header.map((h,ci)=>{let v=r[ci]||'';let cl=(ci===r.length-1&&fc)?` class="${fc}"`:'';return `<td${cl}>${esc(v)}</td>`;}).join('')+`</tr>`;});
     body+=`</tbody></table>`;});
     inner+=`<div class="sec"><h4>${esc(sec.h)}</h4>${sec.notes.map(nn=>`<div class="note">${esc(nn)}</div>`).join('')}${body}</div>`;});
@@ -234,11 +296,61 @@ function buildAll(){
  document.getElementById('clr').addEventListener('click',clearAll);
  setWho();
 }
-function reflectRow(id){const done=!!(STATE[id]&&STATE[id].done);const cb=document.querySelector('.chk[data-id="'+id+'"]');if(!cb)return;
- cb.checked=done;const tr=cb.closest('tr');tr.classList.toggle('done',done);const num=tr.querySelector('.num');
- if(done){const s=STATE[id];num.innerHTML=`<span class="idl">${id}</span><span class="cap">✓ ${esc(first(s.by))} · ${s.at?fmt(s.at):''}</span>`;tr.title='Checked by '+(s.by||'')+(s.at?' on '+new Date(s.at).toLocaleString():'');}
- else{num.innerHTML=`<span class="idl">${id}</span>`;tr.removeAttribute('title');}}
-function reflectAll(){document.querySelectorAll('.chk').forEach(cb=>reflectRow(cb.dataset.id));updateCounts();}
+// ---- priority: index, persistence, popover, to-do tab ----
+function buildIndex(){IDX={};
+ if(D&&D.trades){D.trades.forEach(function(t,ti){var code=tcode(t,ti);var n=0;
+   (t.sections||[]).forEach(function(sec){(sec.tables||[]).forEach(function(tab){
+     (tab.rows||[]).forEach(function(r){var ne=r.filter(function(x){return x.trim();});
+       if(ne.length===1&&r.length>1)return; n++;var id=code+'-'+String(n).padStart(3,'0');
+       IDX[id]={desc:(r[1]||r[0]||'').toString(),code:code};});});});});}
+ (ADD.tasks||[]).forEach(function(t){IDX[t.id]={desc:t.desc||'',code:t.code};});}
+const prioTimers={};const prioPending=new Set();
+function savePrio(id,v){PRIO[id]=v;prioPending.add(id);if(prioTimers[id])clearTimeout(prioTimers[id]);
+ prioTimers[id]=setTimeout(function(){apiPost({action:'setprio',taskId:id,value:v,user:USER}).then(function(){prioPending.delete(id);}).catch(function(){prioPending.delete(id);banner('Priority sync failed.');});delete prioTimers[id];},300);}
+function setPrioValue(id,v){v=Math.max(0,Math.min(100,Math.round(v)));
+ if(v<=0)delete PRIO[id];else PRIO[id]=v;
+ savePrio(id,v); reflectPrioChip(id); renderTodo();}
+let priopop=null;
+function closePrioPop(){if(priopop){priopop.remove();priopop=null;document.removeEventListener('mousedown',onPopOutside,true);}}
+function onPopOutside(e){if(priopop&&!priopop.contains(e.target)&&!(e.target.classList&&e.target.classList.contains('pchip')))closePrioPop();}
+function openPrioPop(chip){closePrioPop();const id=chip.getAttribute('data-prio');const cur=PRIO[id]||0;
+ const pop=document.createElement('div');pop.className='priopop';
+ pop.innerHTML='<div class="pe">🔥</div><div class="pval" id="ppval">'+cur+'</div>'+
+  '<input type="range" class="vrange" min="0" max="100" step="1" value="'+cur+'" aria-label="importance">'+
+  '<div class="pe">🐧</div><button class="pclr">clear</button>';
+ document.body.appendChild(pop);priopop=pop;
+ const r=chip.getBoundingClientRect();let left=r.left-((pop.offsetWidth-r.width)/2);
+ left=Math.max(8,Math.min(left,window.innerWidth-pop.offsetWidth-8));
+ let top=r.bottom+6; if(top+pop.offsetHeight>window.innerHeight-8)top=Math.max(8,r.top-pop.offsetHeight-6);
+ pop.style.left=left+'px';pop.style.top=top+'px';
+ const rng=pop.querySelector('.vrange'),val=pop.querySelector('#ppval');
+ rng.addEventListener('input',function(){val.textContent=rng.value;setPrioValue(id,Number(rng.value));});
+ pop.querySelector('.pclr').onclick=function(){setPrioValue(id,0);closePrioPop();};
+ setTimeout(function(){document.addEventListener('mousedown',onPopOutside,true);},0);}
+function renderTodo(){const host=document.getElementById('todo');if(!host)return;
+ const ids=Object.keys(PRIO).filter(function(id){return PRIO[id]>0;});
+ ids.sort(function(a,b){return PRIO[b]-PRIO[a];});
+ let h='<div class="panel"><h3>🔥 To-Do — prioritized tasks (most urgent first)</h3>';
+ if(!ids.length){h+='<div class="tempty">No tasks prioritized yet. Set an importance (⚖) on any task to add it here.</div></div>';host.innerHTML=h;return;}
+ h+='<div class="todohdr"><span>Priority</span><span>Task</span><span>Description</span><span>Trade</span><span>Done</span><span></span></div>';
+ ids.forEach(function(id){const v=PRIO[id];const meta=IDX[id]||{desc:'',code:(id.split('-')[0]||'')};
+  const done=!!(STATE[id]&&STATE[id].done);
+  h+='<div class="todorow'+(done?' done':'')+'" data-todo="'+esc(id)+'">'+
+    '<span style="display:flex;align-items:center;gap:6px">'+prioEmoji(v)+'<span class="pbar2" style="background:'+prioColor(v)+'"></span><b style="font-size:11px">'+v+'</b></span>'+
+    '<span class="tid">'+esc(id)+'</span>'+
+    '<span class="tdesc">'+esc(meta.desc)+'</span>'+
+    '<span class="ttrade">'+esc(meta.code)+'</span>'+
+    '<span><input type="checkbox" class="chk" data-id="'+esc(id)+'"'+(done?' checked':'')+'></span>'+
+    '<span>'+prioChipHTML(id)+'</span></div>';});
+ h+='</div>';host.innerHTML=h;}
+function reflectRow(id){const done=!!(STATE[id]&&STATE[id].done);
+ document.querySelectorAll('.chk[data-id="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]').forEach(function(cb){
+  cb.checked=done;const tr=cb.closest('tr');
+  if(!tr){const tdrow=cb.closest('.todorow');if(tdrow)tdrow.classList.toggle('done',done);return;}
+  tr.classList.toggle('done',done);const num=tr.querySelector('.num');if(!num)return;
+  if(done){const s=STATE[id];num.innerHTML=`<span class="idl">${id}</span><span class="cap">✓ ${esc(first(s.by))} · ${s.at?fmt(s.at):''}</span>`;tr.title='Checked by '+(s.by||'')+(s.at?' on '+new Date(s.at).toLocaleString():'');}
+  else{num.innerHTML=`<span class="idl">${id}</span>`;tr.removeAttribute('title');}});}
+function reflectAll(){const seen={};document.querySelectorAll('.chk').forEach(function(cb){if(seen[cb.dataset.id])return;seen[cb.dataset.id]=1;reflectRow(cb.dataset.id);});updateCounts();}
 function updateCounts(){var insp=0;Object.keys(STATE).forEach(function(k){if(STATE[k]&&STATE[k].done&&k.indexOf('INS-')===0)insp++;});
  var tot=0,tdone=0;allTrades().forEach(function(t){var total=t.count+manualCount(t.code);var dn=Object.keys(STATE).filter(function(k){return STATE[k]&&STATE[k].done&&k.split('-')[0]===t.code;}).length;tot+=total;tdone+=dn;var a=document.getElementById('cnt-'+t.code);if(a)a.textContent=dn+' / '+total;var b=document.getElementById('chip-'+t.code);if(b){b.textContent=dn+'/'+total;b.style.color=(dn===total&&total)?'var(--green)':'';}});
  TOTAL=tot;var pb=document.getElementById('pbar');if(pb)pb.style.width=(tot?100*tdone/tot:0)+'%';
@@ -263,12 +375,17 @@ function applyFilter(){const q=document.getElementById('q').value.toLowerCase().
  document.getElementById('rc').textContent=(q||ff)?shown+' matching tasks':'';}
 async function clearAll(){if(!confirm('Clear ALL check-offs for everyone? This is logged.'))return;STATE={};reflectAll();LOG.unshift({ts:Date.now(),user:USER,action:'cleared all'});renderLog();try{await apiPost({action:'clear',user:USER});}catch(e){banner('Clear failed to sync.');}}
 document.addEventListener('change',async e=>{if(!e.target.classList.contains('chk'))return;
- const cb=e.target;const id=cb.dataset.id;const done=cb.checked;const tr=cb.closest('tr');const label=tr.getAttribute('data-label')||'';
+ const cb=e.target;const id=cb.dataset.id;const done=cb.checked;const tr=cb.closest('tr');const label=tr?(tr.getAttribute('data-label')||''):((IDX[id]&&IDX[id].desc)||'');
  if(done)STATE[id]={done:true,by:USER,at:Date.now()};else delete STATE[id];
- reflectRow(id);updateCounts();LOG.unshift({ts:Date.now(),user:USER,id,label,action:done?'checked':'unchecked'});renderLog();
+ reflectRow(id);updateCounts();renderTodo();LOG.unshift({ts:Date.now(),user:USER,id,label,action:done?'checked':'unchecked'});renderLog();
  pending.add(id);try{const res=await apiPost({action:'toggle',taskId:id,done,user:USER,label});STATE=res.state||STATE;}catch(err){banner('Sync failed — refresh.');}finally{pending.delete(id);}});
-document.addEventListener('click',function(e){var t=e.target;if(!t||!t.getAttribute)return;if(t.classList&&t.classList.contains('addtask')){openAddTaskForm(t.getAttribute('data-code'),t);}else if(t.id==='addtradebtn'){openAddTradeForm(t);}else if(t.getAttribute('data-del')){delTask(t.getAttribute('data-del'));}else if(t.getAttribute('data-deltrade')){delTrade(t.getAttribute('data-deltrade'));}});
-function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;if(res.add&&JSON.stringify(res.add)!==JSON.stringify(ADD)){ADD=res.add;renderAllManual();}reflectAll();renderLog();banner('');}catch(err){banner(err===401?'Session expired — refresh to sign in again.':'Reconnecting…');}},5000);}
+document.addEventListener('click',function(e){var t=e.target;if(!t||!t.getAttribute)return;
+ var chip=t.closest?t.closest('.pchip'):null;if(chip){e.stopPropagation();openPrioPop(chip);return;}
+ if(t.classList&&t.classList.contains('addtask')){openAddTaskForm(t.getAttribute('data-code'),t);}else if(t.id==='addtradebtn'){openAddTradeForm(t);}else if(t.getAttribute('data-edit')){openEditTaskForm(t.getAttribute('data-edit'),t);}else if(t.getAttribute('data-edittrade')){openEditTradeForm(t.getAttribute('data-edittrade'),t);}else if(t.getAttribute('data-del')){delTask(t.getAttribute('data-del'));}else if(t.getAttribute('data-deltrade')){delTrade(t.getAttribute('data-deltrade'));}});
+function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;let addChanged=false;if(res.add&&JSON.stringify(res.add)!==JSON.stringify(ADD)){ADD=res.add;renderAllManual();addChanged=true;}
+ if(res.prio){const np=res.prio;prioPending.forEach(function(id){if(PRIO[id]!=null)np[id]=PRIO[id];else delete np[id];});if(JSON.stringify(np)!==JSON.stringify(PRIO)){const touched=new Set(Object.keys(PRIO).concat(Object.keys(np)));PRIO=np;touched.forEach(reflectPrioChip);if(addChanged)buildIndex();renderTodo();addChanged=false;}}
+ else if(addChanged){buildIndex();renderTodo();}
+ reflectAll();renderLog();banner('');}catch(err){banner(err===401?'Session expired — refresh to sign in again.':'Reconnecting…');}},5000);}
 // login
 function stopPoll(){if(pollT){clearInterval(pollT);pollT=null;}}
 async function signin(){const name=document.getElementById('gname').value.trim();const pass=document.getElementById('gpass').value;const err=document.getElementById('gerr');const btn=document.getElementById('gbtn');
@@ -285,9 +402,17 @@ function showPicker(){stopPoll();document.getElementById('app').style.display='n
  p.querySelectorAll('.pcard').forEach(function(c){c.onclick=function(){openJob(c.dataset.job);};});
  var so=document.getElementById('signout');if(so)so.onclick=signout;}
 async function openJob(id){JOB=id;
- try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};}catch(e){alert('Could not load project. Try again.');return;}
+ try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};PRIO=res.prio||{};}catch(e){alert('Could not load project. Try again.');return;}
  document.getElementById('picker').style.display='none';document.getElementById('app').style.display='block';
- buildAll();renderAllManual();renderLog();startPoll();window.scrollTo(0,0);}
+ buildAll();renderAllManual();buildIndex();renderTodo();renderLog();startPoll();
+ // default to the To-Do tab
+ document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active');});
+ var nb=document.querySelector('nav button');if(nb)nb.classList.add('active');
+ document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+ var tv=document.getElementById('todo');if(tv)tv.classList.add('active');
+ window.scrollTo(0,0);}
+window.addEventListener('scroll',function(){if(priopop)closePrioPop();},true);
+window.addEventListener('resize',function(){if(priopop)closePrioPop();});
 function backToPicker(){stopPoll();JOB=null;document.getElementById('app').style.display='none';apiList().then(function(res){JOBS=res.jobs||JOBS;showPicker();}).catch(function(){showPicker();});}
 function signout(){stopPoll();JOB=null;D=null;USER='';PASS='';document.getElementById('picker').style.display='none';document.getElementById('app').style.display='none';document.getElementById('gpass').value='';document.getElementById('gate').style.display='flex';}
 document.getElementById('gbtn').addEventListener('click',signin);
