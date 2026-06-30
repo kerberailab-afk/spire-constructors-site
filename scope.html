@@ -70,6 +70,20 @@ mark{background:#fff1a8;padding:0 1px}.hidden{display:none!important}
 #gate button{margin-top:18px;width:100%;padding:12px;border:none;border-radius:9px;background:var(--steel);color:#fff;font-weight:700;font-size:14px;cursor:pointer}
 #gate button:disabled{opacity:.6;cursor:default}
 #gate .err{color:var(--red);font-size:12px;margin-top:10px;display:none}
+
+.backbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer}
+.backbtn:hover{background:rgba(255,255,255,.25)}
+#picker{display:none;max-width:1000px;margin:0 auto;padding:40px 22px}
+.phead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.phead h2{margin:0;color:var(--navy);font-size:22px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.pcard{text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;cursor:pointer;transition:.15s;font-family:inherit}
+.pcard:hover{border-color:var(--steel);box-shadow:0 10px 26px -12px rgba(13,40,80,.25);transform:translateY(-2px)}
+.pcard .pn{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.pcard .pa{font-size:12.5px;color:var(--mut);margin-bottom:12px}
+.pcard .pbar{height:8px;background:#e6ebf2;border-radius:5px;overflow:hidden;margin-bottom:6px}
+.pcard .pbar>i{display:block;height:100%;background:linear-gradient(90deg,#3fa06a,#2e7d32)}
+.pcard .ps{font-size:12px;color:var(--mut);font-weight:600}
 </style></head><body>
 <div id="gate"><div class="box">
 <div class="lock">🔒</div>
@@ -78,8 +92,9 @@ mark{background:#fff1a8;padding:0 1px}.hidden{display:none!important}
 <label>Team passcode</label><input id="gpass" type="password" placeholder="passcode" autocomplete="current-password">
 <button id="gbtn">Sign in</button><div class="err" id="gerr"></div>
 </div></div>
+<div id="picker"></div>
 <div id="app">
-<header><h1 id="htitle"></h1><div class="sub" id="hsub"></div><div class="badges" id="hbadges"></div></header>
+<header><div style="display:flex;align-items:center;gap:14px"><button id="backbtn" class="backbtn">← Projects</button><h1 id="htitle" style="margin:0"></h1></div><div class="sub" id="hsub"></div><div class="badges" id="hbadges"></div></header>
 <div id="banner"></div>
 <nav id="nav"></nav>
 <main>
@@ -102,10 +117,11 @@ const first=s=>(s||'').split(' ')[0];
 function flagClass(v){const u=(v||'').toUpperCase();
  if(/NIC|BY OTHER|BY OWNER|BY LANDLORD|BY TENANT|SEPARATE|N\.I\.C|OWNER-FURNISH|VENDOR/.test(u))return'flg-o';
  if(/ALLOW|ALTERNATE|\bADD\b|HOLD|VERIFY|CONFLICT|TBD/.test(u))return'flg-r';return'';}
-let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null;
+let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null;
 const banner=m=>{const b=document.getElementById('banner');b.textContent=m;b.style.display=m?'block':'none';};
-async function apiGet(init){const r=await fetch(API+(init?'?init=1':''),{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
-async function apiPost(body){const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-pass':PASS},body:JSON.stringify(body)});if(!r.ok)throw r.status;return r.json();}
+async function apiList(){const r=await fetch(API+'?list=1',{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
+async function apiGet(init){const r=await fetch(API+'?job='+encodeURIComponent(JOB)+(init?'&init=1':''),{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
+async function apiPost(body){body.job=JOB;const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-pass':PASS},body:JSON.stringify(body)});if(!r.ok)throw r.status;return r.json();}
 
 // nav (static)
 const TABS=[['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
@@ -219,14 +235,28 @@ document.addEventListener('change',async e=>{if(!e.target.classList.contains('ch
  pending.add(id);try{const res=await apiPost({action:'toggle',taskId:id,done,user:USER,label});STATE=res.state||STATE;}catch(err){banner('Sync failed — refresh.');}finally{pending.delete(id);}});
 function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;reflectAll();renderLog();banner('');}catch(err){banner(err===401?'Session expired — refresh to sign in again.':'Reconnecting…');}},5000);}
 // login
+function stopPoll(){if(pollT){clearInterval(pollT);pollT=null;}}
 async function signin(){const name=document.getElementById('gname').value.trim();const pass=document.getElementById('gpass').value;const err=document.getElementById('gerr');const btn=document.getElementById('gbtn');
  err.style.display='none';if(!name){err.textContent='Please enter your name.';err.style.display='block';return;}
  USER=name;PASS=pass;btn.disabled=true;btn.textContent='Signing in…';
- try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];}
+ try{const res=await apiList();JOBS=res.jobs||[];}
  catch(code){btn.disabled=false;btn.textContent='Sign in';err.textContent=(code===401)?'Wrong passcode.':'Could not reach server. Try again.';err.style.display='block';return;}
- document.getElementById('gate').style.display='none';document.getElementById('app').style.display='block';
- buildAll();reflectAll();renderLog();startPoll();}
+ btn.disabled=false;btn.textContent='Sign in';
+ document.getElementById('gate').style.display='none';showPicker();}
+function showPicker(){stopPoll();document.getElementById('app').style.display='none';const p=document.getElementById('picker');
+ p.innerHTML='<div class="phead"><h2>Select a project</h2><span class="who">Signed in as <b>'+esc(USER)+'</b> · <a id="signout">sign out</a></span></div><div class="pgrid">'+
+  (JOBS.length?JOBS.map(function(j){var pct=j.total?Math.round(100*j.done/j.total):0;return '<button class="pcard" data-job="'+esc(j.id)+'"><div class="pn">'+esc(j.name)+'</div><div class="pa">'+esc(j.address||'')+'</div><div class="pbar"><i style="width:'+pct+'%"></i></div><div class="ps">'+j.done+' / '+j.total+' tasks · '+pct+'%</div></button>';}).join(''):'<div class="note">No projects yet.</div>')+'</div>';
+ p.style.display='block';window.scrollTo(0,0);
+ p.querySelectorAll('.pcard').forEach(function(c){c.onclick=function(){openJob(c.dataset.job);};});
+ var so=document.getElementById('signout');if(so)so.onclick=signout;}
+async function openJob(id){JOB=id;
+ try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];}catch(e){alert('Could not load project. Try again.');return;}
+ document.getElementById('picker').style.display='none';document.getElementById('app').style.display='block';
+ buildAll();reflectAll();renderLog();startPoll();window.scrollTo(0,0);}
+function backToPicker(){stopPoll();JOB=null;document.getElementById('app').style.display='none';apiList().then(function(res){JOBS=res.jobs||JOBS;showPicker();}).catch(function(){showPicker();});}
+function signout(){stopPoll();JOB=null;D=null;USER='';PASS='';document.getElementById('picker').style.display='none';document.getElementById('app').style.display='none';document.getElementById('gpass').value='';document.getElementById('gate').style.display='flex';}
 document.getElementById('gbtn').addEventListener('click',signin);
+document.getElementById('backbtn').addEventListener('click',backToPicker);
 document.getElementById('gpass').addEventListener('keydown',e=>{if(e.key==='Enter')signin();});
 document.getElementById('gname').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gpass').focus();});
 </script></body></html>
