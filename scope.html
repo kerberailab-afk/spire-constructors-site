@@ -172,7 +172,7 @@ const first=s=>(s||'').split(' ')[0];
 function flagClass(v){const u=(v||'').toUpperCase();
  if(/NIC|BY OTHER|BY OWNER|BY LANDLORD|BY TENANT|SEPARATE|N\.I\.C|OWNER-FURNISH|VENDOR/.test(u))return'flg-o';
  if(/ALLOW|ALTERNATE|\bADD\b|HOLD|VERIFY|CONFLICT|TBD/.test(u))return'flg-r';return'';}
-let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]}, PRIO={}, IDX={};
+let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]}, PRIO={}, IDX={}, DRAW={};
 // ---- priority helpers ----
 // value 0-100: high=🔥 hot red (urgent), low=🐧 ice blue. Returns css color for a given value.
 function prioColor(v){v=Math.max(0,Math.min(100,v||0));
@@ -350,7 +350,7 @@ function reflectRow(id){const done=!!(STATE[id]&&STATE[id].done);
   tr.classList.toggle('done',done);const num=tr.querySelector('.num');if(!num)return;
   if(done){const s=STATE[id];num.innerHTML=`<span class="idl">${id}</span><span class="cap">✓ ${esc(first(s.by))} · ${s.at?fmt(s.at):''}</span>`;tr.title='Checked by '+(s.by||'')+(s.at?' on '+new Date(s.at).toLocaleString():'');}
   else{num.innerHTML=`<span class="idl">${id}</span>`;tr.removeAttribute('title');}});}
-function reflectAll(){const seen={};document.querySelectorAll('.chk').forEach(function(cb){if(seen[cb.dataset.id])return;seen[cb.dataset.id]=1;reflectRow(cb.dataset.id);});updateCounts();}
+function reflectAll(){const seen={};document.querySelectorAll('.chk').forEach(function(cb){if(seen[cb.dataset.id])return;seen[cb.dataset.id]=1;reflectRow(cb.dataset.id);});updateCounts();injectDrawIcons();}
 function updateCounts(){var insp=0;Object.keys(STATE).forEach(function(k){if(STATE[k]&&STATE[k].done&&k.indexOf('INS-')===0)insp++;});
  var tot=0,tdone=0;allTrades().forEach(function(t){var total=t.count+manualCount(t.code);var dn=Object.keys(STATE).filter(function(k){return STATE[k]&&STATE[k].done&&k.split('-')[0]===t.code;}).length;tot+=total;tdone+=dn;var a=document.getElementById('cnt-'+t.code);if(a)a.textContent=dn+' / '+total;var b=document.getElementById('chip-'+t.code);if(b){b.textContent=dn+'/'+total;b.style.color=(dn===total&&total)?'var(--green)':'';}});
  TOTAL=tot;var pb=document.getElementById('pbar');if(pb)pb.style.width=(tot?100*tdone/tot:0)+'%';
@@ -402,7 +402,7 @@ function showPicker(){stopPoll();document.getElementById('app').style.display='n
  p.querySelectorAll('.pcard').forEach(function(c){c.onclick=function(){openJob(c.dataset.job);};});
  var so=document.getElementById('signout');if(so)so.onclick=signout;}
 async function openJob(id){JOB=id;
- try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};PRIO=res.prio||{};}catch(e){alert('Could not load project. Try again.');return;}
+ try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};PRIO=res.prio||{};DRAW=res.draw||{};}catch(e){alert('Could not load project. Try again.');return;}
  document.getElementById('picker').style.display='none';document.getElementById('app').style.display='block';
  buildAll();renderAllManual();buildIndex();renderTodo();renderLog();startPoll();
  // default to the To-Do tab
@@ -419,4 +419,21 @@ document.getElementById('gbtn').addEventListener('click',signin);
 document.getElementById('backbtn').addEventListener('click',backToPicker);
 document.getElementById('gpass').addEventListener('keydown',e=>{if(e.key==='Enter')signin();});
 document.getElementById('gname').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gpass').focus();});
+
+/* ---- drawing viewer ---- */
+var DETECTIVE='<svg class="dvico" viewBox="0 0 24 24" fill="none" stroke="#2E5A88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12" stroke="#1F3A5F"/><path d="M6 6c0-2.2 1.6-3.4 4-3.4S14 3.8 14 6" stroke="#1F3A5F"/><circle cx="10" cy="13" r="4.6"/><line x1="13.6" y1="16.6" x2="20" y2="22"/></svg>';
+function injectDrawIcons(){if(!DRAW)return;document.querySelectorAll('tr[data-id]').forEach(function(tr){var id=tr.dataset.id;if(!DRAW[id])return;var num=tr.querySelector('.num');if(!num||num.querySelector('.drawicon'))return;var d=DRAW[id];var rev=(d.c&&d.c.length);var b=document.createElement('button');b.className='drawicon';b.setAttribute('data-draw',id);b.title='View source drawing '+(d.n||'')+(rev?' — revised in Bulletin '+d.c.join(', '):'');b.innerHTML=DETECTIVE+(rev?'<span class="drev"></span>':'');num.appendChild(b);});}
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('.drawicon');if(t){e.preventDefault();e.stopPropagation();openViewer(t.getAttribute('data-draw'));}});
+var dvzoom=1;function applyZoom(){var w=document.querySelector('#dvmodal .dvwrap');if(w)w.style.width=(dvzoom*100)+'%';}
+function closeViewer(){var m=document.getElementById('dvmodal');if(m)m.style.display='none';}
+function openViewer(id){var d=DRAW[id];if(!d)return;var m=document.getElementById('dvmodal');
+ var rev=(d.c&&d.c.length);var badge=rev?'<span class="dvbadge">⚠ Revised in Bulletin '+d.c.map(function(x){return ('0'+x).slice(-2);}).join(', ')+'</span>':'';
+ m.querySelector('.dvtitle').innerHTML='Sheet <b>'+esc(d.n||'')+'</b> &middot; '+esc(id)+' '+badge;
+ var box=d.b?'<div class="dvbox" style="left:'+(d.b[0]*100)+'%;top:'+(d.b[1]*100)+'%;width:'+((d.b[2]-d.b[0])*100)+'%;height:'+((d.b[3]-d.b[1])*100)+'%"></div>':'<div class="dvnote">Opening the source sheet — the exact spot isn\'t auto-boxed for this item; use ＋ to zoom.</div>';
+ m.querySelector('.dvwrap').innerHTML='<img class="dvimg" src="/drawings/'+d.s+'.webp" alt="'+esc(d.n||'')+'">'+(d.b?box:'');
+ if(!d.b){m.querySelector('.dvtitle').innerHTML+=' <span class="dvhint">(sheet opened; no auto-box)</span>';}
+ m.style.display='flex';dvzoom=1;applyZoom();m.querySelector('.dvscroll').scrollTop=0;}
+(function(){var st=document.createElement('style');st.textContent='.drawicon{background:none;border:none;cursor:pointer;padding:0 0 0 6px;vertical-align:middle;position:relative;line-height:0}.drawicon .dvico{width:18px;height:18px}.drawicon:hover .dvico{stroke:#C8A24B}.drawicon .drev{position:absolute;top:-3px;right:-4px;width:7px;height:7px;border-radius:50%;background:#b3322e;border:1px solid #fff}#dvmodal{display:none;position:fixed;inset:0;background:rgba(10,20,40,.82);z-index:300;flex-direction:column;padding:12px}#dvmodal .dvbar{display:flex;align-items:center;gap:10px;color:#fff;margin-bottom:8px;flex-wrap:wrap}#dvmodal .dvtitle{font-size:14px}#dvmodal .dvhint{font-size:11px;opacity:.7}#dvmodal .dvbadge{background:#b3322e;color:#fff;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:6px}#dvmodal .dvscroll{flex:1;overflow:auto;background:#fff;border-radius:8px;-webkit-overflow-scrolling:touch}#dvmodal .dvwrap{position:relative;width:100%}#dvmodal .dvimg{display:block;width:100%}#dvmodal .dvbox{position:absolute;border:3px solid #ff3b30;box-shadow:0 0 0 9999px rgba(20,30,50,.28);border-radius:3px;pointer-events:none}#dvmodal .dvnote{padding:8px 10px;font-size:12px;color:#666}#dvmodal .dvbtn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:7px;padding:7px 11px;font-weight:700;cursor:pointer;font-size:14px}#dvmodal .dvbtn:hover{background:rgba(255,255,255,.28)}';document.head.appendChild(st);
+var m=document.createElement('div');m.id='dvmodal';m.innerHTML='<div class="dvbar"><span class="dvtitle"></span><span style="flex:1"></span><button class="dvbtn" onclick="dvzoom=Math.min(4,dvzoom+0.6);applyZoom()">＋</button><button class="dvbtn" onclick="dvzoom=Math.max(1,dvzoom-0.6);applyZoom()">－</button><button class="dvbtn" onclick="closeViewer()">✕ Close</button></div><div class="dvscroll"><div class="dvwrap"></div></div>';document.body.appendChild(m);
+m.addEventListener('click',function(e){if(e.target===m)closeViewer();});})();
 </script></body></html>
