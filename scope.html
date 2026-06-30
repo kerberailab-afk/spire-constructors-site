@@ -90,6 +90,18 @@ mark{background:#fff1a8;padding:0 1px}.hidden{display:none!important}
 .legitem{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink)}
 .legitem .sw{width:11px;height:11px;border-radius:3px;flex:none}
 .legitem code{font-weight:800;color:var(--navy);font-family:inherit;min-width:24px}
+
+.addrow{padding:4px 16px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btnlite.addtask,.btnlite.addtrade{font-size:12px;padding:6px 10px}
+.addform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 16px 6px;width:calc(100% - 32px)}
+.addform input{padding:8px 10px;border:1px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit}
+.addform .afd{flex:2;min-width:220px}.addform .afl,.addform .aff{flex:1;min-width:120px}
+#addtradeform{margin:8px 0 4px;width:100%}
+.mtag{display:inline-block;font-size:9px;font-weight:700;color:#7a5cab;background:#efe9f7;border-radius:4px;padding:1px 5px;vertical-align:middle}
+.delx{background:none;border:none;color:#b3322e;cursor:pointer;font-size:13px;font-weight:700}
+.delx.tradedel{font-size:11.5px;border:1px solid #f0d2d0;border-radius:6px;padding:4px 8px;margin-left:auto}
+code.tc{font-size:11px;font-weight:800;color:var(--steel);margin-left:8px}
+.byc{font-size:11.5px;color:var(--mut)}
 </style></head><body>
 <div id="gate"><div class="box">
 <div class="lock">🔒</div>
@@ -123,7 +135,7 @@ const first=s=>(s||'').split(' ')[0];
 function flagClass(v){const u=(v||'').toUpperCase();
  if(/NIC|BY OTHER|BY OWNER|BY LANDLORD|BY TENANT|SEPARATE|N\.I\.C|OWNER-FURNISH|VENDOR/.test(u))return'flg-o';
  if(/ALLOW|ALTERNATE|\bADD\b|HOLD|VERIFY|CONFLICT|TBD/.test(u))return'flg-r';return'';}
-let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null;
+let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]};
 const banner=m=>{const b=document.getElementById('banner');b.textContent=m;b.style.display=m?'block':'none';};
 async function apiList(){const r=await fetch(API+'?list=1',{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
 async function apiGet(init){const r=await fetch(API+'?job='+encodeURIComponent(JOB)+(init?'&init=1':''),{headers:{'x-pass':PASS}});if(r.status===401)throw 401;if(!r.ok)throw 'err';return r.json();}
@@ -134,7 +146,22 @@ const TABS=[['overview','Overview'],['scope','Scope by Trade'],['index','Drawing
 const nav=document.getElementById('nav');
 TABS.forEach(([id,lbl],i)=>{const b=document.createElement('button');b.textContent=lbl;b.className=i==0?'active':'';b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);};nav.appendChild(b);});
 
-function legendHTML(){return '<div class="panel lgd"><div class="lgdh">Trade codes &mdash; what the prefixes mean</div><div class="legendgrid">'+D.trades.map(function(t,i){return '<span class="legitem"><span class="sw" style="background:'+t.color+'"></span><code>'+(t.code||PREFIX[i])+'</code> '+esc(t.name)+'</span>';}).join('')+'</div></div>';}
+function tcode(t,i){return t.code||PREFIX[i];}
+function allTrades(){var base=D.trades.map(function(t,i){return {code:tcode(t,i),name:t.name,color:t.color,count:t.count,manual:false};});var man=(ADD.trades||[]).map(function(t){return {code:t.code,name:t.name,color:t.color,count:0,manual:true};});return base.concat(man);}
+function manualCount(code){return (ADD.tasks||[]).filter(function(t){return t.code===code;}).length;}
+function legendHTML(){return '<div class="panel lgd"><div class="lgdh">Trade codes &mdash; what the prefixes mean</div><div class="legendgrid" id="legendgrid"></div></div>';}
+function renderLegend(){var g=document.getElementById('legendgrid');if(!g)return;g.innerHTML=allTrades().map(function(t){return '<span class="legitem"><span class="sw" style="background:'+t.color+'"></span><code>'+esc(t.code)+'</code> '+esc(t.name)+(t.manual?' <span class="mtag">manual</span>':'')+'</span>';}).join('');}
+function manualRowsHTML(code){var rows=(ADD.tasks||[]).filter(function(t){return t.code===code;});if(!rows.length)return '';return '<table><thead><tr><th class="cbx">✓</th><th class="num">#</th><th>Manually added task</th><th>Location</th><th>Added by</th><th></th></tr></thead><tbody>'+rows.map(function(t){return '<tr data-id="'+t.id+'" data-label="'+esc(t.desc)+'"><td class="cbx"><input type="checkbox" class="chk" data-id="'+t.id+'"></td><td class="num"><span class="idl">'+t.id+'</span></td><td>'+esc(t.desc)+' <span class="mtag">manual</span></td><td>'+esc(t.location||'')+'</td><td class="byc">'+esc(first(t.by))+'</td><td><button class="delx" data-del="'+t.id+'" title="Remove this added task">✕</button></td></tr>';}).join('')+'</tbody></table>';}
+function renderManualTasks(code){var w=document.querySelector('.manualsec[data-code="'+code+'"]');if(w)w.innerHTML=manualRowsHTML(code);}
+function tradeBlock(code,name,color){var d=document.createElement('details');d.className='trade';d.id='tr-'+code;d.innerHTML='<summary><span class="dot" style="background:'+color+'"></span>'+esc(name)+' <code class="tc">'+esc(code)+'</code><span class="cnt" id="cnt-'+code+'">0 / 0</span></summary><div class="manualsec" data-code="'+code+'"></div><div class="addrow"><button class="btnlite addtask" data-code="'+code+'">+ Add task</button><button class="delx tradedel" data-deltrade="'+code+'" title="Remove this trade">✕ remove trade</button></div>';return d;}
+function renderManualTrades(){var host=document.getElementById('manualtrades');if(!host)return;host.innerHTML='';document.querySelectorAll('.tchip[data-manual]').forEach(function(c){c.remove();});var menu=document.getElementById('submenu');(ADD.trades||[]).forEach(function(tr){var d=tradeBlock(tr.code,tr.name,tr.color);host.appendChild(d);renderManualTasks(tr.code);if(menu){var chip=document.createElement('div');chip.className='tchip';chip.setAttribute('data-manual','1');chip.innerHTML='<span class="sw" style="background:'+tr.color+'"></span><b>'+esc(tr.code)+'</b> '+esc(tr.name)+'<span class="pc" id="chip-'+tr.code+'">0/0</span>';chip.onclick=function(){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});};menu.appendChild(chip);}});}
+function renderAllManual(){allTrades().forEach(function(t){if(!t.manual)renderManualTasks(t.code);});renderManualTrades();renderLegend();updateCounts();reflectAll();}
+function openAddTaskForm(code,btn){if(btn.parentNode.querySelector('.addform'))return;var f=document.createElement('div');f.className='addform';f.innerHTML='<input class="afd" placeholder="Task description (required)"><input class="afl" placeholder="Location (optional)"><input class="aff" placeholder="Flag e.g. NIC (optional)"><button class="btnlite afsave">Save</button><button class="btnlite afcancel">Cancel</button> <span class="afmsg note"></span>';btn.parentNode.appendChild(f);f.querySelector('.afd').focus();f.querySelector('.afcancel').onclick=function(){f.remove();};f.querySelector('.afsave').onclick=function(){submitAddTask(code,f);};f.querySelector('.afd').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddTask(code,f);});}
+async function submitAddTask(code,f){var desc=f.querySelector('.afd').value.trim();var msg=f.querySelector('.afmsg');if(!desc){msg.textContent='Description required';return;}var location=f.querySelector('.afl').value.trim();var flag=f.querySelector('.aff').value.trim();f.querySelectorAll('button').forEach(function(b){b.disabled=true;});try{var res=await apiPost({action:'addtask',code:code,desc:desc,location:location,flag:flag});ADD.tasks.push(res.item);LOG.unshift({ts:Date.now(),user:USER,action:'added task',id:res.item.id,label:desc});}catch(e){msg.textContent='Save failed';f.querySelectorAll('button').forEach(function(b){b.disabled=false;});return;}f.remove();renderManualTasks(code);renderLegend();updateCounts();reflectAll();renderLog();}
+function openAddTradeForm(btn){if(document.getElementById('addtradeform'))return;var f=document.createElement('div');f.id='addtradeform';f.className='addform';f.innerHTML='<input class="afd" placeholder="New trade name (e.g. Site Utilities)"><button class="btnlite afsave">Add trade</button><button class="btnlite afcancel">Cancel</button> <span class="afmsg note"></span>';btn.parentNode.insertBefore(f,btn.nextSibling);f.querySelector('.afd').focus();f.querySelector('.afcancel').onclick=function(){f.remove();};f.querySelector('.afsave').onclick=function(){submitAddTrade(f);};f.querySelector('.afd').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddTrade(f);});}
+async function submitAddTrade(f){var name=f.querySelector('.afd').value.trim();var msg=f.querySelector('.afmsg');if(!name){msg.textContent='Name required';return;}f.querySelectorAll('button').forEach(function(b){b.disabled=true;});try{var res=await apiPost({action:'addtrade',name:name});ADD.trades.push(res.trade);LOG.unshift({ts:Date.now(),user:USER,action:'added trade',label:name+' ('+res.trade.code+')'});}catch(e){msg.textContent='Add failed';f.querySelectorAll('button').forEach(function(b){b.disabled=false;});return;}f.remove();renderManualTrades();renderLegend();updateCounts();reflectAll();renderLog();}
+async function delTask(id){if(!confirm('Remove added task '+id+'?'))return;var arr=(ADD.tasks||[]).filter(function(x){return x.id===id;});var code=arr.length?arr[0].code:null;try{await apiPost({action:'deladd',taskId:id});}catch(e){banner('Remove failed');return;}ADD.tasks=(ADD.tasks||[]).filter(function(x){return x.id!==id;});delete STATE[id];if(code)renderManualTasks(code);renderLegend();updateCounts();reflectAll();LOG.unshift({ts:Date.now(),user:USER,action:'removed task',id:id});renderLog();}
+async function delTrade(code){if(!confirm('Remove trade '+code+' and its added tasks?'))return;try{await apiPost({action:'deladd',code:code});}catch(e){banner('Remove failed');return;}(ADD.tasks||[]).filter(function(x){return x.code===code;}).forEach(function(x){delete STATE[x.id];});ADD.tasks=(ADD.tasks||[]).filter(function(x){return x.code!==code;});ADD.trades=(ADD.trades||[]).filter(function(x){return x.code!==code;});renderManualTrades();renderLegend();updateCounts();reflectAll();LOG.unshift({ts:Date.now(),user:USER,action:'removed trade',label:code});renderLog();}
 function buildAll(){
  TOTAL=Object.values(D.counts).reduce((a,b)=>a+b,0);
  const ui=D.ui||{};
@@ -157,23 +184,23 @@ function buildAll(){
  ${legendHTML()}<div class="submenu" id="submenu"></div>
  <div class="controls"><input id="q" placeholder="Search all scope tasks…">
  <select id="ff"><option value="">All items</option><option value="open">Open (unchecked)</option><option value="done">Completed</option><option value="flg-o">NIC / by others</option><option value="flg-r">Allowances / verify</option></select>
- <span id="rc" class="note"></span></div><div id="trades"></div>`;
+ <span id="rc" class="note"></span><button class="btnlite addtrade" id="addtradebtn">+ Add trade</button></div><div id="trades"></div><div id="manualtrades"></div>`;
  const tc=document.getElementById('trades'),menu=document.getElementById('submenu');
- D.trades.forEach((t,ti)=>{const pfx=PREFIX[ti];let n=0;
-  const d=document.createElement('details');d.className='trade';d.id='trade-'+ti;if(ti==0)d.open=true;
-  let inner=`<summary><span class="dot" style="background:${t.color}"></span>${esc(t.name)}<span class="cnt" id="cnt-${ti}">0 / ${t.count}</span></summary>`;
+ D.trades.forEach((t,ti)=>{const code=tcode(t,ti);let n=0;
+  const d=document.createElement('details');d.className='trade';d.id='tr-'+code;if(ti==0)d.open=true;
+  let inner=`<summary><span class="dot" style="background:${t.color}"></span>${esc(t.name)} <code class="tc">${code}</code><span class="cnt" id="cnt-${code}">0 / ${t.count}</span></summary>`;
   t.sections.forEach(sec=>{let body='';sec.tables.forEach(tab=>{
     body+=`<table><thead><tr><th class="cbx">✓</th><th class="num">#</th>`+tab.header.map(h=>`<th>${esc(h)}</th>`).join('')+`</tr></thead><tbody>`;
     tab.rows.forEach(r=>{const ne=r.filter(x=>x.trim());
       if(ne.length===1&&r.length>1){body+=`<tr class="srow"><td colspan="${tab.header.length+2}" style="background:#eef2f7;font-weight:700;color:var(--navy)">${esc(ne[0])}</td></tr>`;return;}
-      n++;const id=pfx+'-'+String(n).padStart(3,'0');const lab=(r[1]||r[0]||'').slice(0,80);
+      n++;const id=code+'-'+String(n).padStart(3,'0');const lab=(r[1]||r[0]||'').slice(0,80);
       const last=r[r.length-1]||'';const fc=flagClass(last);
       body+=`<tr data-id="${id}" data-label="${esc(lab)}"><td class="cbx"><input type="checkbox" class="chk" data-id="${id}"></td><td class="num"><span class="idl">${id}</span></td>`+
         tab.header.map((h,ci)=>{let v=r[ci]||'';let cl=(ci===r.length-1&&fc)?` class="${fc}"`:'';return `<td${cl}>${esc(v)}</td>`;}).join('')+`</tr>`;});
     body+=`</tbody></table>`;});
     inner+=`<div class="sec"><h4>${esc(sec.h)}</h4>${sec.notes.map(nn=>`<div class="note">${esc(nn)}</div>`).join('')}${body}</div>`;});
-  d.innerHTML=inner;tc.appendChild(d);
-  const chip=document.createElement('div');chip.className='tchip';chip.innerHTML=`<span class="sw" style="background:${t.color}"></span><b>${pfx}</b> ${esc(SHORT[ti])}<span class="pc" id="chip-${ti}">0/${t.count}</span>`;
+  inner+='<div class="manualsec" data-code="'+code+'"></div><div class="addrow"><button class="btnlite addtask" data-code="'+code+'">+ Add task</button></div>';d.innerHTML=inner;tc.appendChild(d);
+  const chip=document.createElement('div');chip.className='tchip';chip.innerHTML=`<span class="sw" style="background:${t.color}"></span><b>${code}</b> ${esc(SHORT[ti])}<span class="pc" id="chip-${code}">0/${t.count}</span>`;
   chip.onclick=()=>{d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});};menu.appendChild(chip);});
  // INDEX
  let ix=`<div class="controls"><input id="iq" placeholder="Filter sheets (number, title, discipline)…"><span class="note">✓ = sheet present in that issue</span></div>
@@ -212,13 +239,13 @@ function reflectRow(id){const done=!!(STATE[id]&&STATE[id].done);const cb=docume
  if(done){const s=STATE[id];num.innerHTML=`<span class="idl">${id}</span><span class="cap">✓ ${esc(first(s.by))} · ${s.at?fmt(s.at):''}</span>`;tr.title='Checked by '+(s.by||'')+(s.at?' on '+new Date(s.at).toLocaleString():'');}
  else{num.innerHTML=`<span class="idl">${id}</span>`;tr.removeAttribute('title');}}
 function reflectAll(){document.querySelectorAll('.chk').forEach(cb=>reflectRow(cb.dataset.id));updateCounts();}
-function updateCounts(){const c={};let insp=0;Object.keys(STATE).forEach(k=>{if(!STATE[k]||!STATE[k].done)return;const p=k.split('-')[0];const ti=PREFIX.indexOf(p);if(ti>=0)c[ti]=(c[ti]||0)+1;if(k.startsWith('INS-'))insp++;});
- let tot=0;D.trades.forEach((t,ti)=>{const dn=c[ti]||0;tot+=dn;const a=document.getElementById('cnt-'+ti);if(a)a.textContent=`${dn} / ${t.count}`;const b=document.getElementById('chip-'+ti);if(b){b.textContent=`${dn}/${t.count}`;b.style.color=(dn===t.count&&t.count)?'var(--green)':'';}});
- const pb=document.getElementById('pbar');if(pb)pb.style.width=(TOTAL?100*tot/TOTAL:0)+'%';
- const pt=document.getElementById('ptxt');if(pt)pt.textContent=`${tot} / ${TOTAL} (${TOTAL?Math.round(100*tot/TOTAL):0}%)`;
- const od=document.getElementById('ovdone');if(od)od.textContent=tot;
- const ib=document.getElementById('ibar');if(ib)ib.style.width=(INSTOTAL?100*insp/INSTOTAL:0)+'%';
- const it=document.getElementById('itxt');if(it)it.textContent=`${insp} / ${INSTOTAL} inspections signed off`;}
+function updateCounts(){var insp=0;Object.keys(STATE).forEach(function(k){if(STATE[k]&&STATE[k].done&&k.indexOf('INS-')===0)insp++;});
+ var tot=0,tdone=0;allTrades().forEach(function(t){var total=t.count+manualCount(t.code);var dn=Object.keys(STATE).filter(function(k){return STATE[k]&&STATE[k].done&&k.split('-')[0]===t.code;}).length;tot+=total;tdone+=dn;var a=document.getElementById('cnt-'+t.code);if(a)a.textContent=dn+' / '+total;var b=document.getElementById('chip-'+t.code);if(b){b.textContent=dn+'/'+total;b.style.color=(dn===total&&total)?'var(--green)':'';}});
+ TOTAL=tot;var pb=document.getElementById('pbar');if(pb)pb.style.width=(tot?100*tdone/tot:0)+'%';
+ var pt=document.getElementById('ptxt');if(pt)pt.textContent=tdone+' / '+tot+' ('+(tot?Math.round(100*tdone/tot):0)+'%)';
+ var od=document.getElementById('ovdone');if(od)od.textContent=tdone;
+ var ib=document.getElementById('ibar');if(ib)ib.style.width=(INSTOTAL?100*insp/INSTOTAL:0)+'%';
+ var it=document.getElementById('itxt');if(it)it.textContent=insp+' / '+INSTOTAL+' inspections signed off';}
 function renderLog(){const box=document.getElementById('logbox');if(!box)return;const q=(document.getElementById('aq').value||'').toLowerCase();
  const rows=LOG.filter(e=>!q||((e.user||'')+' '+(e.id||'')+' '+(e.label||'')+' '+(e.action||'')).toLowerCase().includes(q));
  document.getElementById('acount').textContent=LOG.length+' entries';
@@ -240,7 +267,8 @@ document.addEventListener('change',async e=>{if(!e.target.classList.contains('ch
  if(done)STATE[id]={done:true,by:USER,at:Date.now()};else delete STATE[id];
  reflectRow(id);updateCounts();LOG.unshift({ts:Date.now(),user:USER,id,label,action:done?'checked':'unchecked'});renderLog();
  pending.add(id);try{const res=await apiPost({action:'toggle',taskId:id,done,user:USER,label});STATE=res.state||STATE;}catch(err){banner('Sync failed — refresh.');}finally{pending.delete(id);}});
-function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;reflectAll();renderLog();banner('');}catch(err){banner(err===401?'Session expired — refresh to sign in again.':'Reconnecting…');}},5000);}
+document.addEventListener('click',function(e){var t=e.target;if(!t||!t.getAttribute)return;if(t.classList&&t.classList.contains('addtask')){openAddTaskForm(t.getAttribute('data-code'),t);}else if(t.id==='addtradebtn'){openAddTradeForm(t);}else if(t.getAttribute('data-del')){delTask(t.getAttribute('data-del'));}else if(t.getAttribute('data-deltrade')){delTrade(t.getAttribute('data-deltrade'));}});
+function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;if(res.add&&JSON.stringify(res.add)!==JSON.stringify(ADD)){ADD=res.add;renderAllManual();}reflectAll();renderLog();banner('');}catch(err){banner(err===401?'Session expired — refresh to sign in again.':'Reconnecting…');}},5000);}
 // login
 function stopPoll(){if(pollT){clearInterval(pollT);pollT=null;}}
 async function signin(){const name=document.getElementById('gname').value.trim();const pass=document.getElementById('gpass').value;const err=document.getElementById('gerr');const btn=document.getElementById('gbtn');
@@ -257,9 +285,9 @@ function showPicker(){stopPoll();document.getElementById('app').style.display='n
  p.querySelectorAll('.pcard').forEach(function(c){c.onclick=function(){openJob(c.dataset.job);};});
  var so=document.getElementById('signout');if(so)so.onclick=signout;}
 async function openJob(id){JOB=id;
- try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];}catch(e){alert('Could not load project. Try again.');return;}
+ try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};}catch(e){alert('Could not load project. Try again.');return;}
  document.getElementById('picker').style.display='none';document.getElementById('app').style.display='block';
- buildAll();reflectAll();renderLog();startPoll();window.scrollTo(0,0);}
+ buildAll();renderAllManual();renderLog();startPoll();window.scrollTo(0,0);}
 function backToPicker(){stopPoll();JOB=null;document.getElementById('app').style.display='none';apiList().then(function(res){JOBS=res.jobs||JOBS;showPicker();}).catch(function(){showPicker();});}
 function signout(){stopPoll();JOB=null;D=null;USER='';PASS='';document.getElementById('picker').style.display='none';document.getElementById('app').style.display='none';document.getElementById('gpass').value='';document.getElementById('gate').style.display='flex';}
 document.getElementById('gbtn').addEventListener('click',signin);
