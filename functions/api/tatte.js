@@ -171,8 +171,10 @@ export async function onRequest(context){
     } else if(b.action==="addnote"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
       const text=(b.text||"").toString().trim().slice(0,2000); if(!text) return json({error:"empty note"},400);
+      const isAuto=!!b.auto; const ref=(b.ref||"").toString().slice(0,20);
+      if(isAuto&&ref){ const ex=(notes[tid]||[]).find(function(n){return n.auto&&n.ref===ref;}); if(ex) return json({ok:true,note:ex,taskId:tid,dedup:true}); }
       const nid="n"+ts.toString(36)+Math.floor(Math.random()*46656).toString(36);
-      const note={id:nid,text,by:user,at:ts,to:Array.isArray(b.to)?b.to.slice(0,24).map(x=>(""+x).slice(0,40)):[],tag:(b.tag||"").toString().slice(0,24),done:false};
+      const note={id:nid,text,by:user,at:ts,to:Array.isArray(b.to)?b.to.slice(0,24).map(x=>(""+x).slice(0,40)):[],tag:(b.tag||"").toString().slice(0,24),done:false,auto:isAuto,ref:ref};
       if(!notes[tid])notes[tid]=[]; notes[tid].push(note);
       log.push({ts,user,action:"added note",id:tid,label:text.slice(0,80)});
       await kv.put("notes:"+id,JSON.stringify(notes));
