@@ -51,7 +51,8 @@ export async function onRequest(context){
     const add=(await kv.get("add:"+id,"json"))||{trades:[],tasks:[]};
     const prio=(await kv.get("prio:"+id,"json"))||{};
     const notes=(await kv.get("notes:"+id,"json"))||{};
-    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,now:Date.now()};
+    const marks=(await kv.get("marks:"+id,"json"))||{};
+    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,now:Date.now()};
     if(url.searchParams.get("init")){out.data=JOBS[id].data;out.draw=DRAWMAP[id]||{};out.sheets=SHEETS[id]||{};}
     return json(out);
   }
@@ -68,6 +69,7 @@ export async function onRequest(context){
     let add=(await kv.get("add:"+id,"json"))||{trades:[],tasks:[]};
     let prio=(await kv.get("prio:"+id,"json"))||{};
     let notes=(await kv.get("notes:"+id,"json"))||{};
+    let marks=(await kv.get("marks:"+id,"json"))||{};
 
     if(b.action==="setprio"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
@@ -178,6 +180,12 @@ export async function onRequest(context){
       await kv.put("notes:"+id,JSON.stringify(notes));
       log.push({ts,user,action:"deleted note",id:tid});
       if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true});
+    } else if(b.action==="savemarks"){
+      const sh=(b.sheet||"").toString(); if(!sh) return json({error:"missing sheet"},400);
+      const shapes=Array.isArray(b.shapes)?b.shapes.slice(0,4000):[];
+      if(!shapes.length && !b.cal){ delete marks[sh]; } else { marks[sh]={shapes,cal:b.cal||null,at:ts,by:user}; }
+      await kv.put("marks:"+id,JSON.stringify(marks));
       return json({ok:true});
     } else return json({error:"unknown action"},400);
 
