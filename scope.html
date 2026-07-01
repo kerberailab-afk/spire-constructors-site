@@ -451,7 +451,7 @@ function openViewer(id){var d=DRAW[id];if(!d)return;var m=document.getElementByI
  var hint=approx?'<span class="dvhint">↳ approximate — zoom to scan this block</span>':'<span class="dvhint" style="color:#7be0a0">↳ highlighted in yellow</span>';
  m.querySelector('.dvtitle').innerHTML='Sheet <b>'+esc(d.n||'')+'</b> &middot; '+esc(id)+' '+badge+' '+hint;
  var box=d.b?'<div class="dvbox '+(approx?'approx':'')+'" style="left:'+(d.b[0]*100)+'%;top:'+(d.b[1]*100)+'%;width:'+((d.b[2]-d.b[0])*100)+'%;height:'+((d.b[3]-d.b[1])*100)+'%"></div>':'';
- m.querySelector('.dvwrap').innerHTML='<img class="dvimg" src="/drawings/'+d.s+'.webp" alt="'+esc(d.n||'')+'">'+box;
+ m.querySelector('.dvwrap').innerHTML='<img class="dvimg" src="/drawings/'+d.s+'.webp?v=2" alt="'+esc(d.n||'')+'">'+box;
  m.style.display='flex';dvzoom=2.6;applyZoom();
  var sc=m.querySelector('.dvscroll'),wrap=m.querySelector('.dvwrap'),img=m.querySelector('.dvimg');
  var center=function(){if(!d.b){sc.scrollTop=0;return;}var bw=wrap.offsetWidth,bh=wrap.offsetHeight;var cx=((d.b[0]+d.b[2])/2)*bw,cy=((d.b[1]+d.b[3])/2)*bh;sc.scrollLeft=Math.max(0,cx-sc.clientWidth/2);sc.scrollTop=Math.max(0,cy-sc.clientHeight/2);};
