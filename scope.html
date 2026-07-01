@@ -167,6 +167,8 @@ td.prio,th.prio{width:46px;text-align:center}
 <section id="bulletins" class="view"></section>
 <section id="notes" class="view"></section>
 <section id="rfis" class="view"></section>
+<section id="submittals" class="view"></section>
+<section id="dailylog" class="view"></section>
 <section id="team" class="view"></section>
 <section id="schedule" class="view"></section>
 </main>
@@ -183,7 +185,7 @@ const first=s=>(s||'').split(' ')[0];
 function flagClass(v){const u=(v||'').toUpperCase();
  if(/NIC|BY OTHER|BY OWNER|BY LANDLORD|BY TENANT|SEPARATE|N\.I\.C|OWNER-FURNISH|VENDOR/.test(u))return'flg-o';
  if(/ALLOW|ALTERNATE|\bADD\b|HOLD|VERIFY|CONFLICT|TBD/.test(u))return'flg-r';return'';}
-let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]}, PRIO={}, IDX={}, DRAW={}, SHEETS={}, NOTES={}, ROSTER=[], DETAILS={}, RFIS={list:[],seq:0};
+let D=null, PASS='', USER='', STATE={}, LOG=[], pending=new Set(), TOTAL=0, INSTOTAL=0, pollT=null, JOBS=[], JOB=null, ADD={trades:[],tasks:[]}, PRIO={}, IDX={}, DRAW={}, SHEETS={}, NOTES={}, ROSTER=[], DETAILS={}, RFIS={list:[],seq:0}, SUBS={list:[],seq:0}, LOGS={list:[]};
 // ---- priority helpers ----
 // value 0-100: high=🔥 hot red (urgent), low=🐧 ice blue. Returns css color for a given value.
 function prioColor(v){v=Math.max(0,Math.min(100,v||0));
@@ -204,7 +206,7 @@ async function apiGet(init){const r=await fetch(API+'?job='+encodeURIComponent(J
 async function apiPost(body){body.job=JOB;const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json','x-pass':PASS},body:JSON.stringify(body)});if(!r.ok)throw r.status;return r.json();}
 
 // nav (static)
-const TABS=[['todo','🔥 To-Do'],['search','🔎 Search'],['notes','📝 Notes'],['rfis','📋 RFIs'],['team','👷 Team'],['schedule','📅 Schedule'],['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
+const TABS=[['todo','🔥 To-Do'],['search','🔎 Search'],['notes','📝 Notes'],['rfis','📋 RFIs'],['submittals','📤 Submittals'],['dailylog','📸 Daily Log'],['team','👷 Team'],['schedule','📅 Schedule'],['overview','Overview'],['scope','Scope by Trade'],['index','Drawing Index'],['inspect','Inspections'],['activity','Activity Log'],['bulletins','Bulletin Log']];
 const nav=document.getElementById('nav');
 function activateTab(id){document.querySelectorAll('nav button').forEach(function(x){x.classList.toggle('active',x.dataset.tab===id);});document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('active',v.id===id);});window.scrollTo(0,0);}
 TABS.forEach(([id,lbl])=>{const b=document.createElement('button');b.textContent=lbl;b.dataset.tab=id;b.onclick=()=>activateTab(id);nav.appendChild(b);});
@@ -412,7 +414,7 @@ document.addEventListener('change',async e=>{if(!e.target.classList.contains('ch
 document.addEventListener('click',function(e){var t=e.target;if(!t||!t.getAttribute)return;
  var chip=t.closest?t.closest('.pchip'):null;if(chip){e.stopPropagation();openPrioPop(chip);return;}
  if(t.classList&&t.classList.contains('addtask')){openAddTaskForm(t.getAttribute('data-code'),t);}else if(t.id==='addtradebtn'){openAddTradeForm(t);}else if(t.getAttribute('data-edit')){openEditTaskForm(t.getAttribute('data-edit'),t);}else if(t.getAttribute('data-edittrade')){openEditTradeForm(t.getAttribute('data-edittrade'),t);}else if(t.getAttribute('data-del')){delTask(t.getAttribute('data-del'));}else if(t.getAttribute('data-deltrade')){delTrade(t.getAttribute('data-deltrade'));}});
-function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;if(res.marks&&document.getElementById('dvmodal')&&document.getElementById('dvmodal').style.display!=='flex'){mkLoad(res.marks);}if(res.notes&&JSON.stringify(res.notes)!==JSON.stringify(NOTES)){NOTES=res.notes;if(typeof injectNoteIcons==='function'){injectNoteIcons();renderNotesFeed();}}if(res.roster&&JSON.stringify(res.roster)!==JSON.stringify(ROSTER)){ROSTER=res.roster;renderRoster();}if(res.rfis&&JSON.stringify(res.rfis)!==JSON.stringify(RFIS)){RFIS=res.rfis;if(typeof renderRFIs==='function')renderRFIs();}if(res.assign&&JSON.stringify(res.assign)!==JSON.stringify(ASSIGN)){ASSIGN=res.assign;injectAssignIcons();renderSchedule();}if(typeof renderBell==='function')renderBell();let addChanged=false;if(res.add&&JSON.stringify(res.add)!==JSON.stringify(ADD)){ADD=res.add;renderAllManual();addChanged=true;}
+function startPoll(){if(pollT)clearInterval(pollT);pollT=setInterval(async()=>{try{const res=await apiGet(false);const ns=res.state||{};pending.forEach(id=>{if(STATE[id])ns[id]=STATE[id];else delete ns[id];});STATE=ns;LOG=res.log||LOG;if(res.marks&&document.getElementById('dvmodal')&&document.getElementById('dvmodal').style.display!=='flex'){mkLoad(res.marks);}if(res.notes&&JSON.stringify(res.notes)!==JSON.stringify(NOTES)){NOTES=res.notes;if(typeof injectNoteIcons==='function'){injectNoteIcons();renderNotesFeed();}}if(res.roster&&JSON.stringify(res.roster)!==JSON.stringify(ROSTER)){ROSTER=res.roster;renderRoster();}if(res.rfis&&JSON.stringify(res.rfis)!==JSON.stringify(RFIS)){RFIS=res.rfis;if(typeof renderRFIs==='function')renderRFIs();}if(res.subs&&JSON.stringify(res.subs)!==JSON.stringify(SUBS)){SUBS=res.subs;if(typeof renderSubmittals==='function')renderSubmittals();}if(res.logs&&JSON.stringify(res.logs)!==JSON.stringify(LOGS)){LOGS=res.logs;if(typeof renderDailyLog==='function')renderDailyLog();}if(res.assign&&JSON.stringify(res.assign)!==JSON.stringify(ASSIGN)){ASSIGN=res.assign;injectAssignIcons();renderSchedule();}if(typeof renderBell==='function')renderBell();let addChanged=false;if(res.add&&JSON.stringify(res.add)!==JSON.stringify(ADD)){ADD=res.add;renderAllManual();addChanged=true;}
  if(res.prio){const np=res.prio;prioPending.forEach(function(id){if(PRIO[id]!=null)np[id]=PRIO[id];else delete np[id];});if(JSON.stringify(np)!==JSON.stringify(PRIO)){const touched=new Set(Object.keys(PRIO).concat(Object.keys(np)));PRIO=np;touched.forEach(reflectPrioChip);if(addChanged)buildIndex();renderTodo();addChanged=false;}}
  else if(addChanged){buildIndex();renderTodo();}
  reflectAll();renderLog();banner('');}catch(err){banner(err===401?'Session expired — refresh to sign in again.':'Reconnecting…');}},5000);}
@@ -432,9 +434,9 @@ function showPicker(){stopPoll();document.getElementById('app').style.display='n
  p.querySelectorAll('.pcard').forEach(function(c){c.onclick=function(){openJob(c.dataset.job);};});
  var so=document.getElementById('signout');if(so)so.onclick=signout;}
 async function openJob(id){JOB=id;
- try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};PRIO=res.prio||{};DRAW=res.draw||{};SHEETS=res.sheets||{};NOTES=res.notes||{};ROSTER=res.roster||[];ASSIGN=res.assign||{};DETAILS=res.details||{};RFIS=res.rfis||{list:[],seq:0};mkLoad(res.marks);}catch(e){alert('Could not load project. Try again.');return;}
+ try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};PRIO=res.prio||{};DRAW=res.draw||{};SHEETS=res.sheets||{};NOTES=res.notes||{};ROSTER=res.roster||[];ASSIGN=res.assign||{};DETAILS=res.details||{};RFIS=res.rfis||{list:[],seq:0};SUBS=res.subs||{list:[],seq:0};LOGS=res.logs||{list:[]};mkLoad(res.marks);}catch(e){alert('Could not load project. Try again.');return;}
  document.getElementById('picker').style.display='none';document.getElementById('app').style.display='block';
- buildAll();renderAllManual();buildIndex();renderTodo();renderLog();renderRoster();renderSchedule();renderBell();if(typeof renderRFIs==='function')renderRFIs();startPoll();
+ buildAll();renderAllManual();buildIndex();renderTodo();renderLog();renderRoster();renderSchedule();renderBell();if(typeof renderRFIs==='function')renderRFIs();if(typeof renderSubmittals==='function')renderSubmittals();if(typeof renderDailyLog==='function')renderDailyLog();startPoll();
  // default to the To-Do tab
  document.querySelectorAll('nav button').forEach(function(x){x.classList.remove('active');});
  var nb=document.querySelector('nav button');if(nb)nb.classList.add('active');
@@ -816,6 +818,160 @@ document.addEventListener('click',function(e){var t=e.target;if(!t||!t.getAttrib
  else if((a=t.getAttribute('data-rclose'))){e.preventDefault();rfiSetStatus(a,'closed');}
  else if((a=t.getAttribute('data-ropen'))){e.preventDefault();rfiSetStatus(a,'open');}
  else if((a=t.getAttribute('data-rdel'))){e.preventDefault();rfiDelete(a);}
+});
+
+
+/* ===================== FILE HELPERS (R2) ===================== */
+async function scUpload(file){
+  var r=await fetch(API+'?upload=1&job='+encodeURIComponent(JOB),{method:'POST',headers:{'content-type':file.type||'application/octet-stream','x-pass':PASS,'x-filename':file.name},body:file});
+  if(!r.ok){var msg='';try{msg=(await r.json()).error;}catch(e){} throw new Error(msg||('upload failed '+r.status));}
+  return r.json();
+}
+async function scFileURL(key){var r=await fetch(API+'?file='+encodeURIComponent(key),{headers:{'x-pass':PASS}});if(!r.ok)throw new Error('load failed');return URL.createObjectURL(await r.blob());}
+async function scDownload(key,name){try{var u=await scFileURL(key);var a=document.createElement('a');a.href=u;a.download=name||'file';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},5000);}catch(e){banner('Could not download file');}}
+async function scOpen(key){try{var u=await scFileURL(key);window.open(u,'_blank');}catch(e){banner('Could not open file');}}
+function scIsImg(t){return /^image\//.test(t||'');}
+function scBytes(n){n=+n||0;if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(0)+' KB';return (n/1048576).toFixed(1)+' MB';}
+function scHydrate(root){(root||document).querySelectorAll('img[data-key]:not([data-hy])').forEach(function(im){im.setAttribute('data-hy','1');scFileURL(im.getAttribute('data-key')).then(function(u){im.src=u;}).catch(function(){im.alt='(unavailable)';});});}
+function scRecipPick(groups){var g=RGROUPS.map(function(x){return '<label class="rlab"><input type="checkbox" class="'+groups+'" value="'+x[0]+'">'+x[1]+'</label>';}).join('');var p=(ROSTER||[]).map(function(x){return '<label class="rlab"><input type="checkbox" class="'+groups+'" value="'+esc(x.name)+'">'+esc(x.name)+'</label>';}).join('');return g+p;}
+function scDropWire(dropId,inputId,onFiles){var d=document.getElementById(dropId),inp=document.getElementById(inputId);if(!d||d.getAttribute('data-w'))return;d.setAttribute('data-w','1');d.addEventListener('click',function(){inp.click();});['dragenter','dragover'].forEach(function(ev){d.addEventListener(ev,function(e){e.preventDefault();d.classList.add('scdrag');});});['dragleave','drop'].forEach(function(ev){d.addEventListener(ev,function(e){e.preventDefault();d.classList.remove('scdrag');});});d.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files)onFiles(e.dataTransfer.files);});inp.addEventListener('change',function(){onFiles(inp.files);inp.value='';});}
+
+/* ===================== styles ===================== */
+(function(){var st=document.createElement('style');st.textContent=
+'#smodal,#srmodal,#lmodal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center}'
++'.scsheet{background:#fff;max-width:600px;width:94%;border-radius:12px;max-height:92vh;overflow:auto}'
++'.schd{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line,#eee)}'
++'.scbody{padding:14px 16px}.scbody label.fl{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}'
++'.scbody input[type=text],.scbody input[type=date],.scbody textarea{width:100%;box-sizing:border-box;border:1px solid var(--line,#ccc);border-radius:7px;padding:8px;font:inherit}'
++'.scbody textarea{min-height:74px;resize:vertical}'
++'.scdrop{border:2px dashed var(--line,#bbb);border-radius:10px;padding:16px;text-align:center;color:#667;cursor:pointer;background:#fafbfc}'
++'.scdrop.scdrag{border-color:var(--accent,#c8102e);background:#fff5f5;color:#333}'
++'.scstage{display:flex;flex-direction:column;gap:5px;margin-top:8px}'
++'.scfile{display:flex;align-items:center;gap:8px;font-size:13px;border:1px solid var(--line,#eee);border-radius:6px;padding:5px 8px}'
++'.scfile .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
++'.scfile .rm{color:#b42318;cursor:pointer;border:none;background:none;font-weight:700}'
++'.scfoot{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line,#eee)}'
++'.scfoot button{border:none;border-radius:7px;padding:8px 14px;font-weight:600;cursor:pointer}'
++'.scfoot .prim{background:var(--accent,#c8102e);color:#fff}.scfoot .sec{background:#eceff3;color:#333}'
++'#submittals .scbar,#dailylog .scbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-2px 0 10px}'
++'.scnew{margin-left:auto;background:var(--accent,#c8102e);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-weight:600;cursor:pointer}'
++'.subcard,.logcard{border:1px solid var(--line,#ddd);border-radius:9px;padding:11px 13px;margin-bottom:10px;background:#fff}'
++'.subcard.closed{opacity:.66}'
++'.subhd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}'
++'.subnum{font-weight:700;background:#eef2ff;color:#33448a;border-radius:5px;padding:1px 7px;font-size:12px}'
++'.subttl{font-weight:600}'
++'.spill{font-size:11px;font-weight:700;border-radius:20px;padding:2px 9px;text-transform:uppercase}'
++'.sp-open{background:#fff3cd;color:#8a6d0b}.sp-closed{background:#e7f4e8;color:#1a7f37}'
++'.filerow{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0}'
++'.filechip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line,#ddd);border-radius:7px;padding:5px 9px;font-size:12px;cursor:pointer;background:#f8f9fb}'
++'.filechip:hover{background:#eef1f5}'
++'.thumb{width:88px;height:88px;object-fit:cover;border-radius:8px;border:1px solid var(--line,#ddd);cursor:pointer;background:#f0f0f0}'
++'.approw{display:flex;flex-wrap:wrap;gap:7px;margin:7px 0}'
++'.appchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;border:1px solid var(--line,#e2e2e2);border-radius:20px;padding:2px 9px}'
++'.decb{font-size:10px;font-weight:700;border-radius:20px;padding:1px 7px;text-transform:uppercase}'
++'.d-app{background:#e7f4e8;color:#1a7f37}.d-noted{background:#e5f3f6;color:#0e6b7a}.d-rev{background:#fff3cd;color:#8a6d0b}.d-rej{background:#fde8e8;color:#b42318}.d-pend{background:#eceff3;color:#667}'
++'.subresp{border-left:3px solid var(--line,#ddd);padding:5px 9px;margin:5px 0;background:#fafbfc;border-radius:0 6px 6px 0;font-size:13px}'
++'.submeta{font-size:12px;color:#667;margin-top:7px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}'
++'.subbtn{background:none;border:none;color:var(--accent,#c8102e);cursor:pointer;font-weight:600;padding:0}'
++'.sdue{font-size:11px;border-radius:5px;padding:1px 7px;background:#fff3cd;color:#8a6d0b}.sdue.od{background:#fde8e8;color:#b42318}'
++'.loghd{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.logdate{font-weight:700}'
++'.logsub{font-size:12px;color:#667}.logmeta{font-size:12px;color:#667;margin:3px 0}'
++'.photogrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}'
++'.lognotes{white-space:pre-wrap;margin:6px 0}';
+document.head.appendChild(st);})();
+
+/* ===================== SUBMITTALS ===================== */
+var SUBFILT='open'; var subStage=[];
+(function(){var m=document.createElement('div');m.id='smodal';
+m.innerHTML='<div class="scsheet"><div class="schd"><b>New Submittal</b><button class="x" onclick="closeSub()">✕</button></div><div class="scbody"><label class="fl">Title</label><input type="text" id="stitle" placeholder="e.g. Kitchen millwork shop drawings"><label class="fl">Spec section (optional)</label><input type="text" id="sspec" placeholder="e.g. 06 41 00"><label class="fl">Files</label><div class="scdrop" id="sdrop">Drag files here, or click to choose (PDF, images, up to 50MB each)</div><input type="file" id="sfile" multiple style="display:none"><div class="scstage" id="sstage"></div><label class="fl">Distribution list (notified)</label><div class="rrecip" id="sdist"></div><label class="fl">Approvers (respond approved / rejected / as noted)</label><div class="rrecip" id="sappr"></div><label class="fl">Due back by</label><input type="date" id="sdue"></div><div class="scfoot"><button class="sec" onclick="closeSub()">Cancel</button><button class="prim" id="ssave" onclick="submitSub()">Send submittal</button></div></div>';
+document.body.appendChild(m);m.addEventListener('click',function(e){if(e.target===m)closeSub();});})();
+(function(){var m=document.createElement('div');m.id='srmodal';
+m.innerHTML='<div class="scsheet" style="max-width:460px"><div class="schd"><b id="srttl">Respond</b><button class="x" onclick="closeResp()">✕</button></div><div class="scbody"><label class="fl">Decision</label><select id="srdec" style="width:100%;padding:8px;border:1px solid var(--line,#ccc);border-radius:7px;font:inherit"><option>Approved</option><option>Approved as Noted</option><option>Revise &amp; Resubmit</option><option>Rejected</option></select><label class="fl">Comments (optional)</label><textarea id="srcomment" placeholder="Notes for the record..."></textarea></div><div class="scfoot"><button class="sec" onclick="closeResp()">Cancel</button><button class="prim" id="srsave" onclick="submitResp()">Submit response</button></div></div>';
+document.body.appendChild(m);m.addEventListener('click',function(e){if(e.target===m)closeResp();});})();
+function renderSubStage(){var h=document.getElementById('sstage');if(!h)return;h.innerHTML=subStage.map(function(f,i){return '<div class="scfile"><span class="nm">'+esc(f.name)+'</span><span style="color:#889">'+scBytes(f.size)+'</span><button class="rm" data-srm="'+i+'">✕</button></div>';}).join('');}
+function subAddFiles(list){for(var i=0;i<list.length;i++)subStage.push(list[i]);renderSubStage();}
+function openSub(){subStage=[];renderSubStage();document.getElementById('stitle').value='';document.getElementById('sspec').value='';document.getElementById('sdue').value='';document.getElementById('sdist').innerHTML=scRecipPick('sdk');document.getElementById('sappr').innerHTML=scRecipPick('sak');document.getElementById('smodal').style.display='flex';scDropWire('sdrop','sfile',subAddFiles);setTimeout(function(){document.getElementById('stitle').focus();},60);}
+function closeSub(){document.getElementById('smodal').style.display='none';}
+async function submitSub(){var title=document.getElementById('stitle').value.trim();if(!title){document.getElementById('stitle').focus();return;}var to=[];document.querySelectorAll('#sdist .sdk:checked').forEach(function(c){to.push(c.value);});var appr=[];document.querySelectorAll('#sappr .sak:checked').forEach(function(c){appr.push(c.value);});var btn=document.getElementById('ssave');btn.disabled=true;
+ try{var files=[];for(var i=0;i<subStage.length;i++){btn.textContent='Uploading '+(i+1)+'/'+subStage.length+'...';var up=await scUpload(subStage[i]);files.push({key:up.key,name:up.name,size:up.size,type:up.type});}
+ btn.textContent='Sending...';var res=await apiPost({action:'addsubmittal',title:title,spec:document.getElementById('sspec').value.trim(),to:to,approvers:appr,due:document.getElementById('sdue').value,files:files,user:USER});if(res&&res.subs)SUBS=res.subs;}
+ catch(e){banner(e.message||'Could not send submittal');btn.disabled=false;btn.textContent='Send submittal';return;}
+ btn.disabled=false;btn.textContent='Send submittal';closeSub();renderSubmittals();if(typeof renderLog==='function')renderLog();}
+function subDecBadge(d){var c='d-pend',t=d||'Pending';if(d==='Approved')c='d-app';else if(d==='Approved as Noted')c='d-noted';else if(d==='Revise & Resubmit')c='d-rev';else if(d==='Rejected')c='d-rej';return '<span class="decb '+c+'">'+esc(t)+'</span>';}
+function subDue(sub){if(!sub.due)return '';var od=false;try{var d=new Date(sub.due+'T00:00:00');var n=new Date();n.setHours(0,0,0,0);od=(sub.status!=='closed'&&d<n);}catch(e){}return '<span class="sdue'+(od?' od':'')+'">back by '+esc(sub.due)+'</span>';}
+function renderSubmittals(){var host=document.getElementById('submittals');if(!host)return;var list=(SUBS&&SUBS.list)||[];
+ function pend(sub){return (sub.approvers||[]).indexOf(USER)>=0 && !(sub.responses||[]).some(function(r){return r.by===USER;});}
+ var openN=list.filter(function(s){return s.status!=='closed';}).length;
+ var mineN=list.filter(function(s){return pend(s);}).length;
+ var f=list.filter(function(s){if(SUBFILT==='open')return s.status!=='closed';if(SUBFILT==='mine')return pend(s);if(SUBFILT==='closed')return s.status==='closed';return true;});
+ f.sort(function(a,b){return (a.status==='closed'?1:0)-(b.status==='closed'?1:0)||(b.num-a.num);});
+ var chips=[['open','Open ('+openN+')'],['mine','My approval ('+mineN+')'],['closed','Closed'],['all','All ('+list.length+')']];
+ var h='<div class="panel"><h3>📤 Submittals</h3><div class="note" style="margin:-4px 0 8px">Upload files, send to a distribution list, and set approvers who respond Approved / Rejected / Approved as Noted. Emails go out to anyone with an address on file once email is turned on.</div><div class="scbar" id="subbar">'+chips.map(function(c){return '<button class="setchip'+(c[0]===SUBFILT?' on':'')+'" data-sb="'+c[0]+'">'+c[1]+'</button>';}).join('')+'<button class="scnew" onclick="openSub()">+ New Submittal</button></div>';
+ if(!f.length){h+='<div class="note" style="padding:12px">No submittals here yet.</div></div>';host.innerHTML=h;var b0=document.getElementById('subbar');if(b0)b0.addEventListener('click',subBar);return;}
+ h+=f.map(function(sub){
+  var files=(sub.files||[]).map(function(fl){return scIsImg(fl.type)?'<img class="thumb" data-key="'+esc(fl.key)+'" title="'+esc(fl.name)+'" onclick="scOpen(\''+esc(fl.key)+'\')">':'<span class="filechip" onclick="scDownload(\''+esc(fl.key)+'\',\''+esc(fl.name)+'\')">📄 '+esc(fl.name)+' <span style="color:#889">'+scBytes(fl.size)+'</span></span>';}).join('');
+  var apprs=(sub.approvers||[]).map(function(a){var r=(sub.responses||[]).filter(function(x){return x.by===a;})[0];return '<span class="appchip">'+esc(a)+' '+subDecBadge(r?r.decision:'')+'</span>';}).join('');
+  var resp=(sub.responses||[]).map(function(r){return '<div class="subresp">'+subDecBadge(r.decision)+' <b>'+esc(r.by)+'</b> '+(r.comment?'— '+esc(r.comment):'')+'<div style="font-size:11px;color:#889">'+fmt(r.at)+'</div></div>';}).join('');
+  var canResp=(sub.approvers||[]).indexOf(USER)>=0;
+  return '<div class="subcard'+(sub.status==='closed'?' closed':'')+'"><div class="subhd"><span class="subnum">SUB #'+sub.num+'</span><span class="spill sp-'+(sub.status==='closed'?'closed':'open')+'">'+(sub.status==='closed'?'Closed':'Open')+'</span><span class="subttl">'+esc(sub.title)+'</span>'+(sub.spec?'<span style="color:#889;font-size:12px">'+esc(sub.spec)+'</span>':'')+'<span style="flex:1"></span>'+subDue(sub)+'</div>'
+   +(files?'<div class="filerow">'+files+'</div>':'<div class="note" style="font-size:12px;padding:4px 0">No files attached</div>')
+   +(recipChips(sub.to)?'<div style="font-size:13px;margin:4px 0">Sent to: '+recipChips(sub.to)+'</div>':'')
+   +(apprs?'<div class="approw">Approvers: '+apprs+'</div>':'<div class="note" style="font-size:12px">No approvers set</div>')
+   +resp
+   +'<div class="submeta"><span>sent by '+esc(sub.by)+' · '+fmt(sub.at)+'</span><span style="flex:1"></span>'
+   +(canResp?'<button class="subbtn" data-sresp="'+sub.id+'">Respond</button>':'')
+   +' <button class="subbtn" data-saddf="'+sub.id+'">Add files</button>'
+   +(sub.status==='closed'?' <button class="subbtn" data-sreopen="'+sub.id+'">Reopen</button>':' <button class="subbtn" data-sclose="'+sub.id+'">Close out</button>')
+   +' <button class="subbtn" data-sdel="'+sub.id+'">Delete</button></div></div>';
+ }).join('');
+ h+='</div>';host.innerHTML=h;var b=document.getElementById('subbar');if(b)b.addEventListener('click',subBar);scHydrate(host);}
+function subBar(e){var b=e.target.closest('.setchip');if(!b)return;SUBFILT=b.getAttribute('data-sb');renderSubmittals();}
+function openResp(sid){var m=document.getElementById('srmodal');m.setAttribute('data-id',sid);var sub=((SUBS&&SUBS.list)||[]).filter(function(x){return x.id===sid;})[0];var mine=sub&&(sub.responses||[]).filter(function(r){return r.by===USER;})[0];document.getElementById('srttl').textContent='Respond to SUB #'+(sub?sub.num:'');document.getElementById('srdec').value=mine?mine.decision:'Approved';document.getElementById('srcomment').value=mine?(mine.comment||''):'';m.style.display='flex';}
+function closeResp(){document.getElementById('srmodal').style.display='none';}
+async function submitResp(){var m=document.getElementById('srmodal');var sid=m.getAttribute('data-id');var dec=document.getElementById('srdec').value;var cm=document.getElementById('srcomment').value.trim();var btn=document.getElementById('srsave');btn.disabled=true;btn.textContent='Submitting...';try{var res=await apiPost({action:'submittalrespond',subId:sid,decision:dec,comment:cm,user:USER});if(res&&res.subs)SUBS=res.subs;}catch(e){banner('Could not submit response');btn.disabled=false;btn.textContent='Submit response';return;}btn.disabled=false;btn.textContent='Submit response';closeResp();renderSubmittals();if(typeof renderLog==='function')renderLog();}
+async function subStatus(sid,st){try{var res=await apiPost({action:'setsubstatus',subId:sid,status:st,user:USER});if(res&&res.subs)SUBS=res.subs;}catch(e){banner('Sync failed');return;}renderSubmittals();}
+async function subDelete(sid){if(!confirm('Delete this submittal?'))return;try{var res=await apiPost({action:'delsubmittal',subId:sid,user:USER});if(res&&res.subs)SUBS=res.subs;}catch(e){banner('Delete failed');return;}renderSubmittals();}
+function subAddFilesTo(sid){var inp=document.createElement('input');inp.type='file';inp.multiple=true;inp.onchange=async function(){var files=[];try{for(var i=0;i<inp.files.length;i++){banner('Uploading '+(i+1)+'/'+inp.files.length+'...');var up=await scUpload(inp.files[i]);files.push({key:up.key,name:up.name,size:up.size,type:up.type});}var res=await apiPost({action:'submittaladdfiles',subId:sid,files:files,user:USER});if(res&&res.subs)SUBS=res.subs;renderSubmittals();}catch(e){banner(e.message||'Upload failed');}};inp.click();}
+
+/* ===================== DAILY LOG ===================== */
+var logStage=[];
+(function(){var m=document.createElement('div');m.id='lmodal';
+m.innerHTML='<div class="scsheet"><div class="schd"><b>New Daily Log</b><button class="x" onclick="closeLog()">✕</button></div><div class="scbody"><label class="fl">Date</label><input type="date" id="ldate"><label class="fl">Weather (optional)</label><input type="text" id="lweather" placeholder="e.g. 88°F, sunny"><label class="fl">Crew on site (optional)</label><input type="text" id="lcrew" placeholder="e.g. 4 carpenters, 2 electricians"><label class="fl">Notes / work performed</label><textarea id="lnotes" placeholder="What happened on site today..."></textarea><label class="fl">Photos</label><div class="scdrop" id="ldrop">Drag photos here, or click to choose</div><input type="file" id="lfile" accept="image/*" multiple style="display:none"><div class="scstage" id="lstage"></div><label class="fl">Share with</label><div class="rrecip" id="ldist"></div></div><div class="scfoot"><button class="sec" onclick="closeLog()">Cancel</button><button class="prim" id="lsave" onclick="submitLog()">Post log</button></div></div>';
+document.body.appendChild(m);m.addEventListener('click',function(e){if(e.target===m)closeLog();});})();
+function renderLogStage(){var h=document.getElementById('lstage');if(!h)return;h.innerHTML=logStage.map(function(f,i){return '<div class="scfile"><span class="nm">'+esc(f.name)+'</span><span style="color:#889">'+scBytes(f.size)+'</span><button class="rm" data-lrm="'+i+'">✕</button></div>';}).join('');}
+function logAddFiles(list){for(var i=0;i<list.length;i++)logStage.push(list[i]);renderLogStage();}
+function openLog(){logStage=[];renderLogStage();var d=new Date();document.getElementById('ldate').value=d.toISOString().slice(0,10);document.getElementById('lweather').value='';document.getElementById('lcrew').value='';document.getElementById('lnotes').value='';document.getElementById('ldist').innerHTML=scRecipPick('ldk');document.getElementById('lmodal').style.display='flex';scDropWire('ldrop','lfile',logAddFiles);setTimeout(function(){document.getElementById('lnotes').focus();},60);}
+function closeLog(){document.getElementById('lmodal').style.display='none';}
+async function submitLog(){var notes=document.getElementById('lnotes').value.trim();if(!notes&&!logStage.length){document.getElementById('lnotes').focus();return;}var to=[];document.querySelectorAll('#ldist .ldk:checked').forEach(function(c){to.push(c.value);});var btn=document.getElementById('lsave');btn.disabled=true;
+ try{var photos=[];for(var i=0;i<logStage.length;i++){btn.textContent='Uploading '+(i+1)+'/'+logStage.length+'...';var up=await scUpload(logStage[i]);photos.push({key:up.key,name:up.name,type:up.type});}
+ btn.textContent='Posting...';var res=await apiPost({action:'addlog',date:document.getElementById('ldate').value,weather:document.getElementById('lweather').value.trim(),crew:document.getElementById('lcrew').value.trim(),notes:notes,photos:photos,to:to,user:USER});if(res&&res.logs)LOGS=res.logs;}
+ catch(e){banner(e.message||'Could not post log');btn.disabled=false;btn.textContent='Post log';return;}
+ btn.disabled=false;btn.textContent='Post log';closeLog();renderDailyLog();if(typeof renderLog==='function')renderLog();}
+function renderDailyLog(){var host=document.getElementById('dailylog');if(!host)return;var list=((LOGS&&LOGS.list)||[]).slice();
+ list.sort(function(a,b){return (b.date||'').localeCompare(a.date||'')||(b.at-a.at);});
+ var h='<div class="panel"><h3>📸 Daily Log</h3><div class="note" style="margin:-4px 0 8px">The on-site super posts each day — notes, crew, weather, and photos — shared with the team and ownership.</div><div class="scbar"><button class="scnew" onclick="openLog()">+ New Log Entry</button></div>';
+ if(!list.length){h+='<div class="note" style="padding:12px">No log entries yet. Post the first one.</div></div>';host.innerHTML=h;return;}
+ h+=list.map(function(en){
+  var ph=(en.photos||[]).map(function(p){return '<img class="thumb" data-key="'+esc(p.key)+'" onclick="scOpen(\''+esc(p.key)+'\')">';}).join('');
+  return '<div class="logcard"><div class="loghd"><span class="logdate">'+esc(en.date)+'</span><span class="logsub">— '+esc(en.by)+' · '+fmt(en.at)+'</span><span style="flex:1"></span><button class="subbtn" data-ldel="'+en.id+'">Delete</button></div>'
+   +((en.weather||en.crew)?'<div class="logmeta">'+(en.weather?'☀ '+esc(en.weather):'')+(en.weather&&en.crew?' · ':'')+(en.crew?'👷 '+esc(en.crew):'')+'</div>':'')
+   +(en.notes?'<div class="lognotes">'+esc(en.notes)+'</div>':'')
+   +(recipChips(en.to)?'<div style="font-size:12px;margin-top:4px">Shared: '+recipChips(en.to)+'</div>':'')
+   +(ph?'<div class="photogrid">'+ph+'</div>':'')+'</div>';
+ }).join('');
+ h+='</div>';host.innerHTML=h;scHydrate(host);}
+async function logDelete(lid){if(!confirm('Delete this log entry?'))return;try{var res=await apiPost({action:'dellog',logId:lid,user:USER});if(res&&res.logs)LOGS=res.logs;}catch(e){banner('Delete failed');return;}renderDailyLog();}
+
+/* ===================== delegated clicks ===================== */
+document.addEventListener('click',function(e){var t=e.target;if(!t||!t.getAttribute)return;var a;
+ if(t.hasAttribute('data-srm')){subStage.splice(+t.getAttribute('data-srm'),1);renderSubStage();return;}
+ if(t.hasAttribute('data-lrm')){logStage.splice(+t.getAttribute('data-lrm'),1);renderLogStage();return;}
+ if((a=t.getAttribute('data-sresp'))){openResp(a);return;}
+ if((a=t.getAttribute('data-saddf'))){subAddFilesTo(a);return;}
+ if((a=t.getAttribute('data-sclose'))){subStatus(a,'closed');return;}
+ if((a=t.getAttribute('data-sreopen'))){subStatus(a,'open');return;}
+ if((a=t.getAttribute('data-sdel'))){subDelete(a);return;}
+ if((a=t.getAttribute('data-ldel'))){logDelete(a);return;}
 });
 
 </script></body></html>
