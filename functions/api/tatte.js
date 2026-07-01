@@ -95,6 +95,7 @@ export async function onRequest(context){
 
   if(request.method==="POST"){
     let b; try{b=await request.json();}catch{return json({error:"bad json"},400);}
+    try{
     const id=(b.job||"").toString();
     if(!JOBS[id]) return json({error:"unknown job"},400);
     const data=JOBS[id].data;
@@ -373,4 +374,6 @@ export async function onRequest(context){
     return json({ok:true,state,ts});
   }
   return json({error:"method not allowed"},405);
-}
+
+    }catch(e){return json({error:"ACTIONERR: "+String((e&&e.message)||e)+" @@ "+String((e&&e.stack)||"").slice(0,400)},500);}
+  }
