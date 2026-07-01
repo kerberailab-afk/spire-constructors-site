@@ -634,6 +634,7 @@ function mkLoad(rm){rm=rm||{};MARKS={};CAL={};Object.keys(rm).forEach(function(k
 
 /* ===================== ROSTER / TEAM ===================== */
 function rosterGroups(){return [['team','Team'],['subs','Subcontractors'],['ownership','Ownership / Client']];}
+function fmtPhone(s){var d=(s||'').replace(/\D/g,'');var ext='';if(d.length===11&&d[0]==='1')d=d.slice(1);if(d.length>10){ext=d.slice(10);d=d.slice(0,10);}var out;if(d.length<4)out=d;else if(d.length<7)out='('+d.slice(0,3)+') '+d.slice(3);else out='('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);return out+(ext?' x'+ext:'');}
 function renderRoster(){var host=document.getElementById('team');if(!host)return;
  var h='<div class="panel"><h3>👷 Team &amp; Contacts</h3><div class="note" style="margin:-4px 0 10px">Add everyone on the job — your crew, subs, and ownership. These names become selectable when you tag people in a note.</div><div id="radd"></div>';
  rosterGroups().forEach(function(g){var people=ROSTER.filter(function(p){return (p.group||'team')===g[0];});
@@ -647,11 +648,11 @@ function openPersonForm(group,p){var box=document.getElementById('radd');if(!box
   +'<input id="pf_name" placeholder="Name *" value="'+(p?esc(p.name):'')+'">'
   +'<input id="pf_role" placeholder="Role / trade (e.g. Electrician, PM)" value="'+v('role')+'">'
   +'<input id="pf_company" placeholder="Company" value="'+v('company')+'">'
-  +'<input id="pf_phone" placeholder="Phone" value="'+v('phone')+'">'
+  +'<input id="pf_phone" placeholder="Phone" value="'+(p&&p.phone?esc(fmtPhone(p.phone)):'')+'">'
   +'<input id="pf_email" placeholder="Email" value="'+v('email')+'">'
   +'<select id="pf_group">'+rosterGroups().map(function(g){return '<option value="'+g[0]+'"'+(((p?p.group:group)||'team')===g[0]?' selected':'')+'>'+g[1]+'</option>';}).join('')+'</select>'
   +'<div class="pfrow"><button class="btnlite pfsave" id="pf_save">'+(p?'Save':'Add')+'</button><button class="btnlite" id="pf_cancel">Cancel</button></div></div>';
- document.getElementById('pf_name').focus();box.scrollIntoView({behavior:'smooth',block:'center'});
+ document.getElementById('pf_name').focus();box.scrollIntoView({behavior:'smooth',block:'center'});var _ph=document.getElementById('pf_phone');if(_ph)_ph.addEventListener('input',function(){_ph.value=fmtPhone(_ph.value);});
  document.getElementById('pf_cancel').onclick=function(){box.innerHTML='';};
  document.getElementById('pf_save').onclick=function(){savePerson(p?p.id:null);};}
 async function savePerson(idEdit){var g=function(x){var el=document.getElementById('pf_'+x);return el?el.value.trim():'';};var name=g('name');if(!name){document.getElementById('pf_name').focus();return;}
