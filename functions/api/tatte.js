@@ -39,6 +39,7 @@ export async function onRequest(context){
   const kv=env.SCOPE; if(!kv) return json({error:"KV namespace binding 'SCOPE' is missing"},500);
 
   if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv});
+  if(url.searchParams.get("kvtest")){ try{ await kv.put("diag:test","x"+Date.now()); return json({ok:true,kvwrite:"success"}); }catch(e){ return json({ok:false,kvwrite:String((e&&e.message)||e).slice(0,300)}); } }
   if(request.method==="GET" && url.searchParams.get("file")){
     if(!env.FILES) return json({error:"file storage not connected"},500);
     const key=url.searchParams.get("file");
