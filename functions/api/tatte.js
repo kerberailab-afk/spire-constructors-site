@@ -38,6 +38,30 @@ export async function onRequest(context){
   if(!digestOk){ if(!PASS || (request.headers.get("x-pass")||"")!==PASS) return json({error:"unauthorized"},401); }
   const kv=env.SCOPE; if(!kv) return json({error:"KV namespace binding 'SCOPE' is missing"},500);
 
+  if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv});
+  if(request.method==="GET" && url.searchParams.get("file")){
+    if(!env.FILES) return json({error:"file storage not connected"},500);
+    const key=url.searchParams.get("file");
+    const obj=await env.FILES.get(key);
+    if(!obj) return new Response("not found",{status:404});
+    const h=new Headers(); obj.writeHttpMetadata(h); h.set("Cache-Control","private, max-age=3600");
+    const dl=url.searchParams.get("dl"); if(dl){ h.set("Content-Disposition",'attachment; filename="'+dl.replace(/[^A-Za-z0-9._-]/g,"_")+'"'); }
+    return new Response(obj.body,{headers:h});
+  }
+  if(request.method==="POST" && url.searchParams.get("upload")){
+    if(!env.FILES) return json({error:"file storage not connected"},500);
+    const job=(url.searchParams.get("job")||"").toString(); if(!JOBS[job]) return json({error:"unknown job"},400);
+    const name=(request.headers.get("x-filename")||"file").toString().slice(0,180);
+    const ctype=request.headers.get("content-type")||"application/octet-stream";
+    const body=await request.arrayBuffer();
+    if(body.byteLength>52428800) return json({error:"file too large (50MB max)"},400);
+    const rand=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+    const safe=name.replace(/[^A-Za-z0-9._-]/g,"_");
+    const key="files/"+job+"/"+rand+"-"+safe;
+    await env.FILES.put(key,body,{httpMetadata:{contentType:ctype}});
+    return json({ok:true,key:key,name:name,size:body.byteLength,type:ctype});
+  }
+
   if(request.method==="GET"){
     if(isDigest) return await runDigest(env,kv,url);
     if(url.searchParams.get("list")){
@@ -61,7 +85,10 @@ export async function onRequest(context){
     const marks=(await kv.get("marks:"+id,"json"))||{};
     const roster=(await kv.get("roster:"+id,"json"))||[];
     const assign=(await kv.get("assign:"+id,"json"))||{};
-    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,roster,assign,now:Date.now()};
+    const rfis=(await kv.get("rfis:"+id,"json"))||{list:[],seq:0};
+    const subs=(await kv.get("subs:"+id,"json"))||{list:[],seq:0};
+    const logs=(await kv.get("logs:"+id,"json"))||{list:[]};
+    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,roster,assign,rfis,subs,logs,now:Date.now()};
     if(url.searchParams.get("init")){out.data=JOBS[id].data;out.draw=DRAWMAP[id]||{};out.sheets=SHEETS[id]||{};out.details=DETAILS[id]||{};}
     return json(out);
   }
@@ -81,6 +108,9 @@ export async function onRequest(context){
     let marks=(await kv.get("marks:"+id,"json"))||{};
     let roster=(await kv.get("roster:"+id,"json"))||[];
     let assign=(await kv.get("assign:"+id,"json"))||{};
+    let rfis=(await kv.get("rfis:"+id,"json"))||{list:[],seq:0};
+    let subs=(await kv.get("subs:"+id,"json"))||{list:[],seq:0};
+    let logs=(await kv.get("logs:"+id,"json"))||{list:[]};
 
     if(b.action==="setprio"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
@@ -181,6 +211,115 @@ export async function onRequest(context){
       await kv.put("notes:"+id,JSON.stringify(notes));
       if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
       return json({ok:true,note:note,taskId:tid});
+    } else if(b.action==="addrfi"){
+      const isAuto=!!b.auto; const ref=(b.ref||"").toString().slice(0,20);
+      if(isAuto&&ref){ const ex=(rfis.list||[]).find(function(r){return r.auto&&r.ref===ref;}); if(ex) return json({ok:true,rfi:ex,dedup:true}); }
+      const subject=(b.subject||"").toString().trim().slice(0,200);
+      const question=(b.question||"").toString().trim().slice(0,4000);
+      if(!subject&&!question) return json({error:"empty rfi"},400);
+      if(!rfis.list)rfis.list=[]; if(!rfis.seq)rfis.seq=0;
+      rfis.seq++;
+      const rid="r"+ts.toString(36)+Math.floor(Math.random()*46656).toString(36);
+      const rfi={id:rid,num:rfis.seq,subject:subject,question:question,by:user,at:ts,
+        to:Array.isArray(b.to)?b.to.slice(0,24).map(x=>(""+x).slice(0,40)):[],
+        due:(b.due||"").toString().slice(0,20),taskId:(b.taskId||"").toString().slice(0,60),
+        ref:ref,priority:(b.priority||"").toString().slice(0,20),
+        status:"open",answer:"",answerBy:"",answerAt:0,auto:isAuto};
+      rfis.list.push(rfi);
+      log.push({ts,user,action:"opened RFI #"+rfi.num,id:rfi.taskId||"",label:subject.slice(0,80)});
+      await kv.put("rfis:"+id,JSON.stringify(rfis));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,rfi:rfi,rfis:rfis});
+    } else if(b.action==="answerrfi"){
+      const rid=(b.rfiId||"").toString(); const r=(rfis.list||[]).find(function(x){return x.id===rid;});
+      if(!r) return json({error:"no rfi"},400);
+      r.answer=(b.answer||"").toString().trim().slice(0,4000);
+      r.answerBy=user; r.answerAt=ts; r.status="answered";
+      log.push({ts,user,action:"answered RFI #"+r.num,id:r.taskId||"",label:(r.answer||"").slice(0,80)});
+      await kv.put("rfis:"+id,JSON.stringify(rfis));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,rfi:r,rfis:rfis});
+    } else if(b.action==="setrfistatus"){
+      const rid=(b.rfiId||"").toString(); const r=(rfis.list||[]).find(function(x){return x.id===rid;});
+      if(!r) return json({error:"no rfi"},400);
+      const st=(b.status||"").toString(); if(["open","answered","closed"].indexOf(st)<0) return json({error:"bad status"},400);
+      r.status=st;
+      log.push({ts,user,action:st+" RFI #"+r.num,id:r.taskId||"",label:(r.subject||"").slice(0,80)});
+      await kv.put("rfis:"+id,JSON.stringify(rfis));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,rfi:r,rfis:rfis});
+    } else if(b.action==="delrfi"){
+      const rid=(b.rfiId||"").toString(); const before=(rfis.list||[]).length;
+      rfis.list=(rfis.list||[]).filter(function(x){return x.id!==rid;});
+      if(rfis.list.length!==before){ log.push({ts,user,action:"deleted RFI",id:"",label:""}); }
+      await kv.put("rfis:"+id,JSON.stringify(rfis));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,rfis:rfis});
+    } else if(b.action==="addsubmittal"){
+      const title=(b.title||"").toString().trim().slice(0,200); if(!title) return json({error:"title required"},400);
+      if(!subs.list)subs.list=[]; if(!subs.seq)subs.seq=0; subs.seq++;
+      const sid="s"+ts.toString(36)+Math.floor(Math.random()*46656).toString(36);
+      const files=Array.isArray(b.files)?b.files.slice(0,30).map(function(f){return {key:(f.key||"").toString().slice(0,200),name:(f.name||"file").toString().slice(0,180),size:+f.size||0,type:(f.type||"").toString().slice(0,80),at:ts,by:user};}):[];
+      const sub={id:sid,num:subs.seq,title:title,spec:(b.spec||"").toString().slice(0,120),
+        by:user,at:ts,to:Array.isArray(b.to)?b.to.slice(0,40).map(x=>(""+x).slice(0,40)):[],
+        approvers:Array.isArray(b.approvers)?b.approvers.slice(0,10).map(x=>(""+x).slice(0,40)):[],
+        due:(b.due||"").toString().slice(0,20),status:"open",files:files,responses:[]};
+      subs.list.push(sub);
+      log.push({ts,user,action:"sent submittal #"+sub.num,id:"",label:title.slice(0,80)});
+      await kv.put("subs:"+id,JSON.stringify(subs));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      try{ if(env.RESEND_KEY){ const emailBy={}; roster.forEach(function(p){ if(p.email) emailBy[p.name]=p.email; }); const rc=[]; (sub.to||[]).concat(sub.approvers||[]).forEach(function(nm){ const e=emailBy[nm]; if(e&&rc.indexOf(e)<0)rc.push(e); }); const link="https://spireconstructors.com/scope.html"; const html='<p>A submittal was sent to you on the Spire Scope Tracker.</p><p><b>Submittal #'+sub.num+' — '+title+'</b></p>'+((sub.approvers&&sub.approvers.length)?'<p>Approvers: '+sub.approvers.join(", ")+'</p>':'')+'<p><a href="'+link+'">Open the tracker to review</a></p>'; for(const em of rc){ await sendEmail(env,em,"Submittal #"+sub.num+": "+title,html); } } }catch(e){}
+      return json({ok:true,submittal:sub,subs:subs});
+    } else if(b.action==="submittalrespond"){
+      const sid=(b.subId||"").toString(); const sub=(subs.list||[]).find(function(x){return x.id===sid;});
+      if(!sub) return json({error:"no submittal"},400);
+      const dec=(b.decision||"").toString();
+      if(["Approved","Approved as Noted","Revise & Resubmit","Rejected"].indexOf(dec)<0) return json({error:"bad decision"},400);
+      if(!sub.responses)sub.responses=[];
+      sub.responses=sub.responses.filter(function(r){return r.by!==user;});
+      sub.responses.push({by:user,decision:dec,comment:(b.comment||"").toString().slice(0,2000),at:ts});
+      if(dec==="Approved"||dec==="Rejected"){ var appr=(sub.approvers&&sub.approvers.length)?sub.approvers:null; if(appr){ var done=appr.every(function(a){return sub.responses.some(function(r){return r.by===a&&(r.decision==="Approved"||r.decision==="Rejected");});}); if(done) sub.status="closed"; } }
+      log.push({ts,user,action:dec+" submittal #"+sub.num,id:"",label:(sub.title||"").slice(0,80)});
+      await kv.put("subs:"+id,JSON.stringify(subs));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,submittal:sub,subs:subs});
+    } else if(b.action==="submittaladdfiles"){
+      const sid=(b.subId||"").toString(); const sub=(subs.list||[]).find(function(x){return x.id===sid;});
+      if(!sub) return json({error:"no submittal"},400);
+      if(!sub.files)sub.files=[];
+      (Array.isArray(b.files)?b.files:[]).slice(0,30).forEach(function(f){ sub.files.push({key:(f.key||"").toString().slice(0,200),name:(f.name||"file").toString().slice(0,180),size:+f.size||0,type:(f.type||"").toString().slice(0,80),at:ts,by:user}); });
+      await kv.put("subs:"+id,JSON.stringify(subs));
+      return json({ok:true,submittal:sub,subs:subs});
+    } else if(b.action==="setsubstatus"){
+      const sid=(b.subId||"").toString(); const sub=(subs.list||[]).find(function(x){return x.id===sid;});
+      if(!sub) return json({error:"no submittal"},400);
+      const st=(b.status||"").toString(); if(["open","closed"].indexOf(st)<0) return json({error:"bad status"},400);
+      sub.status=st;
+      await kv.put("subs:"+id,JSON.stringify(subs));
+      return json({ok:true,submittal:sub,subs:subs});
+    } else if(b.action==="delsubmittal"){
+      const sid=(b.subId||"").toString();
+      subs.list=(subs.list||[]).filter(function(x){return x.id!==sid;});
+      await kv.put("subs:"+id,JSON.stringify(subs));
+      return json({ok:true,subs:subs});
+    } else if(b.action==="addlog"){
+      if(!logs.list)logs.list=[];
+      const lid="l"+ts.toString(36)+Math.floor(Math.random()*46656).toString(36);
+      const photos=Array.isArray(b.photos)?b.photos.slice(0,40).map(function(p){return {key:(p.key||"").toString().slice(0,200),name:(p.name||"photo").toString().slice(0,180),type:(p.type||"").toString().slice(0,80),at:ts};}):[];
+      const entry={id:lid,date:(b.date||"").toString().slice(0,20)||new Date(ts).toISOString().slice(0,10),
+        by:user,at:ts,weather:(b.weather||"").toString().slice(0,120),crew:(b.crew||"").toString().slice(0,400),
+        notes:(b.notes||"").toString().slice(0,5000),photos:photos,
+        to:Array.isArray(b.to)?b.to.slice(0,40).map(x=>(""+x).slice(0,40)):[]};
+      logs.list.push(entry);
+      log.push({ts,user,action:"posted daily log",id:"",label:(entry.notes||"").slice(0,80)});
+      await kv.put("logs:"+id,JSON.stringify(logs));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,entry:entry,logs:logs});
+    } else if(b.action==="dellog"){
+      const lid=(b.logId||"").toString();
+      logs.list=(logs.list||[]).filter(function(x){return x.id!==lid;});
+      await kv.put("logs:"+id,JSON.stringify(logs));
+      return json({ok:true,logs:logs});
     } else if(b.action==="resolvenote"){
       const tid=(b.taskId||"").toString(),nid=(b.noteId||"").toString();
       const arr=notes[tid]||[]; const nt=arr.find(n=>n.id===nid); if(!nt) return json({error:"no note"},400);
