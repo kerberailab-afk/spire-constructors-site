@@ -2,7 +2,7 @@
 <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
 <title>Scope Tracker — Sign in</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<style>
+<style>.allpanel{max-width:1100px;margin:22px auto 0;background:#fff;border:1px solid var(--line,#e5e7eb);border-radius:12px;padding:16px 18px}.allpanel h3{margin:0 0 2px}.allproj{margin:12px 0 4px}.allph{font-size:13px;font-weight:700;color:var(--navy,#1c4f86);border-bottom:1px solid var(--line,#eee);padding-bottom:5px;margin-bottom:6px;display:flex;align-items:center;gap:8px}.allcnt{font-weight:600;font-size:11px;color:#667;background:#eef2f7;border-radius:10px;padding:1px 8px}.allrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fafbfc;border:1px solid var(--line,#eee);border-radius:8px;padding:7px 10px;margin-bottom:5px;cursor:pointer;font:inherit}.allrow:hover{background:#eef4fb;border-color:#c7ddf5}.allrow.done{opacity:.55}.allrow.done .alldesc{text-decoration:line-through}.allprio{min-width:26px;text-align:center;color:#fff;font-weight:700;font-size:11px;border-radius:5px;padding:2px 0}.allid{font-weight:700;font-size:12px;color:#33448a;background:#eef2ff;border-radius:5px;padding:1px 7px;white-space:nowrap}.alldesc{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 :root{--navy:#1F3A5F;--steel:#2E5A88;--gold:#C8A24B;--ink:#1c2530;--mut:#6b7886;--line:#e3e8ef;--bg:#f5f7fa;--card:#fff;--orange:#b9650a;--red:#b3322e;--green:#2e7d32}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
 header{background:linear-gradient(100deg,var(--navy),var(--steel));color:#fff;padding:18px 26px}
@@ -430,13 +430,16 @@ async function signin(){const name=document.getElementById('gname').value.trim()
  catch(code){btn.disabled=false;btn.textContent='Sign in';err.textContent=(code===401)?'Wrong passcode.':'Could not reach server. Try again.';err.style.display='block';return;}
  btn.disabled=false;btn.textContent='Sign in';
  document.getElementById('gate').style.display='none';showPicker();}
+function buildComboPanel(){var j=(JOBS||[]).filter(function(x){return x.todos&&x.todos.length;});if(!j.length)return '';var h='<div class="allpanel"><h3>\ud83d\udd25 To-Do across all projects</h3><div class="note" style="margin:-4px 0 10px">Prioritized tasks from every project in one place. Click any task to jump straight to it.</div>';h+= j.map(function(j){var openN=j.todos.filter(function(t){return !t.done;}).length;return '<div class="allproj"><div class="allph">'+esc(j.name)+' <span class="allcnt">'+openN+' open</span></div>'+j.todos.map(function(t){return '<button class="allrow'+(t.done?' done':'')+'" data-gojob="'+esc(j.id)+'" data-goid="'+esc(t.id)+'"><span class="allprio" style="background:'+(typeof prioColor==='function'?prioColor(t.prio):'#888')+'">'+t.prio+'</span><span class="allid">'+esc(t.id)+'</span><span class="alldesc">'+esc(t.desc||'')+'</span></button>';}).join('')+'</div>';}).join('');h+='</div>';return h;}
 function showPicker(){stopPoll();document.getElementById('app').style.display='none';const p=document.getElementById('picker');
+ var combined=buildComboPanel();
  p.innerHTML='<div class="phead"><h2>Select a project</h2><span class="who">Signed in as <b>'+esc(USER)+'</b> · <a id="signout">sign out</a></span></div><div class="pgrid">'+
-  (JOBS.length?JOBS.map(function(j){var pct=j.total?Math.round(100*j.done/j.total):0;return '<button class="pcard" data-job="'+esc(j.id)+'"><div class="pn">'+esc(j.name)+'</div><div class="pa">'+esc(j.address||'')+'</div><div class="pbar"><i style="width:'+pct+'%"></i></div><div class="ps">'+j.done+' / '+j.total+' tasks · '+pct+'%</div></button>';}).join(''):'<div class="note">No projects yet.</div>')+'</div>';
+  (JOBS.length?JOBS.map(function(j){var pct=j.total?Math.round(100*j.done/j.total):0;return '<button class="pcard" data-job="'+esc(j.id)+'"><div class="pn">'+esc(j.name)+'</div><div class="pa">'+esc(j.address||'')+'</div><div class="pbar"><i style="width:'+pct+'%"></i></div><div class="ps">'+j.done+' / '+j.total+' tasks · '+pct+'%</div></button>';}).join(''):'<div class="note">No projects yet.</div>')+'</div>'+combined;
  p.style.display='block';window.scrollTo(0,0);
  p.querySelectorAll('.pcard').forEach(function(c){c.onclick=function(){openJob(c.dataset.job);};});
+ p.querySelectorAll('.allrow').forEach(function(r){r.onclick=function(){var jb=r.getAttribute('data-gojob'),iid=r.getAttribute('data-goid');openJob(jb).then(function(){setTimeout(function(){if(typeof openResult==='function')openResult(iid);},180);});};});
  var so=document.getElementById('signout');if(so)so.onclick=signout;}
-async function openJob(id){JOB=id;
+async function openJob(id){JOB=id;D=null;STATE={};PRIO={};ASSIGN={};ADD={trades:[],tasks:[]};NOTES={};RFIS={list:[],seq:0};SUBS={list:[],seq:0};LOGS={list:[]};DRAW={};DETAILS={};SHEETS={};IDX={};
  try{const res=await apiGet(true);D=res.data;STATE=res.state||{};LOG=res.log||[];ADD=res.add||{trades:[],tasks:[]};PRIO=res.prio||{};DRAW=res.draw||{};SHEETS=res.sheets||{};NOTES=res.notes||{};ROSTER=res.roster||[];ASSIGN=res.assign||{};DETAILS=res.details||{};RFIS=res.rfis||{list:[],seq:0};SUBS=res.subs||{list:[],seq:0};LOGS=res.logs||{list:[]};mkLoad(res.marks);}catch(e){alert('Could not load project. Try again.');return;}
  document.getElementById('picker').style.display='none';document.getElementById('app').style.display='block';
  buildAll();renderAllManual();buildIndex();renderTodo();renderLog();renderRoster();renderSchedule();renderBell();if(typeof renderRFIs==='function')renderRFIs();if(typeof renderSubmittals==='function')renderSubmittals();if(typeof renderDailyLog==='function')renderDailyLog();startPoll();
@@ -448,7 +451,7 @@ async function openJob(id){JOB=id;
  window.scrollTo(0,0);}
 window.addEventListener('scroll',function(){if(priopop)closePrioPop();},true);
 window.addEventListener('resize',function(){if(priopop)closePrioPop();});
-function backToPicker(){stopPoll();JOB=null;document.getElementById('app').style.display='none';apiList().then(function(res){JOBS=res.jobs||JOBS;showPicker();}).catch(function(){showPicker();});}
+function backToPicker(){stopPoll();JOB=null;D=null;STATE={};PRIO={};ASSIGN={};ADD={trades:[],tasks:[]};NOTES={};RFIS={list:[],seq:0};SUBS={list:[],seq:0};LOGS={list:[]};DRAW={};DETAILS={};SHEETS={};IDX={};document.getElementById('app').style.display='none';apiList().then(function(res){JOBS=res.jobs||JOBS;showPicker();}).catch(function(){showPicker();});}
 function signout(){stopPoll();JOB=null;D=null;USER='';PASS='';document.getElementById('picker').style.display='none';document.getElementById('app').style.display='none';document.getElementById('gpass').value='';document.getElementById('gate').style.display='flex';}
 document.getElementById('gbtn').addEventListener('click',signin);
 document.getElementById('backbtn').addEventListener('click',backToPicker);
