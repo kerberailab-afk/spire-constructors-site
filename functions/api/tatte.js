@@ -53,7 +53,8 @@ export async function onRequest(context){
     const notes=(await kv.get("notes:"+id,"json"))||{};
     const marks=(await kv.get("marks:"+id,"json"))||{};
     const roster=(await kv.get("roster:"+id,"json"))||[];
-    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,roster,now:Date.now()};
+    const assign=(await kv.get("assign:"+id,"json"))||{};
+    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,roster,assign,now:Date.now()};
     if(url.searchParams.get("init")){out.data=JOBS[id].data;out.draw=DRAWMAP[id]||{};out.sheets=SHEETS[id]||{};}
     return json(out);
   }
@@ -72,6 +73,7 @@ export async function onRequest(context){
     let notes=(await kv.get("notes:"+id,"json"))||{};
     let marks=(await kv.get("marks:"+id,"json"))||{};
     let roster=(await kv.get("roster:"+id,"json"))||[];
+    let assign=(await kv.get("assign:"+id,"json"))||{};
 
     if(b.action==="setprio"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
@@ -205,6 +207,15 @@ export async function onRequest(context){
       const pid=(b.id||"").toString(); roster=roster.filter(x=>x.id!==pid);
       await kv.put("roster:"+id,JSON.stringify(roster));
       log.push({ts,user,action:"removed person",id:pid});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true});
+    } else if(b.action==="setassign"){
+      const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
+      const to=Array.isArray(b.to)?b.to.slice(0,20).map(function(x){return(""+x).slice(0,60);}):[];
+      const due=(b.due||"").toString().slice(0,20);
+      if(!to.length && !due){ delete assign[tid]; } else { assign[tid]={to,due,by:user,at:ts}; }
+      await kv.put("assign:"+id,JSON.stringify(assign));
+      log.push({ts,user,action:"assigned",id:tid,label:(to.join(", ")+(due?" \u00b7 due "+due:"")).slice(0,80)});
       if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
       return json({ok:true});
     } else return json({error:"unknown action"},400);
