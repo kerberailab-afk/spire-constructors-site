@@ -475,7 +475,7 @@ function openSheet(name,box){name=(name||'').toString().toUpperCase();var hash=S
  var center=function(){if(!box){sc.scrollLeft=0;sc.scrollTop=0;return;}var bw=wrap.offsetWidth,bh=wrap.offsetHeight;sc.scrollLeft=Math.max(0,((box[0]+box[2])/2)*bw-sc.clientWidth/2);sc.scrollTop=Math.max(0,((box[1]+box[3])/2)*bh-sc.clientHeight/2);};
  if(img.complete)setTimeout(center,40);else img.onload=center;}
 /* auto-link sheet references (A611, P008, "detail 5 on A611"...) inside scope text */
-function linkifyRefs(){var cells=document.querySelectorAll('#trades td:nth-child(4),#manualtrades td:nth-child(4),#todo .tdesc,#sresults .srdesc');
+function linkifyRefs(){var cells=document.querySelectorAll('#trades tbody td,#manualtrades td,#todo .tdesc,#sresults .srdesc');
  cells.forEach(function(cell){if(cell.getAttribute('data-lk'))return;cell.setAttribute('data-lk','1');
   var w=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT,null),nodes=[];while(w.nextNode())nodes.push(w.currentNode);
   nodes.forEach(function(tn){var txt=tn.nodeValue,re=/\b([A-Z]{1,3})-?(\d{3})(?:\.\d+)?\b/g,m,last=0,frag=null;
