@@ -50,7 +50,8 @@ export async function onRequest(context){
     const log=(await kv.get("log:"+id,"json"))||[];
     const add=(await kv.get("add:"+id,"json"))||{trades:[],tasks:[]};
     const prio=(await kv.get("prio:"+id,"json"))||{};
-    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,now:Date.now()};
+    const notes=(await kv.get("notes:"+id,"json"))||{};
+    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,now:Date.now()};
     if(url.searchParams.get("init")){out.data=JOBS[id].data;out.draw=DRAWMAP[id]||{};out.sheets=SHEETS[id]||{};}
     return json(out);
   }
@@ -66,6 +67,7 @@ export async function onRequest(context){
     let log=(await kv.get("log:"+id,"json"))||[];
     let add=(await kv.get("add:"+id,"json"))||{trades:[],tasks:[]};
     let prio=(await kv.get("prio:"+id,"json"))||{};
+    let notes=(await kv.get("notes:"+id,"json"))||{};
 
     if(b.action==="setprio"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
@@ -154,6 +156,29 @@ export async function onRequest(context){
       else return json({error:"nothing to remove"},400);
       if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));await kv.put("add:"+id,JSON.stringify(add));
       return json({ok:true,add});
+    } else if(b.action==="addnote"){
+      const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
+      const text=(b.text||"").toString().trim().slice(0,2000); if(!text) return json({error:"empty note"},400);
+      const nid="n"+ts.toString(36)+Math.floor(Math.random()*46656).toString(36);
+      const note={id:nid,text,by:user,at:ts,to:Array.isArray(b.to)?b.to.slice(0,24).map(x=>(""+x).slice(0,40)):[],tag:(b.tag||"").toString().slice(0,24),done:false};
+      if(!notes[tid])notes[tid]=[]; notes[tid].push(note);
+      log.push({ts,user,action:"added note",id:tid,label:text.slice(0,80)});
+      await kv.put("notes:"+id,JSON.stringify(notes));
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,note:note,taskId:tid});
+    } else if(b.action==="resolvenote"){
+      const tid=(b.taskId||"").toString(),nid=(b.noteId||"").toString();
+      const arr=notes[tid]||[]; const nt=arr.find(n=>n.id===nid); if(!nt) return json({error:"no note"},400);
+      nt.done=!!b.done; nt.doneBy=b.done?user:null; nt.doneAt=b.done?ts:null;
+      await kv.put("notes:"+id,JSON.stringify(notes));
+      return json({ok:true});
+    } else if(b.action==="delnote"){
+      const tid=(b.taskId||"").toString(),nid=(b.noteId||"").toString();
+      if(notes[tid]){notes[tid]=notes[tid].filter(n=>n.id!==nid); if(!notes[tid].length)delete notes[tid];}
+      await kv.put("notes:"+id,JSON.stringify(notes));
+      log.push({ts,user,action:"deleted note",id:tid});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true});
     } else return json({error:"unknown action"},400);
 
     if(log.length>LOG_KEEP) log=log.slice(-LOG_KEEP);
