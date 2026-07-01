@@ -52,7 +52,8 @@ export async function onRequest(context){
     const prio=(await kv.get("prio:"+id,"json"))||{};
     const notes=(await kv.get("notes:"+id,"json"))||{};
     const marks=(await kv.get("marks:"+id,"json"))||{};
-    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,now:Date.now()};
+    const roster=(await kv.get("roster:"+id,"json"))||[];
+    const out={state,log:log.slice(-LOG_RETURN).reverse(),add,prio,notes,marks,roster,now:Date.now()};
     if(url.searchParams.get("init")){out.data=JOBS[id].data;out.draw=DRAWMAP[id]||{};out.sheets=SHEETS[id]||{};}
     return json(out);
   }
@@ -70,6 +71,7 @@ export async function onRequest(context){
     let prio=(await kv.get("prio:"+id,"json"))||{};
     let notes=(await kv.get("notes:"+id,"json"))||{};
     let marks=(await kv.get("marks:"+id,"json"))||{};
+    let roster=(await kv.get("roster:"+id,"json"))||[];
 
     if(b.action==="setprio"){
       const tid=(b.taskId||"").toString(); if(!tid) return json({error:"missing taskId"},400);
@@ -186,6 +188,24 @@ export async function onRequest(context){
       const shapes=Array.isArray(b.shapes)?b.shapes.slice(0,4000):[];
       if(!shapes.length && !b.cal){ delete marks[sh]; } else { marks[sh]={shapes,cal:b.cal||null,at:ts,by:user}; }
       await kv.put("marks:"+id,JSON.stringify(marks));
+      return json({ok:true});
+    } else if(b.action==="addperson"){
+      const name=(b.name||"").toString().trim().slice(0,60); if(!name) return json({error:"missing name"},400);
+      const pid="p"+ts.toString(36)+Math.floor(Math.random()*1296).toString(36);
+      const person={id:pid,name,role:(b.role||"").toString().slice(0,60),company:(b.company||"").toString().slice(0,60),phone:(b.phone||"").toString().slice(0,40),email:(b.email||"").toString().slice(0,80),group:(b.group||"team").toString().slice(0,20),by:user,at:ts};
+      roster.push(person); await kv.put("roster:"+id,JSON.stringify(roster));
+      log.push({ts,user,action:"added person",label:name});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
+      return json({ok:true,person});
+    } else if(b.action==="editperson"){
+      const pid=(b.id||"").toString(); const pr=roster.find(x=>x.id===pid); if(!pr) return json({error:"no person"},400);
+      ["name","role","company","phone","email","group"].forEach(function(k){ if(b[k]!=null) pr[k]=(""+b[k]).slice(0,80); });
+      await kv.put("roster:"+id,JSON.stringify(roster)); return json({ok:true,person:pr});
+    } else if(b.action==="delperson"){
+      const pid=(b.id||"").toString(); roster=roster.filter(x=>x.id!==pid);
+      await kv.put("roster:"+id,JSON.stringify(roster));
+      log.push({ts,user,action:"removed person",id:pid});
+      if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);await kv.put("log:"+id,JSON.stringify(log));
       return json({ok:true});
     } else return json({error:"unknown action"},400);
 
