@@ -39,6 +39,7 @@ export async function onRequest(context){
   const kv=env.SCOPE; if(!kv) return json({error:"KV namespace binding 'SCOPE' is missing"},500);
 
   if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv});
+  if(url.searchParams.get("kvtest")){ try{ await kv.put("diag:test","x"+Date.now()); const rb=await kv.get("diag:test"); return json({ok:true,kvwrite:"success",readback:rb}); }catch(e){ return json({ok:false,kvwrite:String((e&&e.message)||e).slice(0,300)}); } }
   if(request.method==="GET" && url.searchParams.get("file")){
     if(!env.FILES) return json({error:"file storage not connected"},500);
     const key=url.searchParams.get("file");
@@ -95,7 +96,6 @@ export async function onRequest(context){
 
   if(request.method==="POST"){
     let b; try{b=await request.json();}catch{return json({error:"bad json"},400);}
-    try{
     const id=(b.job||"").toString();
     if(!JOBS[id]) return json({error:"unknown job"},400);
     const data=JOBS[id].data;
@@ -374,6 +374,4 @@ export async function onRequest(context){
     return json({ok:true,state,ts});
   }
   return json({error:"method not allowed"},405);
-
-    }catch(e){return json({error:"ACTIONERR: "+String((e&&e.message)||e)+" @@ "+String((e&&e.stack)||"").slice(0,400)},500);}
-  }
+}
