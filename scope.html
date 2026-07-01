@@ -265,12 +265,12 @@ function buildAll(){
  <div class="kpi"><div class="n">${D.index.length}</div><div class="l">Drawing sheets</div></div>
  <div class="kpi"><div class="n">${TOTAL.toLocaleString()}</div><div class="l">Itemized scope tasks</div></div>
  <div class="kpi"><div class="n" id="ovdone">0</div><div class="l">Tasks complete</div></div>
- <div class="kpi"><div class="n">21</div><div class="l">Required inspections</div></div>
- <div class="kpi"><div class="n">4</div><div class="l">Bulletins logged</div></div></div>
+ <div class="kpi"><div class="n">${(D.inspections||[]).reduce((a,sec)=>a+((sec.tables||[]).reduce((b,t)=>b+((t.rows&&t.rows.length)||0),0)),0)||0}</div><div class="l">Required inspections</div></div>
+ ${(((D.ui&&D.ui.badges)||[]).length>1)?`<div class="kpi"><div class="n">${D.ui.badges.length-1}</div><div class="l">Bulletins logged</div></div>`:``}</div>
  <div class="grid2"><div class="panel"><h3>Scope tasks by trade</h3><canvas id="chart" height="220"></canvas></div>
  <div class="panel"><h3>Issue timeline</h3><div class="tl">${(ui.timeline||[]).map(e=>`<div class="ev ${e.major?'major':''}"><div class="d">${esc(e.d)}</div><div class="t">${esc(e.t)}</div></div>`).join('')}</div></div></div>
  <div class="panel"><h3>Key commercial flags for bidding</h3>${(ui.callouts||[]).map(c=>`<div class="callout ${c.cls}">${c.html}</div>`).join('')}</div>`;
- new Chart(document.getElementById('chart'),{type:'bar',data:{labels:D.trades.map((t,i)=>SHORT[i]),datasets:[{data:D.trades.map(t=>t.count),backgroundColor:D.trades.map(t=>t.color)}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef'}},y:{ticks:{font:{size:11}}}}}});
+ new Chart(document.getElementById('chart'),{type:'bar',data:{labels:D.trades.map((t,i)=>t.short||SHORT[i]||t.name),datasets:[{data:D.trades.map(t=>t.count),backgroundColor:D.trades.map(t=>t.color)}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef'}},y:{ticks:{font:{size:11}}}}}});
  // SCOPE
  document.getElementById('scope').innerHTML=`<div class="progress"><div class="bar"><i id="pbar"></i></div><span class="pct" id="ptxt">0 / ${TOTAL}</span><button class="btnlite" id="clr">Clear all</button><span class="who" id="who"></span></div>
  ${legendHTML()}<div class="submenu" id="submenu"></div>
@@ -292,12 +292,13 @@ function buildAll(){
     body+=`</tbody></table>`;});
     inner+=`<div class="sec"><h4>${esc(sec.h)}</h4>${sec.notes.map(nn=>`<div class="note">${esc(nn)}</div>`).join('')}${body}</div>`;});
   inner+='<div class="manualsec" data-code="'+code+'"></div><div class="addrow"><button class="btnlite addtask" data-code="'+code+'">+ Add task</button></div>';d.innerHTML=inner;tc.appendChild(d);
-  const chip=document.createElement('div');chip.className='tchip';chip.innerHTML=`<span class="sw" style="background:${t.color}"></span><b>${code}</b> ${esc(SHORT[ti])}<span class="pc" id="chip-${code}">0/${t.count}</span>`;
+  const chip=document.createElement('div');chip.className='tchip';chip.innerHTML=`<span class="sw" style="background:${t.color}"></span><b>${code}</b> ${esc(D.trades[ti].short||SHORT[ti]||D.trades[ti].name)}<span class="pc" id="chip-${code}">0/${t.count}</span>`;
   chip.onclick=()=>{d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});};menu.appendChild(chip);});
  // INDEX
- let ix=`<div class="setbar" id="setbar"><b>Drawing set:</b><button class="setchip on" data-set="all">All sheets</button><button class="setchip" data-set="0">Bid Set 9.17.25</button><button class="setchip" data-set="1">Bulletin 01</button><button class="setchip" data-set="2">Bulletin 02</button><button class="setchip" data-set="3">Bulletin 03</button><button class="setchip" data-set="4">Bulletin 04</button></div>
+ var _sets=(D.ui&&D.ui.badges)||[];
+ let ix=`<div class="setbar" id="setbar"><b>Drawing set:</b><button class="setchip on" data-set="all">All sheets</button>`+_sets.map(function(b,i){return `<button class="setchip" data-set="${i}">${esc(b[0])}</button>`;}).join('')+`</div>
  <div class="controls"><input id="iq" placeholder="Filter sheets (number, title, discipline)…"><span class="note">✓ = sheet in that issue &middot; tap a blue sheet number to open the drawing</span></div>
- <table class="idxtbl"><thead><tr><th>Sheet</th><th>Title</th><th>Discipline</th><th>Bid</th><th>Bul 01</th><th>Bul 02</th><th>Bul 03</th><th>Bul 04</th><th>Notes</th></tr></thead><tbody>`;
+ <table class="idxtbl"><thead><tr><th>Sheet</th><th>Title</th><th>Discipline</th>`+_sets.map(function(b){return `<th>${esc(b[0])}</th>`;}).join('')+`<th>Notes</th></tr></thead><tbody>`;
  D.index.forEach(r=>{var hs=SHEETS[r.sheet];ix+=`<tr data-cols="${r.cols.map(c=>c?1:0).join('')}"><td>${hs?`<span class="tag tclk" data-sheet="${esc(r.sheet)}">${esc(r.sheet)}</span>`:`<span class="tag">${esc(r.sheet)}</span>`}</td><td>${esc(r.title)}</td><td>${esc(r.disc)}</td>`+r.cols.map(c=>`<td class="c ${c?'yes':'no'}">${c?'✓':'—'}</td>`).join('')+`<td class="${r.note?'flg-o':''}">${esc(r.note)}</td></tr>`;});
  ix+=`</tbody></table>`;document.getElementById('index').innerHTML=ix;
  document.getElementById('iq').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('#index tbody tr').forEach(tr=>tr.classList.toggle('hidden',q&&!tr.textContent.toLowerCase().includes(q)));});
@@ -314,6 +315,7 @@ function buildAll(){
  document.getElementById('activity').innerHTML='<div class="panel"><h3>Activity Log — who checked what, and when</h3><div class="controls"><input id="aq" placeholder="Filter log (name, task id)…"><span class="note" id="acount"></span></div><div id="logbox"></div></div>';
  document.getElementById('aq').addEventListener('input',renderLog);
  // BULLETINS
+ if(!D.ui.bmeta||!D.deltas){document.getElementById('bulletins').innerHTML='<div class="panel"><div class="note" style="padding:12px">No bulletins issued for this project — single permit set.</div></div>';}else{
  const BMETA=D.ui.bmeta;
  let bl='<div class="controls"><input id="bq" placeholder="Search all bulletin changes…"></div>';
  ['BUL1','BUL2','BUL3','BUL4'].forEach(b=>{const m=BMETA[b];bl+=`<details class="trade" ${b=='BUL1'?'open':''}><summary><span class="dot" style="background:${b=='BUL3'?'#b3322e':'#2E5A88'}"></span>${m[0]} — ${m[1]}<span class="cnt">${m[2]}</span></summary>`;
@@ -323,6 +325,7 @@ function buildAll(){
      bl+='<tr>'+t.header.map((h,i)=>`<td>${esc(r[i]||'')}</td>`).join('')+'</tr>';});bl+='</tbody></table>';});bl+='</div>';});bl+='</details>';});
  document.getElementById('bulletins').innerHTML=bl;
  document.getElementById('bq').addEventListener('input',e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('#bulletins tbody tr').forEach(tr=>tr.classList.toggle('hidden',q&&!tr.textContent.toLowerCase().includes(q)));if(q)document.querySelectorAll('#bulletins details').forEach(d=>d.open=true);});
+ }
  // listeners
  document.getElementById('q').addEventListener('input',applyFilter);document.getElementById('ff').addEventListener('change',applyFilter);
  document.getElementById('clr').addEventListener('click',clearAll);
