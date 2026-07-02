@@ -260,6 +260,7 @@ function buildAll(){
  document.getElementById('htitle').textContent=ui.title||'Scope Tracker';
  document.getElementById('hsub').textContent=ui.sub||'';
  document.getElementById('hbadges').innerHTML=(ui.badges||[]).map(b=>`<span class="badge">${esc(b[0])} <b>${esc(b[1])}</b></span>`).join('');
+ var _ft=document.querySelector('.foot');if(_ft)_ft.textContent='Confidential — internal use only. Check-offs & activity log sync live across the team.'+(ui.foot?' '+ui.foot:'');
  // OVERVIEW
  document.getElementById('overview').innerHTML=`<div class="kpis">
  <div class="kpi"><div class="n">${D.index.length}</div><div class="l">Drawing sheets</div></div>
