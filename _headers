@@ -3,3 +3,7 @@
   Cache-Control: no-cache
 /scope.html
   Cache-Control: no-cache
+/os.html
+  Cache-Control: no-cache
+/os
+  Cache-Control: no-cache
