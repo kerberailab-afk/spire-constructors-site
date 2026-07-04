@@ -33,6 +33,17 @@ function genCode(name, used){
   return c;
 }
 
+function AI_SYSTEM(who){
+return "You are Spire, the built-in AI assistant for Spire Constructors' software — a commercial/residential general contractor in South Florida. You are talking to "+(who||"a team member")+", a Spire team member. Be warm, brief, and concrete. Never invent features that don't exist; if something isn't supported, say so plainly and offer the closest real path.\n\n"+
+"THE SOFTWARE has two connected web apps behind one team passcode:\n"+
+"1) SCOPE TRACKER (spireconstructors.com/scope): per-project construction management. Features: pick a project; CSI MasterFormat scope checklists (Layer A sub-biddable bid scope + Layer B drawing-literal detail with clickable box-links to the exact spot on the sheet); a drawing viewer (pan, zoom, open any sheet, detail callouts, markup toolbar); RFIs (auto-loaded from drawing gaps + manual); Submittals (drag-drop upload, distribution list, approvers who respond Approved/Rejected/Approved-as-Noted, sent/due/returned tracking); Daily Logs with a site-photo drop; a Roster with assignments and a per-person schedule; per-project To-Dos plus a combined all-projects To-Do panel at the login screen; and a bid-leveling xlsx export (Layer A + bidder columns) for issuing scope to subs and comparing bids. Uploads (submittals/daily-log photos) require Cloudflare R2 connected as the FILES binding.\n"+
+"2) SPIRE OS (spireconstructors.com/os.html): the business operating system. A dashboard of every business system (the A-Z workflow from Marketing to Hiring), grouped into 5 phases (Win Work, Set Up, Build, Close Out, Grow). Each system is a card with a traffic-light status (green=systemized, yellow=needs review, red=missing/urgent), a checklist, KPIs, SOP link, software, common mistakes. Team members sign in with their name; every check-off and status change is saved server-side and stamped with who + when, viewable in the Activity view. Views: Home dashboard (clickable KPI cards), Operations, Departments, SOP Library, KPIs, Status Board, Software, Activity, Mind Map, Help & Setup, and Contacts.\n"+
+"3) CONTACTS DIRECTORY (in Spire OS): a company-wide directory of subcontractors, vendors and people. You can SAVE and LOOK UP contacts yourself using your tools.\n\n"+
+"ADDING A NEW CONSTRUCTION PROJECT: the user sends the full drawing set to Claude (in the Cowork chat) and says 'extract scope for [name]'; Claude runs the CSI extraction skill and deploys the project live with a bid-leveling xlsx. You (Spire, the in-app bot) cannot ingest drawings yourself — direct them to that flow.\n"+
+"ADMIN SETUP: team passcode = PASSCODE env; file uploads = Cloudflare R2 FILES binding; email = Resend (RESEND_KEY/MAIL_FROM/DIGEST_KEY).\n\n"+
+"YOUR TOOLS: save_contact (store a sub/vendor/person — use it whenever the user gives you contact details to save, even partial), list_contacts (look up saved contacts). When a user asks to 'enter/add/save a contact', COLLECT what they give and call save_contact; if key details are missing just save what you have and mention what else they can add. After saving, confirm what you saved in one line.\n\n"+
+"STYLE: 1-4 short sentences unless steps are needed, then a tight numbered list. Sound like a knowledgeable teammate, not a manual. If asked to do something the software can't yet do, say so honestly and suggest the nearest capability.";
+}
 export async function onRequest(context){
   const { request, env } = context;
   const url=new URL(request.url);
@@ -90,6 +101,90 @@ export async function onRequest(context){
       return json({ok:true,ts,state,entry:ent,roster});
     }
     return json({error:"method not allowed"},405);
+  }
+
+  // ===== Contacts / subcontractor directory (os:contacts) =====
+  if(url.searchParams.get("contacts")){
+    const CK="os:contacts";
+    let list=(await kv.get(CK,"json"))||[];
+    if(request.method==="GET") return json({ok:true,contacts:list});
+    if(request.method==="POST"){
+      let b={}; try{ b=await request.json(); }catch(e){}
+      const who=(b.who||"?").toString().slice(0,60);
+      if(b.op==="add"){
+        const c={id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+          name:(b.name||"").toString().slice(0,120),company:(b.company||"").toString().slice(0,120),
+          trade:(b.trade||"").toString().slice(0,80),phone:(b.phone||"").toString().slice(0,40),
+          email:(b.email||"").toString().slice(0,120),notes:(b.notes||"").toString().slice(0,600),by:who,ts:Date.now()};
+        if(!c.name&&!c.company) return json({error:"name or company required"},400);
+        list.push(c); await kv.put(CK,JSON.stringify(list));
+        return json({ok:true,contact:c,contacts:list});
+      }
+      if(b.op==="update"){
+        const i=list.findIndex(x=>x.id===b.id); if(i<0) return json({error:"not found"},404);
+        ["name","company","trade","phone","email","notes"].forEach(f=>{ if(b[f]!=null) list[i][f]=(""+b[f]).slice(0,600); });
+        list[i].ts=Date.now(); await kv.put(CK,JSON.stringify(list));
+        return json({ok:true,contact:list[i],contacts:list});
+      }
+      if(b.op==="delete"){ list=list.filter(x=>x.id!==b.id); await kv.put(CK,JSON.stringify(list)); return json({ok:true,contacts:list}); }
+      return json({error:"unknown contacts op"},400);
+    }
+    return json({error:"method not allowed"},405);
+  }
+
+  // ===== Ask Spire — real Claude assistant with tools =====
+  if(url.searchParams.get("ai")){
+    if(request.method!=="POST") return json({error:"method not allowed"},405);
+    const KEY=env.ANTHROPIC_API_KEY;
+    if(!KEY) return json({ok:true,notConfigured:true,reply:"The Claude assistant isn't switched on yet. An admin needs to add an ANTHROPIC_API_KEY in Cloudflare (Pages project → Settings → Variables) and redeploy. Once that's set, I can answer anything and even save your contacts."});
+    let b={}; try{ b=await request.json(); }catch(e){}
+    const who=(b.who||"a teammate").toString().slice(0,60);
+    const model=(env.AI_MODEL||"claude-haiku-4-5-20251001").toString();
+    const tools=[
+      {name:"save_contact",description:"Save a subcontractor, vendor, or person to the company Contacts directory. Use whenever the user gives details to store, even partial.",
+       input_schema:{type:"object",properties:{name:{type:"string"},company:{type:"string"},trade:{type:"string",description:"e.g. Electrical, Plumbing, Concrete, Drywall"},phone:{type:"string"},email:{type:"string"},notes:{type:"string"}}}},
+      {name:"list_contacts",description:"Look up saved contacts. Optional query filters by name, company or trade.",
+       input_schema:{type:"object",properties:{query:{type:"string"}}}}
+    ];
+    let messages=Array.isArray(b.messages)?b.messages.slice(-24):[];
+    const actions=[];
+    async function callAI(msgs){
+      const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+        headers:{"x-api-key":KEY,"anthropic-version":"2023-06-01","content-type":"application/json"},
+        body:JSON.stringify({model:model,max_tokens:900,system:AI_SYSTEM(who),tools:tools,messages:msgs})});
+      if(!r.ok){ return {__err:true,status:r.status,text:(await r.text()).slice(0,400)}; }
+      return await r.json();
+    }
+    let guard=0;
+    while(guard++<5){
+      const resp=await callAI(messages);
+      if(resp.__err) return json({ok:true,error:"ai_error",reply:"I hit an error reaching Claude (HTTP "+resp.status+"). "+(resp.status===401?"The ANTHROPIC_API_KEY looks invalid.":"Please try again in a moment."),detail:resp.text});
+      const content=resp.content||[];
+      const toolUses=content.filter(c=>c.type==="tool_use");
+      if(resp.stop_reason==="tool_use"&&toolUses.length){
+        messages.push({role:"assistant",content:content});
+        const results=[];
+        for(const tu of toolUses){
+          let out;
+          if(tu.name==="save_contact"){
+            const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[]; const inp=tu.input||{};
+            const c={id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:(inp.name||"").toString().slice(0,120),company:(inp.company||"").toString().slice(0,120),trade:(inp.trade||"").toString().slice(0,80),phone:(inp.phone||"").toString().slice(0,40),email:(inp.email||"").toString().slice(0,120),notes:(inp.notes||"").toString().slice(0,600),by:who,ts:Date.now()};
+            if(!c.name&&!c.company){ out={error:"need at least a name or company"}; }
+            else { list.push(c); await kv.put(CK,JSON.stringify(list)); actions.push({type:"contact_saved",contact:c}); out={ok:true,saved:c}; }
+          } else if(tu.name==="list_contacts"){
+            const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[]; const q=((tu.input&&tu.input.query)||"").toString().toLowerCase();
+            const f=q?list.filter(c=>((c.name+" "+c.company+" "+c.trade+" "+c.notes).toLowerCase().includes(q))):list;
+            out={count:f.length,contacts:f.slice(0,60)};
+          } else out={error:"unknown tool"};
+          results.push({type:"tool_result",tool_use_id:tu.id,content:JSON.stringify(out)});
+        }
+        messages.push({role:"user",content:results});
+        continue;
+      }
+      const text=content.filter(c=>c.type==="text").map(c=>c.text).join("\n").trim();
+      return json({ok:true,reply:text||"…",actions:actions});
+    }
+    return json({ok:true,reply:"That took too many steps — try rephrasing?",actions:actions});
   }
   if(request.method==="GET" && url.searchParams.get("file")){
     if(!env.FILES) return json({error:"file storage not connected"},500);
