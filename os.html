@@ -203,6 +203,33 @@ a.link{color:var(--teal-d);font-weight:600;text-decoration:none}
 .micbtn.on{background:var(--r);border-color:var(--r);animation:pulse 1.4s infinite}
 .sendbtn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:10px 15px;font-weight:700;font-size:13px;cursor:pointer}
 .sendbtn:hover{background:var(--teal-d)}
+/* ---- sign-in pill + gate ---- */
+.mepill{display:inline-flex;align-items:center;gap:7px;font-weight:700}
+.medot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+#gate{position:fixed;inset:0;background:rgba(18,24,38,.55);backdrop-filter:blur(3px);z-index:90;display:none;align-items:center;justify-content:center}
+#gate.on{display:flex}
+.gcard{background:#fff;width:400px;max-width:92vw;border-radius:18px;padding:24px;box-shadow:0 30px 70px rgba(0,0,0,.35)}
+.glogo{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.glogo .m{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--teal),#3b82f6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.glogo b{font-size:16px;display:block;line-height:1}.glogo small{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.gmsg{font-size:13px;color:var(--mut);line-height:1.5;margin:0 0 16px}
+.gl{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);font-weight:700;display:block;margin:10px 0 5px}
+.gcard input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;font-size:14px}
+.gerr{color:var(--r);font-size:12.5px;min-height:18px;margin-top:8px}
+.gact{display:flex;gap:9px;margin-top:8px}
+.gbtn{flex:1;background:var(--teal);color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;font-size:14px;cursor:pointer}
+.gbtn:hover{background:var(--teal-d)}
+.gskip{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-weight:600;cursor:pointer}
+/* ---- attribution + activity ---- */
+.by{display:inline-block;margin-left:8px;font-size:10.5px;font-weight:700;color:var(--teal-d);background:#e9f7f6;border:1px solid #cceceb;border-radius:20px;padding:1px 8px;vertical-align:middle}
+.phd .by{color:var(--mut);background:var(--bg);border-color:var(--line)}
+.arow2{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.arow2:last-child{border-bottom:none}
+.arow2 .who{flex:0 0 auto;min-width:96px;font-weight:800;color:var(--navy)}
+.arow2 .what{flex:1;color:var(--ink)}
+.arow2 .what .sg{color:var(--g)}.arow2 .what .sy{color:var(--y)}.arow2 .what .sr{color:var(--r)}
+.arow2 .what .mut{color:var(--faint);font-weight:400}
+.arow2 .when{flex:0 0 auto;color:var(--faint);font-size:11.5px}
 </style></head>
 <body>
 <div id="app">
@@ -218,6 +245,7 @@ a.link{color:var(--teal-d);font-weight:600;text-decoration:none}
     <div id="head">
       <div><h1 id="ptitle">Operations Dashboard</h1><div class="sub" id="psub"></div></div>
       <div class="grow"></div>
+      <button id="mebtn" class="hbtn mepill" onclick="openGate()">👤 Sign in to sync</button>
       <input id="search" placeholder="Search systems…" oninput="applyFilters()">
       <button class="hbtn" onclick="window.print()">⬇︎ PDF</button>
       <button class="hbtn" onclick="exportImage()">🖼 Image</button>
@@ -231,6 +259,18 @@ a.link{color:var(--teal-d);font-weight:600;text-decoration:none}
         </div>
       </div>
     </div>
+  </div>
+</div>
+<div id="gate">
+  <div class="gcard">
+    <div class="glogo"><span class="m">S</span><div><b>Spire OS</b><small>team sign-in</small></div></div>
+    <p class="gmsg">Sign in so your check-offs and status changes are tracked to your name. Same team passcode as the tracker.</p>
+    <label class="gl">Team passcode</label>
+    <input id="gpass" type="password" placeholder="Team passcode" onkeydown="if(event.key==='Enter')document.getElementById('gname').focus()">
+    <label class="gl">Your name</label>
+    <input id="gname" placeholder="e.g. Jose R." onkeydown="if(event.key==='Enter')doSignIn()">
+    <div id="gerr" class="gerr"></div>
+    <div class="gact"><button class="gbtn" onclick="doSignIn()">Sign in</button><button class="gskip" onclick="closeGate()">Not now</button></div>
   </div>
 </div>
 <div id="scrim" onclick="closePanel()"></div>
@@ -256,6 +296,44 @@ let store={};try{store=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){store
 function save(){localStorage.setItem(LS,JSON.stringify(store))}
 const NODES=DATA.nodes.map(n=>{const o=(store.nodes&&store.nodes[n.id])||{};return Object.assign({},n,o,{checklistState:(store.ck&&store.ck[n.id])||{}})});
 const BYID={};NODES.forEach(n=>BYID[n.id]=n);
+
+/* ===== team sync + accountability ===== */
+const API='/api/tatte';
+let ME=localStorage.getItem('spireos_who')||'';
+let PASS=localStorage.getItem('spireos_pass')||'';
+let OSMETA={},OSLOG=[],ROSTER=[],pendingAction=null;
+function tsShort(ts){const d=new Date(ts);const now=new Date();const opt={hour:'numeric',minute:'2-digit'};const t=d.toLocaleTimeString([],opt).replace(' ','').toLowerCase();
+ if(d.toDateString()===now.toDateString())return 'today '+t;
+ return d.toLocaleDateString([],{month:'short',day:'numeric'})+' '+t;}
+async function osLoad(){if(!PASS)return;
+ try{const r=await fetch(API+'?os=1',{headers:{'x-pass':PASS}});
+  if(!r.ok){if(r.status===401){PASS='';localStorage.removeItem('spireos_pass');updateMe();}return;}
+  const d=await r.json();const st=d.state||{};OSMETA=st.ckmeta||{};OSLOG=d.log||[];ROSTER=d.roster||[];
+  store.nodes=Object.assign({},store.nodes||{},st.nodes||{});
+  store.ck=store.ck||{};Object.keys(st.ck||{}).forEach(nid=>{store.ck[nid]=Object.assign({},store.ck[nid]||{},st.ck[nid]);});
+  NODES.forEach(n=>{const o=(store.nodes&&store.nodes[n.id])||{};Object.assign(n,o);n.checklistState=(store.ck&&store.ck[n.id])||{};});
+  save();updateMe();render();
+ }catch(e){}}
+async function osPost(body){if(!PASS||!ME)return;body.who=ME;
+ try{const r=await fetch(API+'?os=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify(body)});
+  if(r.ok){const d=await r.json();if(d.entry)OSLOG.unshift(d.entry);if(d.state&&d.state.ckmeta)OSMETA=d.state.ckmeta;if(d.roster)ROSTER=d.roster;}
+ }catch(e){}}
+function needMe(cb){if(ME&&PASS){return true;}pendingAction=cb||null;openGate();return false;}
+function openGate(){document.getElementById('gate').classList.add('on');const g=document.getElementById('gname');document.getElementById('gpass').value=PASS||'';g.value=ME||'';(PASS?g:document.getElementById('gpass')).focus();}
+function closeGate(){document.getElementById('gate').classList.remove('on');pendingAction=null;}
+async function doSignIn(){const p=document.getElementById('gpass').value.trim(),nm=document.getElementById('gname').value.trim(),err=document.getElementById('gerr');
+ if(!p||!nm){err.textContent='Enter the team passcode and your name.';return;}
+ err.textContent='Checking…';
+ try{const r=await fetch(API+'?os=1',{method:'POST',headers:{'x-pass':p,'content-type':'application/json'},body:JSON.stringify({type:'identify',who:nm})});
+  if(r.status===401){err.textContent='That passcode isn’t right.';return;}
+  if(!r.ok){err.textContent='Couldn’t connect — try again.';return;}
+  PASS=p;ME=nm;localStorage.setItem('spireos_pass',p);localStorage.setItem('spireos_who',nm);
+  document.getElementById('gate').classList.remove('on');updateMe();await osLoad();
+  const cb=pendingAction;pendingAction=null;if(cb)cb();
+ }catch(e){err.textContent='Couldn’t connect — try again.';}}
+function signOut(){ME='';PASS='';localStorage.removeItem('spireos_who');localStorage.removeItem('spireos_pass');updateMe();}
+function updateMe(){const b=document.getElementById('mebtn');if(!b)return;
+ b.innerHTML=ME?('<span class="medot"></span>'+esc(ME)):'👤 Sign in to sync';b.title=ME?('Signed in as '+ME+' — click to switch'):'Sign in so your check-offs are tracked';}
 const PHASES=[
  {id:'win',name:'Win Work',desc:'Marketing → signed contract',color:'#2563eb',nodes:['marketing','sales','lead_not_converted','send_thank_you','newsletter','pricing_estimating','contract_signed']},
  {id:'setup',name:'Set Up',desc:'Schedule & mobilize the job',color:'#7c3aed',nodes:['schedule','project_setup','start_project']},
@@ -267,7 +345,7 @@ const PHOF={};PHASES.forEach(p=>p.nodes.forEach(id=>PHOF[id]=p));
 const NAV=[
  ['home','🏠','Home'],['ops','🧭','Operations'],['dept','🏢','Departments'],
  ['sop','📋','SOP Library'],['kpi','📊','KPIs'],['status','🚦','Status Board'],
- ['soft','🧩','Software'],['map','🗺','Mind Map'],['help','🎓','Help & Setup'],
+ ['soft','🧩','Software'],['activity','🕘','Activity'],['map','🗺','Mind Map'],['help','🎓','Help & Setup'],
 ];
 let view='home',admin=false;
 function esc(s){return(s==null?'':''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -290,7 +368,7 @@ function setView(k){view=k;if(k!=='status')statusFilter=null;document.querySelec
 function goStatus(st){statusFilter=st;view='status';document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.k==='status'));
  document.getElementById('mapview').classList.remove('on');document.getElementById('content').style.display='block';document.getElementById('main').scrollTop=0;render();}
 
-const TITLES={home:['Operations Dashboard','The health of every system, one screen'],ops:['Operations','The A-Z flow, grouped by phase'],dept:['Departments','Systems organized by who owns them'],sop:['SOP Library','Every system, its SOP and checklist'],kpi:['KPI Dashboard','Operating metrics across the business'],status:['Status Board','Red / Yellow / Green at a glance'],soft:['Software Stack','The tools Spire OS ties together'],map:['Mind Map','See every step at once'],help:['Help & Setup','Guided walkthroughs — plus ask Spire anything']};
+const TITLES={home:['Operations Dashboard','The health of every system, one screen'],ops:['Operations','The A-Z flow, grouped by phase'],dept:['Departments','Systems organized by who owns them'],sop:['SOP Library','Every system, its SOP and checklist'],kpi:['KPI Dashboard','Operating metrics across the business'],status:['Status Board','Red / Yellow / Green at a glance'],soft:['Software Stack','The tools Spire OS ties together'],activity:['Activity','Who did what, and when — the audit trail'],map:['Mind Map','See every step at once'],help:['Help & Setup','Guided walkthroughs — plus ask Spire anything']};
 
 function counts(list){const c={green:0,yellow:0,red:0};list.forEach(n=>c[n.status]++);return c}
 function nodeMatch(n){const q=(document.getElementById('search').value||'').toLowerCase();
@@ -433,7 +511,7 @@ const FAQ=[
  {q:'What’s the difference between Spire OS and the Scope Tracker?',kw:['difference','spire os','tracker','scope','what is'],a:'The Scope Tracker (spireconstructors.com/scope) is where you run projects — scope, drawings, RFIs, submittals, logs. Spire OS (this app) is the business operating system — your A-Z systems, SOPs, KPIs and software stack.',go:{view:'home'}},
  {q:'How do the clickable KPI cards work?',kw:['kpi','clickable','cards','numbers','dashboard'],a:'On the Home dashboard, each KPI card is a doorway: Total → Operations, the color counts → Status Board filtered to that color, Departments → the Departments view.',go:{view:'home'}},
  {q:'How do I level bids from subs?',kw:['bid','level','subs','compare','award'],a:'Use the bid-leveling xlsx for the project — issue the Layer A scope to subs, enter each bidder’s number, and compare variance to pick your award. See “Export bid-leveling workbook”.',go:{view:'help'}},
- {q:'Can the team all edit at once?',kw:['team','multi user','share','collaborate','sync'],a:'The Scope Tracker syncs live for everyone behind the passcode. Spire OS edits currently save in your browser — ask Claude to wire it to the shared backend for team-wide editing.',go:{view:'home'}},
+ {q:'Can the team all edit at once?',kw:['team','multi user','share','collaborate','sync','who checked','accountability','audit'],a:'Yes. Sign in with your name (top-right) and every check-off, uncheck and status change syncs live for the whole team — and is stamped with who did it and when. See the Activity view for the full audit trail.',go:{view:'activity'}},
 ];
 function helpKBIndex(){const idx=[];
  HSECT.forEach(s=>{idx.push({type:'sect',id:s.id,title:s.title,kw:s.kw||[],body:(s.blurb+' '+s.steps.join(' ')),answer:s.a,go:s.go});});
@@ -511,8 +589,20 @@ function seedAsk(){const c=document.getElementById('askchips');if(c.dataset.done
 function render(){const t=TITLES[view];document.getElementById('ptitle').textContent=t[0];document.getElementById('psub').textContent=t[1];
  if(view==='home')renderHome();else if(view==='ops')renderOps();else if(view==='dept')renderDept();
  else if(view==='sop')renderSOP();else if(view==='kpi')renderKPI();else if(view==='status')renderStatus();
- else if(view==='soft')renderSoft();else if(view==='help')renderHelp();else if(view==='map')renderMM();
+ else if(view==='soft')renderSoft();else if(view==='activity')renderActivity();else if(view==='help')renderHelp();else if(view==='map')renderMM();
 }
+function actLine(e){const n=BYID[e.node];const nm=n?n.title:(e.title||e.node);let txt;
+ if(e.type==='check')txt=(e.on?'checked off':'unchecked')+' “'+esc(e.label||('step '+(e.idx+1)))+'”';
+ else if(e.type==='status')txt='set status to <b class="s'+(e.to==='green'?'g':e.to==='yellow'?'y':'r')+'">'+esc(e.to)+'</b>'+(e.from?' <span class="mut">(was '+esc(e.from)+')</span>':'');
+ else if(e.type==='field')txt='updated '+esc(e.field==='sop_link'?'the SOP link':e.field==='checklist'?'the checklist':e.field==='notes'?'notes':e.field);
+ else txt='made a change';
+ return '<div class="arow2"><div class="who">'+esc(e.who||'?')+'</div><div class="what"><b>'+esc(nm)+'</b> — '+txt+'</div><div class="when">'+tsShort(e.ts)+'</div></div>';}
+function renderActivity(){let h='';
+ if(!ME){h+='<div class="fbar">Sign in to load and record the team activity trail. <button class="mini" onclick="openGate()">Sign in ›</button></div>';}
+ if(!OSLOG.length){h+='<div class="empty">No activity yet'+(ME?' — check off a step and it shows here, stamped with your name.':'.')+'</div>';document.getElementById('content').innerHTML=h;return;}
+ const shown=OSLOG.filter(e=>{const q=(document.getElementById('search').value||'').toLowerCase();if(!q)return true;const n=BYID[e.node];return ((n?n.title:'')+' '+(e.who||'')+' '+(e.label||'')).toLowerCase().includes(q);});
+ h+='<div class="actwrap panelcard" style="padding:6px 0">'+shown.map(actLine).join('')+'</div>';
+ document.getElementById('content').innerHTML=h;}
 
 /* ---------- MIND MAP (secondary view) ---------- */
 let tx=40,ty=20,scale=.82;
@@ -545,10 +635,11 @@ function fitView(){tx=40;ty=20;scale=.82;applyTransform()}
 let cur=null;
 function openNode(id){cur=id;const n=BYID[id];const p=document.getElementById('panel');const ph=PHOF[id];
  const softHTML=(n.software||[]).map(s=>{const o=SW[s];return o?'<span class="sof"><i style="background:'+o.color+'"></i>'+esc(o.name)+'</span>':''}).join('');
- const ck=(n.checklist||[]).map((c,i)=>'<label class="ck"><input type="checkbox" '+(n.checklistState[i]?'checked':'')+' onchange="toggleCk(\''+id+'\','+i+',this.checked)"><span>'+esc(c)+'</span></label>').join('');
+ const ck=(n.checklist||[]).map((c,i)=>{const m=(OSMETA[id]||{})[i];const by=(m&&m.on)?'<span class="by">✓ '+esc(m.who)+' · '+tsShort(m.ts)+'</span>':'';return '<label class="ck"><input type="checkbox" '+(n.checklistState[i]?'checked':'')+' onchange="toggleCk(\''+id+'\','+i+',this.checked)"><span>'+esc(c)+by+'</span></label>';}).join('');
+ const sb=(n._statusBy||(store.nodes&&store.nodes[id]&&store.nodes[id]._statusBy));
  const rel=(n.related_nodes||[]).map(r=>BYID[r]?'<span class="tag" style="cursor:pointer" onclick="openNode(\''+r+'\')">'+esc(BYID[r].title)+'</span>':'').join('');
  p.innerHTML='<div class="phd"><button class="x" onclick="closePanel()">✕</button><h2>'+esc(n.title)+'</h2>'+
-  '<div class="meta"><span class="statusset">'+['green','yellow','red'].map(st=>'<button class="'+sc(st)+(n.status===st?' on':'')+'" onclick="setStatus(\''+id+'\',\''+st+'\')">'+({green:'Green',yellow:'Yellow',red:'Red'}[st])+'</button>').join('')+'</span>'+
+  '<div class="meta"><span class="statusset">'+['green','yellow','red'].map(st=>'<button class="'+sc(st)+(n.status===st?' on':'')+'" onclick="setStatus(\''+id+'\',\''+st+'\')">'+({green:'Green',yellow:'Yellow',red:'Red'}[st])+'</button>').join('')+'</span>'+(sb&&sb.who?'<span class="by">by '+esc(sb.who)+' · '+tsShort(sb.ts)+'</span>':'')+
   (ph?'<span class="tag">'+esc(ph.name)+'</span>':'')+'<span class="tag">'+esc(n.department)+'</span><span class="tag">Owner: '+esc(n.owner)+'</span></div></div><div class="pbody">'+
   sec('Purpose','<p>'+esc(n.purpose)+'</p>')+
   sec('Software',softHTML||'<span class="empty">—</span>')+
@@ -565,9 +656,15 @@ function openNode(id){cur=id;const n=BYID[id];const p=document.getElementById('p
  document.getElementById('scrim').style.display='block';p.classList.add('open');}
 function sec(h,b){return '<div class="sec"><h4>'+h+'</h4>'+b+'</div>'}
 function closePanel(){document.getElementById('panel').classList.remove('open');document.getElementById('scrim').style.display='none';cur=null}
-function toggleCk(id,i,on){store.ck=store.ck||{};store.ck[id]=store.ck[id]||{};store.ck[id][i]=on;BYID[id].checklistState[i]=on;save();if(view!=='map')render()}
-function setStatus(id,st){setField(id,'status',st);BYID[id].status=st;render();openNode(id)}
-function setField(id,f,v){store.nodes=store.nodes||{};store.nodes[id]=store.nodes[id]||{};store.nodes[id][f]=v;BYID[id][f]=v;save();if(f!=='notes'&&f!=='sop_link')render()}
+function toggleCk(id,i,on){if(!needMe(()=>toggleCk(id,i,on)))return;store.ck=store.ck||{};store.ck[id]=store.ck[id]||{};store.ck[id][i]=on;BYID[id].checklistState[i]=on;save();
+ OSMETA[id]=OSMETA[id]||{};OSMETA[id][i]={who:ME,ts:Date.now(),on:on};
+ osPost({type:'check',node:id,idx:i,value:on,label:(BYID[id].checklist||[])[i]||'',title:BYID[id].title});
+ if(view!=='map')render();if(cur===id)openNode(id);}
+function setStatus(id,st){if(!needMe(()=>setStatus(id,st)))return;store.nodes=store.nodes||{};store.nodes[id]=store.nodes[id]||{};store.nodes[id].status=st;store.nodes[id]._statusBy={who:ME,ts:Date.now()};BYID[id].status=st;BYID[id]._statusBy={who:ME,ts:Date.now()};save();
+ osPost({type:'status',node:id,value:st,title:BYID[id].title});render();openNode(id);}
+function setField(id,f,v){if(!needMe(()=>setField(id,f,v)))return;store.nodes=store.nodes||{};store.nodes[id]=store.nodes[id]||{};store.nodes[id][f]=v;BYID[id][f]=v;save();
+ osPost({type:'field',node:id,field:f,value:v,label:f,title:BYID[id].title});
+ if(f!=='notes'&&f!=='sop_link')render()}
 function addArr(id,arr,inp){const v=document.getElementById(inp).value.trim();if(!v)return;const a=(BYID[id][arr]||[]).slice();a.push(v);setField(id,arr,a);openNode(id)}
 function addCk(id){const v=document.getElementById('ckadd').value.trim();if(!v)return;const a=(BYID[id].checklist||[]).slice();a.push(v);setField(id,'checklist',a);openNode(id)}
 function toggleAdmin(){admin=!admin;document.getElementById('adminNav').classList.toggle('on',admin);if(cur)openNode(cur)}
@@ -576,5 +673,5 @@ function exportImage(){const s=document.createElement('script');s.src='https://c
  s.onerror=()=>{window.print()};document.body.appendChild(s);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
 window.addEventListener('resize',()=>{if(view==='map')drawEdges()});
-render();seedAsk();
+render();seedAsk();updateMe();osLoad();
 </script></body></html>
