@@ -41,6 +41,12 @@ html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Seg
 .kpi.g .n{color:var(--g)}.kpi.y .n{color:var(--y)}.kpi.r .n{color:var(--r)}
 .kpi .bar{height:7px;border-radius:6px;background:#edf0f4;overflow:hidden;margin-top:9px}
 .kpi .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--accent))}
+.kpi.clk{cursor:pointer;transition:transform .07s,box-shadow .12s,border-color .12s}
+.kpi.clk:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(16,24,40,.10);border-color:var(--teal)}
+.kpi .go{opacity:0;color:var(--teal);font-weight:800;transition:opacity .12s}
+.kpi.clk:hover .go{opacity:1}
+.fbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 15px;margin-bottom:16px;font-size:13px;box-shadow:var(--shadow)}
+.fbar .mini{margin-left:auto}
 /* section */
 .sect{margin:26px 0 12px;display:flex;align-items:center;gap:10px}
 .sect h2{margin:0;font-size:15px;font-weight:800}
@@ -206,10 +212,13 @@ function ckpct(n){const t=(n.checklist||[]).length;if(!t)return 0;let d=0;for(le
    b.innerHTML='<span class="ic">'+ic+'</span><span class="tx">'+l+'</span>'+(cnt?'<span class="ct">'+cnt+'</span>':'');
    b.onclick=()=>setView(k);w.appendChild(b);});
 })();
-function setView(k){view=k;document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.k===k));
+let statusFilter=null;
+function setView(k){view=k;if(k!=='status')statusFilter=null;document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.k===k));
  document.getElementById('mapview').classList.toggle('on',k==='map');
  document.getElementById('content').style.display=k==='map'?'none':'block';
- render();}
+ document.getElementById('main').scrollTop=0;render();}
+function goStatus(st){statusFilter=st;view='status';document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.k==='status'));
+ document.getElementById('mapview').classList.remove('on');document.getElementById('content').style.display='block';document.getElementById('main').scrollTop=0;render();}
 
 const TITLES={home:['Operations Dashboard','The health of every system, one screen'],ops:['Operations','The A-Z flow, grouped by phase'],dept:['Departments','Systems organized by who owns them'],sop:['SOP Library','Every system, its SOP and checklist'],kpi:['KPI Dashboard','Operating metrics across the business'],status:['Status Board','Red / Yellow / Green at a glance'],soft:['Software Stack','The tools Spire OS ties together'],map:['Mind Map','See every step at once']};
 
@@ -221,10 +230,13 @@ function applyFilters(){if(view==='map'){document.querySelectorAll('.node').forE
 function kpiRow(){const c=counts(NODES),tot=NODES.length,pct=Math.round(c.green/tot*100);
  const nd=new Set(NODES.map(n=>n.department)).size;
  return '<div class="kpis">'+
-  kc(tot,'Total systems','')+kc(c.green,'Systemized','g')+kc(c.yellow,'Needs review','y')+kc(c.red,'Missing / urgent','r')+
-  '<div class="kpi"><div class="n">'+pct+'%</div><div class="l">Systemized</div><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
-  kc(nd,'Departments','')+'</div>';}
-function kc(n,l,cl){return '<div class="kpi '+cl+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'}
+  kc(tot,'Total systems','',"setView('ops')")+
+  kc(c.green,'Systemized','g',"goStatus('green')")+
+  kc(c.yellow,'Needs review','y',"goStatus('yellow')")+
+  kc(c.red,'Missing / urgent','r',"goStatus('red')")+
+  '<div class="kpi clk" onclick="goStatus(\'green\')"><div class="n">'+pct+'%</div><div class="l">Systemized</div><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
+  kc(nd,'Departments','',"setView('dept')")+'</div>';}
+function kc(n,l,cl,act){return '<div class="kpi clk '+cl+'"'+(act?' onclick="'+act+'"':'')+'><div class="n">'+n+'</div><div class="l">'+l+' <span class="go">›</span></div></div>'}
 function ncard(n){const p=ckpct(n);return '<div class="ncard s'+sc(n.status)+'" onclick="openNode(\''+n.id+'\')">'+
  '<div class="h"><b>'+esc(n.title)+'</b><span class="st pill '+sc(n.status)+'">'+n.status+'</span></div>'+
  '<div class="meta">'+esc(n.department)+' · '+esc(n.owner)+'</div>'+
@@ -275,8 +287,12 @@ function renderKPI(){const shown=NODES.filter(nodeMatch);let h='';PHASES.forEach
  document.getElementById('content').innerHTML=h;}
 
 function renderStatus(){const shown=NODES.filter(nodeMatch);const cols={red:[],yellow:[],green:[]};shown.forEach(n=>cols[n.status].push(n));
- const col=(st,lbl,cl)=>'<div><div class="sect"><span class="dot '+cl+'" style="width:11px;height:11px"></span><h2>'+lbl+' ('+cols[st].length+')</h2></div>'+cols[st].map(ncard).join('')+'</div>';
- document.getElementById('content').innerHTML='<div class="two" style="grid-template-columns:1fr 1fr 1fr">'+col('red','Missing / urgent','r')+col('yellow','Needs review','y')+col('green','Systemized','g')+'</div>';}
+ const col=(st,lbl,cl)=>'<div><div class="sect"><span class="dot '+cl+'" style="width:11px;height:11px"></span><h2>'+lbl+' ('+cols[st].length+')</h2></div>'+(cols[st].map(ncard).join('')||'<div class="empty">None</div>')+'</div>';
+ let banner='';
+ if(statusFilter){const nm={green:'Systemized',yellow:'Needs review',red:'Missing / urgent'}[statusFilter];
+  banner='<div class="fbar">Showing <b>'+nm+'</b> · '+cols[statusFilter].length+' systems <button class="mini" onclick="statusFilter=null;render()">Show all ›</button></div>';
+  document.getElementById('content').innerHTML=banner+'<div class="grid">'+(cols[statusFilter].map(ncard).join('')||'<div class="empty">None</div>')+'</div>';return;}
+ document.getElementById('content').innerHTML='<div class="two" style="grid-template-columns:1fr 1fr 1fr;align-items:start">'+col('red','Missing / urgent','r')+col('yellow','Needs review','y')+col('green','Systemized','g')+'</div>';}
 
 function renderSoft(){let h='<div class="swgrid">';DATA.software.forEach(s=>{const u=NODES.filter(n=>(n.software||[]).includes(s.id)).length;
  h+='<a class="sw" href="'+s.url+'" target="_blank"><span class="sq" style="background:'+s.color+'">'+esc(s.name[0])+'</span><div><b>'+esc(s.name)+'</b><span>'+esc(s.cat)+' · '+u+' systems</span></div></a>';});
