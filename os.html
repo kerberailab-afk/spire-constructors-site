@@ -230,6 +230,27 @@ a.link{color:var(--teal-d);font-weight:600;text-decoration:none}
 .arow2 .what .sg{color:var(--g)}.arow2 .what .sy{color:var(--y)}.arow2 .what .sr{color:var(--r)}
 .arow2 .what .mut{color:var(--faint);font-weight:400}
 .arow2 .when{flex:0 0 auto;color:var(--faint);font-size:11.5px}
+/* ---- contacts ---- */
+.cform .clab{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);font-weight:700;display:block;margin:10px 0 4px}
+.cform input,.cform textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit;font-size:13px}
+.cform textarea{min-height:56px;resize:vertical}
+.cform .gbtn{width:100%;margin-top:12px}
+.chint{font-size:11.5px;color:var(--mut);line-height:1.5;margin:12px 0 0}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px 14px;box-shadow:var(--shadow);border-top:3px solid var(--teal)}
+.cch{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.cch b{font-size:14px}
+.ctag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;background:#eef6ff;color:#1d4ed8;border:1px solid #cfe0fb;border-radius:20px;padding:2px 8px}
+.cco{font-size:12.5px;color:var(--mut);margin-top:2px}
+.cli{font-size:12.5px;margin-top:6px}.cli a{color:var(--teal-d);text-decoration:none}
+.cnote{font-size:12px;color:var(--ink);background:var(--bg);border-radius:8px;padding:7px 9px;margin-top:9px;line-height:1.45}
+.cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:9px;border-top:1px solid var(--line)}
+.cfoot span{font-size:10.5px;color:var(--faint)}
+.cdel{background:none;border:none;color:var(--r);font-size:11.5px;font-weight:600;cursor:pointer}
+/* ---- chat extras ---- */
+.typing{display:inline-flex;gap:4px;padding:2px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--faint);animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.savedcard{background:#f0fdf4;border:1px solid #bbe7c6;border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#14532d}
 </style></head>
 <body>
 <div id="app">
@@ -312,7 +333,7 @@ async function osLoad(){if(!PASS)return;
   store.nodes=Object.assign({},store.nodes||{},st.nodes||{});
   store.ck=store.ck||{};Object.keys(st.ck||{}).forEach(nid=>{store.ck[nid]=Object.assign({},store.ck[nid]||{},st.ck[nid]);});
   NODES.forEach(n=>{const o=(store.nodes&&store.nodes[n.id])||{};Object.assign(n,o);n.checklistState=(store.ck&&store.ck[n.id])||{};});
-  save();updateMe();render();
+  save();updateMe();render();loadContacts();
  }catch(e){}}
 async function osPost(body){if(!PASS||!ME)return;body.who=ME;
  try{const r=await fetch(API+'?os=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify(body)});
@@ -345,7 +366,7 @@ const PHOF={};PHASES.forEach(p=>p.nodes.forEach(id=>PHOF[id]=p));
 const NAV=[
  ['home','🏠','Home'],['ops','🧭','Operations'],['dept','🏢','Departments'],
  ['sop','📋','SOP Library'],['kpi','📊','KPIs'],['status','🚦','Status Board'],
- ['soft','🧩','Software'],['activity','🕘','Activity'],['map','🗺','Mind Map'],['help','🎓','Help & Setup'],
+ ['soft','🧩','Software'],['contacts','📇','Contacts'],['activity','🕘','Activity'],['map','🗺','Mind Map'],['help','🎓','Help & Setup'],
 ];
 let view='home',admin=false;
 function esc(s){return(s==null?'':''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -368,7 +389,7 @@ function setView(k){view=k;if(k!=='status')statusFilter=null;document.querySelec
 function goStatus(st){statusFilter=st;view='status';document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.k==='status'));
  document.getElementById('mapview').classList.remove('on');document.getElementById('content').style.display='block';document.getElementById('main').scrollTop=0;render();}
 
-const TITLES={home:['Operations Dashboard','The health of every system, one screen'],ops:['Operations','The A-Z flow, grouped by phase'],dept:['Departments','Systems organized by who owns them'],sop:['SOP Library','Every system, its SOP and checklist'],kpi:['KPI Dashboard','Operating metrics across the business'],status:['Status Board','Red / Yellow / Green at a glance'],soft:['Software Stack','The tools Spire OS ties together'],activity:['Activity','Who did what, and when — the audit trail'],map:['Mind Map','See every step at once'],help:['Help & Setup','Guided walkthroughs — plus ask Spire anything']};
+const TITLES={home:['Operations Dashboard','The health of every system, one screen'],ops:['Operations','The A-Z flow, grouped by phase'],dept:['Departments','Systems organized by who owns them'],sop:['SOP Library','Every system, its SOP and checklist'],kpi:['KPI Dashboard','Operating metrics across the business'],status:['Status Board','Red / Yellow / Green at a glance'],soft:['Software Stack','The tools Spire OS ties together'],contacts:['Contacts','Your subcontractor & vendor directory'],activity:['Activity','Who did what, and when — the audit trail'],map:['Mind Map','See every step at once'],help:['Help & Setup','Guided walkthroughs — plus ask Spire anything']};
 
 function counts(list){const c={green:0,yellow:0,red:0};list.forEach(n=>c[n.status]++);return c}
 function nodeMatch(n){const q=(document.getElementById('search').value||'').toLowerCase();
@@ -559,16 +580,25 @@ function openAsk(){document.getElementById('askwrap').classList.add('open');docu
 function closeAsk(){document.getElementById('askwrap').classList.remove('open');if(recog&&listening){recog.stop();}}
 function toggleAsk(){document.getElementById('askwrap').classList.contains('open')?closeAsk():openAsk();}
 function addBubble(who,html){const m=document.getElementById('askmsgs');const d=document.createElement('div');d.className='bub '+who;d.innerHTML=html;m.appendChild(d);m.scrollTop=m.scrollHeight;return d;}
-function askSend(text){const q=(text!=null?text:document.getElementById('askin').value).trim();if(!q)return;
- document.getElementById('askin').value='';addBubble('me',esc(q));
- const hit=scoreKB(q);
- let ans,go=null;
- if(hit){ans=hit.answer;go=hit.go;}
- else{ans="I’m not certain on that one. Try rephrasing, or browse the walkthroughs in Help & Setup. You can ask about: logging in, adding a project, RFIs, submittals, daily logs, uploads/R2, bid leveling, the KPI cards, or connecting your software.";}
- let html=esc(ans).replace(/\n/g,'<br>');
- if(go){const lbl=go.url?'Open ↗':'Take me there →';const act=go.url?"window.open('"+go.url+"','_blank')":"setView('"+go.view+"');closeAsk()";html+='<div style="margin-top:8px"><button class="mini go" onclick="'+act+'">'+lbl+'</button></div>';}
- addBubble('ai',html);
- if(speakOn)speak(ans);}
+let ASKHIST=[],asking=false;
+function mdlite(s){return esc(s).replace(/\n/g,'<br>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(^|<br>)\s*[-•]\s+/g,'$1• ');}
+async function askSend(text){const inp=document.getElementById('askin');const q=(text!=null?text:inp.value).trim();if(!q||asking)return;
+ inp.value='';addBubble('me',esc(q));
+ if(!ME||!PASS){needMe(()=>askSend(q));return;}
+ ASKHIST.push({role:'user',content:q});
+ asking=true;const typing=addBubble('ai','<span class="typing"><i></i><i></i><i></i></span>');
+ try{
+  const r=await fetch(API+'?ai=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify({who:ME,messages:ASKHIST})});
+  const d=await r.json();typing.remove();
+  const reply=d.reply||'Sorry — I didn’t catch that.';
+  ASKHIST.push({role:'assistant',content:reply});
+  addBubble('ai',mdlite(reply));
+  if(d.actions&&d.actions.length){let saved=d.actions.filter(a=>a.type==='contact_saved');
+   if(saved.length){saved.forEach(a=>{const c=a.contact;addBubble('ai','<div class="savedcard">📇 Saved to Contacts<br><b>'+esc(c.name||c.company)+'</b>'+(c.company&&c.name?' · '+esc(c.company):'')+(c.trade?'<br>'+esc(c.trade):'')+(c.phone?'<br>'+esc(c.phone):'')+(c.email?'<br>'+esc(c.email):'')+'</div><div style="margin-top:6px"><button class="mini go" onclick="setView(\'contacts\');closeAsk()">Open Contacts →</button></div>');});
+    if(view==='contacts')loadContacts();}}
+  if(speakOn)speak(reply.replace(/[*#>]/g,''));
+ }catch(e){typing.remove();addBubble('ai','I couldn’t reach the assistant just now. Check your connection and try again.');}
+ asking=false;}
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=1.03;u.pitch=1;speechSynthesis.speak(u);}catch(e){}}
 function toggleSpeak(){speakOn=!speakOn;document.getElementById('spkbtn').classList.toggle('on',speakOn);if(!speakOn)try{speechSynthesis.cancel()}catch(e){}}
 function toggleMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -581,16 +611,56 @@ function toggleMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecog
  recog.onend=()=>{listening=false;btn.classList.remove('on');inp.placeholder='Ask about any feature…';const v=inp.value.trim();if(v)askSend(v);};
  recog.onresult=e=>{let s='';for(let i=0;i<e.results.length;i++)s+=e.results[i][0].transcript;inp.value=s;};
  recog.start();}
-const QCHIPS=['What is the passcode?','How do I add a new project?','Set up submittals','Why won’t uploads work?','How do the KPI cards work?','Connect my software'];
+const QCHIPS=['Save a new subcontractor contact','How do I add a new project?','Set up submittals','Show me my electrical subs','How does the audit trail work?'];
 function seedAsk(){const c=document.getElementById('askchips');if(c.dataset.done)return;c.dataset.done='1';
  c.innerHTML=QCHIPS.map(q=>'<button class="qchip" onclick="askSend(\''+q.replace(/'/g,"\\'")+'\')">'+esc(q)+'</button>').join('');
- addBubble('ai','Hi — I’m Spire, your guide to the site. Ask me how to set up or use any feature. You can <b>talk</b> (tap the mic) or type. Try a suggestion below. 👇');}
+ addBubble('ai','Hi — I’m Spire, your AI assistant. Ask me anything about the software, and I can actually <b>do</b> things — like <b>save a subcontractor’s contact info</b> to your directory. Just tell me the details. You can <b>talk</b> (tap the mic) or type.');}
 
 function render(){const t=TITLES[view];document.getElementById('ptitle').textContent=t[0];document.getElementById('psub').textContent=t[1];
  if(view==='home')renderHome();else if(view==='ops')renderOps();else if(view==='dept')renderDept();
  else if(view==='sop')renderSOP();else if(view==='kpi')renderKPI();else if(view==='status')renderStatus();
- else if(view==='soft')renderSoft();else if(view==='activity')renderActivity();else if(view==='help')renderHelp();else if(view==='map')renderMM();
+ else if(view==='soft')renderSoft();else if(view==='contacts')renderContacts();else if(view==='activity')renderActivity();else if(view==='help')renderHelp();else if(view==='map')renderMM();
 }
+/* ---- Contacts directory ---- */
+let CONTACTS=[];
+async function loadContacts(){if(!PASS)return;try{const r=await fetch(API+'?contacts=1',{headers:{'x-pass':PASS}});if(r.ok){const d=await r.json();CONTACTS=d.contacts||[];if(view==='contacts')renderContacts();}}catch(e){}}
+async function saveContact(){if(!needMe(()=>saveContact()))return;
+ const g=id=>document.getElementById(id).value.trim();
+ const body={op:'add',who:ME,name:g('cn'),company:g('cc'),trade:g('ct'),phone:g('cp'),email:g('ce'),notes:g('cnotes')};
+ if(!body.name&&!body.company){document.getElementById('cerr').textContent='Add at least a name or company.';return;}
+ document.getElementById('cerr').textContent='Saving…';
+ try{const r=await fetch(API+'?contacts=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json();if(d.ok){CONTACTS=d.contacts||CONTACTS;renderContacts();}else{document.getElementById('cerr').textContent=d.error||'Could not save.';}
+ }catch(e){document.getElementById('cerr').textContent='Could not connect.';}}
+async function delContact(id){if(!needMe(()=>delContact(id)))return;if(!confirm('Delete this contact?'))return;
+ try{const r=await fetch(API+'?contacts=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify({op:'delete',id:id,who:ME})});const d=await r.json();if(d.ok){CONTACTS=d.contacts||[];renderContacts();}}catch(e){}}
+function renderContacts(){const q=(document.getElementById('search').value||'').toLowerCase();
+ if(!ME){document.getElementById('content').innerHTML='<div class="fbar">Sign in to view and add contacts. <button class="mini" onclick="openGate()">Sign in ›</button></div>';return;}
+ const list=CONTACTS.filter(c=>!q||((c.name+' '+c.company+' '+c.trade+' '+c.notes+' '+c.phone+' '+c.email).toLowerCase().includes(q)));
+ let h='<div class="two" style="grid-template-columns:340px 1fr;align-items:start">';
+ h+='<div class="panelcard"><h3>Add a contact</h3>'+
+  '<div class="cform">'+
+  ipt('cn','Name','e.g. Jose Ramirez')+ipt('cc','Company','e.g. Ramirez Electric')+ipt('ct','Trade','e.g. Electrical')+
+  ipt('cp','Phone','(555) 123-4567')+ipt('ce','Email','name@company.com')+
+  '<label class="clab">Notes</label><textarea id="cnotes" placeholder="License #, pricing notes, who referred them…"></textarea>'+
+  '<div id="cerr" class="gerr"></div>'+
+  '<button class="gbtn" onclick="saveContact()">Save contact</button>'+
+  '<p class="chint">Tip: you can also just tell <b>Ask Spire</b> “save a contact: Jose at Ramirez Electric, 555-1234” and it’ll do it for you.</p>'+
+  '</div></div>';
+ h+='<div><div class="sect"><h2>Directory</h2><div class="line"></div><span class="mini">'+list.length+' of '+CONTACTS.length+'</span></div>';
+ if(!CONTACTS.length)h+='<div class="empty">No contacts yet. Add your first subcontractor on the left, or ask Spire to save one.</div>';
+ else if(!list.length)h+='<div class="empty">No contacts match your search.</div>';
+ else{h+='<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">';
+  list.slice().reverse().forEach(c=>{h+='<div class="ccard"><div class="cch"><b>'+esc(c.name||c.company||'—')+'</b>'+(c.trade?'<span class="ctag">'+esc(c.trade)+'</span>':'')+'</div>'+
+   (c.company&&c.name?'<div class="cco">'+esc(c.company)+'</div>':'')+
+   (c.phone?'<div class="cli">📞 <a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a></div>':'')+
+   (c.email?'<div class="cli">✉️ <a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></div>':'')+
+   (c.notes?'<div class="cnote">'+esc(c.notes)+'</div>':'')+
+   '<div class="cfoot"><span>added by '+esc(c.by||'?')+' · '+tsShort(c.ts)+'</span><button class="cdel" onclick="delContact(\''+c.id+'\')">Delete</button></div></div>';});
+  h+='</div>';}
+ h+='</div></div>';
+ document.getElementById('content').innerHTML=h;}
+function ipt(id,lab,ph){return '<label class="clab">'+lab+'</label><input id="'+id+'" placeholder="'+ph+'">';}
 function actLine(e){const n=BYID[e.node];const nm=n?n.title:(e.title||e.node);let txt;
  if(e.type==='check')txt=(e.on?'checked off':'unchecked')+' “'+esc(e.label||('step '+(e.idx+1)))+'”';
  else if(e.type==='status')txt='set status to <b class="s'+(e.to==='green'?'g':e.to==='yellow'?'y':'r')+'">'+esc(e.to)+'</b>'+(e.from?' <span class="mut">(was '+esc(e.from)+')</span>':'');
