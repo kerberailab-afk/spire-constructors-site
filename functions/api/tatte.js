@@ -43,6 +43,54 @@ export async function onRequest(context){
   const kv=env.SCOPE; if(!kv) return json({error:"KV namespace binding 'SCOPE' is missing"},500);
 
   if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv});
+
+  // ===== SPIRE OS: shared state + audit log (os:state / os:log / os:roster) =====
+  if(url.searchParams.get("os")){
+    const OSKEY="os:state", OSLOG="os:log", OSROS="os:roster";
+    if(request.method==="GET"){
+      const state=(await kv.get(OSKEY,"json"))||{nodes:{},ck:{},ckmeta:{}};
+      const log=(await kv.get(OSLOG,"json"))||[];
+      const roster=(await kv.get(OSROS,"json"))||[];
+      return json({ok:true,state,log:log.slice(-400).reverse(),roster,now:Date.now()});
+    }
+    if(request.method==="POST"){
+      let b={}; try{ b=await request.json(); }catch(e){}
+      const who=(b.who||"?").toString().slice(0,60).trim()||"?";
+      const state=(await kv.get(OSKEY,"json"))||{nodes:{},ck:{},ckmeta:{}};
+      state.nodes=state.nodes||{}; state.ck=state.ck||{}; state.ckmeta=state.ckmeta||{};
+      let roster=(await kv.get(OSROS,"json"))||[];
+      if(who!=="?" && roster.indexOf(who)<0){ roster.push(who); await kv.put(OSROS,JSON.stringify(roster)); }
+      if(b.type==="identify") return json({ok:true,roster});
+      let log=(await kv.get(OSLOG,"json"))||[];
+      const ts=Date.now();
+      const ent={ts,who,type:b.type,node:(b.node||"").toString(),title:(b.title||"").toString().slice(0,80)};
+      if(b.type==="check"){
+        state.ck[b.node]=state.ck[b.node]||{};
+        state.ck[b.node][b.idx]=!!b.value;
+        state.ckmeta[b.node]=state.ckmeta[b.node]||{};
+        state.ckmeta[b.node][b.idx]={who,ts,on:!!b.value};
+        ent.idx=b.idx; ent.on=!!b.value; ent.label=(b.label||"").toString().slice(0,140);
+      } else if(b.type==="status"){
+        state.nodes[b.node]=state.nodes[b.node]||{};
+        ent.from=state.nodes[b.node].status||null;
+        state.nodes[b.node].status=b.value;
+        state.nodes[b.node]._statusBy={who,ts};
+        ent.to=b.value;
+      } else if(b.type==="field"){
+        state.nodes[b.node]=state.nodes[b.node]||{};
+        state.nodes[b.node][b.field]=b.value;
+        ent.field=(b.field||"").toString(); ent.label=(b.label||"").toString().slice(0,140);
+      } else {
+        return json({error:"unknown os op"},400);
+      }
+      log.push(ent);
+      if(log.length>LOG_KEEP) log=log.slice(-LOG_KEEP);
+      await kv.put(OSLOG,JSON.stringify(log));
+      await kv.put(OSKEY,JSON.stringify(state));
+      return json({ok:true,ts,state,entry:ent,roster});
+    }
+    return json({error:"method not allowed"},405);
+  }
   if(request.method==="GET" && url.searchParams.get("file")){
     if(!env.FILES) return json({error:"file storage not connected"},500);
     const key=url.searchParams.get("file");
