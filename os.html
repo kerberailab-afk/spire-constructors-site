@@ -1,364 +1,354 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Spire OS — A-Z Operations System</title>
+<title>Spire OS — Operations</title>
 <style>
-:root{--bg:#ffffff;--panel:#f7f8fa;--ink:#1f2430;--mut:#6b7280;--line:#e6e9ee;--teal:#0FB5AE;--teal-d:#0a8f89;--navy:#1C4F86;
---g:#16a34a;--y:#f59e0b;--r:#dc2626;--shadow:0 8px 30px rgba(20,30,50,.10);}
+:root{--bg:#f6f7f9;--card:#ffffff;--ink:#1a2233;--mut:#7a8699;--faint:#9aa4b2;--line:#e7eaf0;
+--teal:#0FB5AE;--teal-d:#0a8f89;--navy:#16233b;--navy2:#1e3050;--accent:#2563eb;
+--g:#16a34a;--y:#e2a008;--r:#e0453e;--shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.06);}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
-#top{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;letter-spacing:.2px}
-.brand .dot{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,var(--teal),var(--navy))}
-.brand small{font-weight:600;color:var(--mut);font-size:11px;letter-spacing:.4px;text-transform:uppercase}
-.tabs{display:flex;gap:4px;flex-wrap:wrap}
-.tab{border:none;background:none;color:var(--mut);font-weight:600;font-size:13px;padding:7px 12px;border-radius:9px;cursor:pointer}
-.tab:hover{background:var(--panel);color:var(--ink)}
-.tab.on{background:var(--ink);color:#fff}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;font-size:14px}
+#app{display:grid;grid-template-columns:246px 1fr;height:100vh;overflow:hidden}
+/* ---------- sidebar ---------- */
+#side{background:var(--navy);color:#cdd6e4;display:flex;flex-direction:column;padding:16px 12px;gap:2px;overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 8px 14px;color:#fff}
+.logo .m{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--teal),#3b82f6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.logo b{font-size:15px;letter-spacing:.3px;display:block;line-height:1}
+.logo small{font-size:10px;color:#8ea0bd;letter-spacing:.6px;text-transform:uppercase}
+.navlbl{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#6f82a3;padding:14px 10px 5px}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;color:#c4cee0;cursor:pointer;font-weight:600;font-size:13.5px;border:none;background:none;width:100%;text-align:left}
+.nav:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav.on{background:linear-gradient(90deg,rgba(15,181,174,.22),rgba(15,181,174,.05));color:#fff;box-shadow:inset 3px 0 0 var(--teal)}
+.nav .ic{width:17px;text-align:center;opacity:.9}
+.nav .ct{margin-left:auto;font-size:11px;color:#8ea0bd;font-weight:700}
+.sidefoot{margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
+/* ---------- main ---------- */
+#main{overflow:auto;position:relative}
+#head{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 26px;display:flex;align-items:center;gap:14px}
+#head h1{margin:0;font-size:19px;font-weight:800;letter-spacing:-.2px}
+#head .sub{font-size:12.5px;color:var(--mut);margin-top:2px}
 .grow{flex:1}
-.tool{display:flex;align-items:center;gap:8px}
-input,select{font:inherit}
-#search{border:1px solid var(--line);border-radius:9px;padding:7px 11px;font-size:13px;min-width:150px;background:var(--panel)}
-.fbtn{border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:7px 10px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer}
-.fbtn:hover{border-color:var(--teal)}
-.fbtn.on{background:var(--teal);color:#fff;border-color:var(--teal)}
-select.fsel{border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:7px 9px;font-size:12.5px;color:var(--ink)}
-/* counters */
-#counts{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
-.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;min-width:96px}
-.kpi .n{font-size:20px;font-weight:800;line-height:1}
-.kpi .l{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+#search{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;min-width:190px;background:#fff}
+.hbtn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 11px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.hbtn:hover{border-color:var(--teal)}
+.hbtn.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.wrap{padding:22px 26px;max-width:1240px}
+/* KPI row */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.kpi .n{font-size:26px;font-weight:800;line-height:1;letter-spacing:-.5px}
+.kpi .l{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;margin-top:6px}
 .kpi.g .n{color:var(--g)}.kpi.y .n{color:var(--y)}.kpi.r .n{color:var(--r)}
-.bar{height:7px;border-radius:6px;background:#eceff3;overflow:hidden;margin-top:6px;min-width:120px}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--navy))}
-/* views */
-#stage{position:relative}
-.view{display:none;padding:16px}
-.view.on{display:block}
-/* mindmap */
-#mm{display:none;position:relative;height:calc(100vh - 168px);overflow:hidden;background:
- radial-gradient(circle at 1px 1px,#e9edf2 1px,transparent 0) 0 0/26px 26px,#fbfcfd;cursor:grab}
-#mm.on{display:block}
+.kpi .bar{height:7px;border-radius:6px;background:#edf0f4;overflow:hidden;margin-top:9px}
+.kpi .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--accent))}
+/* section */
+.sect{margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+.sect h2{margin:0;font-size:15px;font-weight:800}
+.sect .line{flex:1;height:1px;background:var(--line)}
+.sect .mini{font-size:12px;color:var(--mut)}
+/* phase cards (pipeline) */
+.pipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.phase{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);cursor:pointer;position:relative;overflow:hidden}
+.phase:hover{border-color:var(--teal)}
+.phase .top{width:38px;height:4px;border-radius:4px;margin-bottom:11px}
+.phase h3{margin:0;font-size:15px}
+.phase .d{font-size:12px;color:var(--mut);margin:3px 0 12px}
+.phase .st{display:flex;gap:5px;align-items:center;font-size:12px;color:var(--mut)}
+.dot{width:9px;height:9px;border-radius:50%}
+.dot.g{background:var(--g)}.dot.y{background:var(--y)}.dot.r{background:var(--r)}
+.phase .pct{position:absolute;right:15px;top:15px;font-weight:800;font-size:15px;color:var(--faint)}
+/* node cards grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ncard{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 15px;box-shadow:var(--shadow);cursor:pointer;border-left:4px solid var(--faint);transition:transform .07s,box-shadow .12s}
+.ncard:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(16,24,40,.10)}
+.ncard.sg{border-left-color:var(--g)}.ncard.sy{border-left-color:var(--y)}.ncard.sr{border-left-color:var(--r)}
+.ncard .h{display:flex;align-items:center;gap:8px}
+.ncard .h b{font-size:14px}
+.ncard .h .st{margin-left:auto}
+.ncard .meta{font-size:11.5px;color:var(--mut);margin-top:5px}
+.ncard .pg{height:6px;border-radius:6px;background:#eef1f5;overflow:hidden;margin-top:11px}
+.ncard .pg i{display:block;height:100%;background:var(--teal)}
+.ncard .pgl{font-size:10.5px;color:var(--faint);margin-top:5px}
+.pill{font-size:9.5px;font-weight:800;border-radius:20px;padding:2px 8px;text-transform:uppercase;letter-spacing:.3px}
+.pill.g{background:#e7f4e8;color:var(--g)}.pill.y{background:#fbf0d3;color:#8a6206}.pill.r{background:#fde8e7;color:var(--r)}
+/* two-col */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.two{grid-template-columns:1fr}#app{grid-template-columns:64px 1fr}.logo b,.logo small,.nav span.tx,.navlbl,.nav .ct{display:none}}
+.panelcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.panelcard h3{margin:0 0 10px;font-size:14px}
+.arow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.arow:last-child{border-bottom:none}
+.arow:hover b{color:var(--teal-d)}
+.arow .dot{flex:0 0 9px}
+.arow span{color:var(--mut);font-size:11.5px;margin-left:auto}
+.deph{margin:9px 0}
+.deph .r{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}
+.deph .b{height:8px;border-radius:6px;background:#eef1f5;overflow:hidden;display:flex}
+.deph .b i{height:100%}
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;background:var(--card)}
+.tbl th{text-align:left;color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr{cursor:pointer}.tbl tbody tr:hover td{background:#fafbfc}
+.swgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.sw{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow)}
+.sw .sq{width:30px;height:30px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.sw b{font-size:13px}.sw span{font-size:10.5px;color:var(--mut);display:block}
+/* mind map */
+#mapview{display:none}
+#mapview.on{display:block}
+#mm{position:relative;height:calc(100vh - 150px);overflow:hidden;background:radial-gradient(circle at 1px 1px,#e4e9f0 1px,transparent 0) 0 0/26px 26px,#fbfcfd;cursor:grab;border:1px solid var(--line);border-radius:16px}
 #mm.drag{cursor:grabbing}
 #mmworld{position:absolute;left:0;top:0;transform-origin:0 0}
 #mmedges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
-.node{position:absolute;width:186px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--mut);border-radius:13px;padding:11px 12px;box-shadow:var(--shadow);cursor:pointer;transition:transform .08s,box-shadow .12s;user-select:none}
-.node:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(20,30,50,.16)}
+.node{position:absolute;width:184px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--faint);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);cursor:pointer;user-select:none}
+.node:hover{box-shadow:0 12px 30px rgba(16,24,40,.14)}
 .node.sg{border-left-color:var(--g)}.node.sy{border-left-color:var(--y)}.node.sr{border-left-color:var(--r)}
-.node .nt{font-weight:700;font-size:13px;line-height:1.25}
-.node .nd{font-size:10.5px;color:var(--mut);margin-top:4px;display:flex;align-items:center;gap:6px}
-.node .light{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
-.light.g{background:var(--g)}.light.y{background:var(--y)}.light.r{background:var(--r)}
 .node.branch{background:#fbfaff;border-style:dashed}
-.node.dim{opacity:.22;filter:grayscale(.4)}
-.chip{display:inline-block;font-size:9.5px;font-weight:700;color:var(--mut);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:1px 7px;margin-top:7px}
-.mmhint{position:absolute;left:14px;bottom:12px;font-size:11px;color:var(--mut);background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
-.mmzoom{position:absolute;right:14px;bottom:12px;display:flex;gap:6px}
-.mmzoom button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:18px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
-/* department view */
-.depgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.depcol{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
-.depcol h3{margin:0 0 4px;font-size:13.5px}
-.depcol .cnt{font-size:11px;color:var(--mut);margin-bottom:8px}
-.dnode{background:#fff;border:1px solid var(--line);border-radius:10px;border-left:4px solid var(--mut);padding:9px 11px;margin-bottom:7px;cursor:pointer}
-.dnode.sg{border-left-color:var(--g)}.dnode.sy{border-left-color:var(--y)}.dnode.sr{border-left-color:var(--r)}
-.dnode b{font-size:13px}.dnode span{font-size:11px;color:var(--mut);display:block;margin-top:2px}
-/* SOP + KPI + RYG cards */
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(20,30,50,.04)}
-.card h3{margin:0 0 3px;font-size:15px}
-.card .sub{font-size:12px;color:var(--mut);margin-bottom:10px}
-.tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--line)}
-.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-.tbl tr{cursor:pointer}.tbl tr:hover td{background:var(--panel)}
-.pill{font-size:10px;font-weight:700;border-radius:20px;padding:2px 9px;text-transform:uppercase}
-.pill.g{background:#e7f4e8;color:var(--g)}.pill.y{background:#fef3d6;color:#9a6a06}.pill.r{background:#fde8e8;color:var(--r)}
-.ryg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.rygcol h3{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:14px}
-.rygcol .light{width:12px;height:12px;border-radius:50%}
-.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-.krow{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:12.5px}
-.krow b{font-size:11px;color:var(--navy)}
-.swgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.sw{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 12px;text-decoration:none;color:var(--ink)}
-.sw .sq{width:26px;height:26px;border-radius:7px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
-.sw b{font-size:13px}.sw span{font-size:10.5px;color:var(--mut);display:block}
+.node.dim{opacity:.22}
+.node .nt{font-weight:700;font-size:12.5px;line-height:1.2}
+.node .nd{font-size:10px;color:var(--mut);margin-top:4px;display:flex;align-items:center;gap:6px}
+.mmzoom{position:absolute;right:16px;bottom:16px;display:flex;gap:6px}
+.mmzoom button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:17px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
 /* detail panel */
-#scrim{position:fixed;inset:0;background:rgba(15,20,30,.35);z-index:60;display:none}
-#panel{position:fixed;top:0;right:0;height:100%;width:440px;max-width:94vw;background:#fff;box-shadow:-16px 0 50px rgba(0,0,0,.18);z-index:61;transform:translateX(100%);transition:transform .22s;overflow:auto}
+#scrim{position:fixed;inset:0;background:rgba(15,20,30,.34);z-index:60;display:none}
+#panel{position:fixed;top:0;right:0;height:100%;width:460px;max-width:94vw;background:#fff;box-shadow:-16px 0 50px rgba(0,0,0,.18);z-index:61;transform:translateX(100%);transition:transform .22s;overflow:auto}
 #panel.open{transform:none}
-.phd{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:16px 18px;z-index:2}
-.phd .x{position:absolute;right:14px;top:14px;border:none;background:var(--panel);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px}
-.phd h2{margin:0 22px 0 0;font-size:18px}
-.phd .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
-.pbody{padding:16px 18px}
+.phd{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:18px 20px;z-index:2}
+.phd .x{position:absolute;right:16px;top:16px;border:none;background:var(--bg);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px}
+.phd h2{margin:0 26px 0 0;font-size:19px}
+.phd .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.pbody{padding:16px 20px}
 .sec{margin-bottom:16px}
-.sec h4{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut)}
-.sec p{margin:0;font-size:13.5px;line-height:1.5}
-.ck{display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.sec h4{margin:0 0 7px;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--faint)}
+.sec p{margin:0;font-size:13.5px;line-height:1.55}
+.ck{display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line)}
 .ck input{margin-top:2px}
-.tag{display:inline-block;font-size:11.5px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 9px;margin:0 5px 5px 0}
-.tag.tmpl{background:#eef6ff;border-color:#cfe4fb}
-.tag.auto{background:#f0fdf4;border-color:#c9ead2}
-.tag.kpi{background:#fff7e8;border-color:#f3e2bd}
+.tag{display:inline-block;font-size:11.5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 9px;margin:0 5px 5px 0}
+.tag.tmpl{background:#eef6ff;border-color:#cfe4fb}.tag.auto{background:#f0fdf4;border-color:#c9ead2}.tag.kpi{background:#fff7e8;border-color:#f3e2bd}
 .sof{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;border:1px solid var(--line);border-radius:8px;padding:3px 8px;margin:0 5px 5px 0}
 .sof i{width:9px;height:9px;border-radius:3px;display:inline-block}
-.editrow{display:flex;gap:6px;margin-top:6px}
-.editrow input{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
-.mini{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer}
-.mini:hover{border-color:var(--teal)}
 .statusset{display:flex;gap:6px}
-.statusset button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.statusset button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer}
 .statusset button.g.on{background:var(--g);color:#fff;border-color:var(--g)}
 .statusset button.y.on{background:var(--y);color:#fff;border-color:var(--y)}
 .statusset button.r.on{background:var(--r);color:#fff;border-color:var(--r)}
+.editrow{display:flex;gap:6px;margin-top:6px}
+.editrow input{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px}
+.mini{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer}
 textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;font:inherit;font-size:13px;min-height:64px;resize:vertical}
 a.link{color:var(--teal-d);font-weight:600;text-decoration:none}
-.foot{text-align:center;color:var(--mut);font-size:11px;padding:14px}
-@media print{#top,#counts,#scrim,.mmhint,.mmzoom{display:none!important}#panel{position:static;transform:none;width:100%;box-shadow:none}.view{display:block!important}}
+.empty{color:var(--faint);font-size:13px}
+@media print{#side,#head{display:none}#app{display:block;height:auto}#main{overflow:visible}}
 </style></head>
 <body>
-<div id="top">
-  <div class="brand"><span class="dot"></span><div>SPIRE OS<br><small>A-Z Operations System</small></div></div>
-  <div class="tabs" id="tabs"></div>
-  <div class="grow"></div>
-  <div class="tool">
-    <input id="search" placeholder="Search systems…" oninput="applyFilters()">
-    <select class="fsel" id="fdept" onchange="applyFilters()"><option value="">All departments</option></select>
-    <select class="fsel" id="fowner" onchange="applyFilters()"><option value="">All owners</option></select>
-    <select class="fsel" id="fsoft" onchange="applyFilters()"><option value="">All software</option></select>
-    <button class="fbtn" data-st="green" onclick="toggleStatusFilter('green',this)">🟢</button>
-    <button class="fbtn" data-st="yellow" onclick="toggleStatusFilter('yellow',this)">🟡</button>
-    <button class="fbtn" data-st="red" onclick="toggleStatusFilter('red',this)">🔴</button>
-    <button class="fbtn" id="adminBtn" onclick="toggleAdmin()">✏️ Admin</button>
-    <button class="fbtn" onclick="window.print()">⬇︎ PDF</button>
-    <button class="fbtn" onclick="exportImage()">🖼 Image</button>
-    <a class="fbtn" href="https://spireconstructors.com/scope" style="text-decoration:none">↗ Scope Tracker</a>
+<div id="app">
+  <aside id="side">
+    <div class="logo"><span class="m">S</span><div><b>Spire OS</b><small>Operations</small></div></div>
+    <div id="navmain"></div>
+    <div class="sidefoot">
+      <a class="nav" href="https://spireconstructors.com/scope" target="_blank"><span class="ic">📐</span><span class="tx">Scope Tracker</span></a>
+      <button class="nav" id="adminNav" onclick="toggleAdmin()"><span class="ic">✏️</span><span class="tx">Admin mode</span></button>
+    </div>
+  </aside>
+  <div id="main">
+    <div id="head">
+      <div><h1 id="ptitle">Operations Dashboard</h1><div class="sub" id="psub"></div></div>
+      <div class="grow"></div>
+      <input id="search" placeholder="Search systems…" oninput="applyFilters()">
+      <button class="hbtn" onclick="window.print()">⬇︎ PDF</button>
+      <button class="hbtn" onclick="exportImage()">🖼 Image</button>
+    </div>
+    <div class="wrap" id="content"></div>
+    <div id="mapview">
+      <div style="padding:14px 26px 0" class="empty">Every step and page in one canvas — drag to pan, scroll to zoom, drag a card to arrange, click to open.</div>
+      <div class="wrap" style="padding-top:12px">
+        <div id="mm"><svg id="mmedges"></svg><div id="mmworld"></div>
+          <div class="mmzoom"><button onclick="zoomBy(1.2)">+</button><button onclick="zoomBy(.83)">−</button><button onclick="fitView()" style="font-size:13px">⤢</button></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div id="counts"></div>
-<div id="stage">
-  <div id="mm" class="on">
-    <svg id="mmedges"></svg>
-    <div id="mmworld"></div>
-    <div class="mmhint">Drag background to pan · scroll to zoom · drag a card to move · click to open</div>
-    <div class="mmzoom"><button onclick="zoomBy(1.2)">+</button><button onclick="zoomBy(.83)">−</button><button onclick="fitView()" title="Reset" style="font-size:13px">⤢</button></div>
-  </div>
-  <div class="view" id="v_dept"></div>
-  <div class="view" id="v_sop"></div>
-  <div class="view" id="v_kpi"></div>
-  <div class="view" id="v_ryg"></div>
-  <div class="view" id="v_soft"></div>
-  <div class="foot" id="foot"></div>
 </div>
 <div id="scrim" onclick="closePanel()"></div>
 <div id="panel"></div>
 <script>
 const DATA = {"software": [{"id": "procore", "name": "Procore", "cat": "Project Mgmt", "url": "https://procore.com", "color": "#F47E42"}, {"id": "pipedrive", "name": "Pipedrive", "cat": "CRM", "url": "https://pipedrive.com", "color": "#017737"}, {"id": "fieldwire", "name": "Fieldwire", "cat": "Field", "url": "https://fieldwire.com", "color": "#0C7FF2"}, {"id": "quickbooks", "name": "QuickBooks Online", "cat": "Accounting", "url": "https://quickbooks.intuit.com", "color": "#2CA01C"}, {"id": "docusign", "name": "DocuSign", "cat": "E-Sign", "url": "https://docusign.com", "color": "#D8B500"}, {"id": "gmail", "name": "Gmail", "cat": "Email", "url": "https://mail.google.com", "color": "#EA4335"}, {"id": "gdrive", "name": "Google Drive", "cat": "Docs", "url": "https://drive.google.com", "color": "#1FA463"}, {"id": "slack", "name": "Slack", "cat": "Comms", "url": "https://slack.com", "color": "#611F69"}, {"id": "justcall", "name": "JustCall", "cat": "Phone", "url": "https://justcall.io", "color": "#00B3A4"}, {"id": "gcal", "name": "Google Calendar", "cat": "Scheduling", "url": "https://calendar.google.com", "color": "#4285F4"}, {"id": "spire_tracker", "name": "Spire Scope Tracker", "cat": "Internal", "url": "https://spireconstructors.com/scope", "color": "#1C4F86"}], "departments": ["Executive / Ownership", "Business Development", "Marketing", "Sales", "Estimating / Preconstruction", "Contracts / Administration", "Project Management", "Field Operations", "Finance / Accounting", "Client Communication", "HR / Recruiting", "Training / Onboarding", "Systems / SOPs"], "nodes": [{"id": "marketing", "title": "Marketing", "type": "workflow", "department": "Marketing", "owner": "Business Development", "status": "green", "purpose": "Generate qualified leads and build the Spire brand pipeline.", "software": ["pipedrive", "gmail", "gdrive", "justcall"], "sop_link": "SOP: Marketing", "templates": ["Campaign brief", "Lead capture form", "Landing page"], "checklist": ["Define target client", "Create campaign", "Track lead source", "Capture lead", "Add lead to CRM", "Trigger follow-up sequence"], "kpis": ["Leads generated", "Cost per lead", "Lead quality", "Conversion rate"], "automations": ["New web lead → create Pipedrive deal", "Lead source tag auto-applied"], "related_nodes": ["sales", "lead_not_converted"], "common_mistakes": ["No lead-source tracking", "Slow follow-up (>1hr)"], "improvement_ideas": ["Referral program", "Case-study library"], "notes": "", "col": 0, "row": 2, "branch": false}, {"id": "sales", "title": "Sales", "type": "workflow", "department": "Sales", "owner": "Business Development", "status": "yellow", "purpose": "Qualify and convert leads into signed opportunities.", "software": ["pipedrive", "justcall", "gmail"], "sop_link": "SOP: Sales", "templates": ["Discovery call script", "Site-visit checklist", "Proposal cover letter"], "checklist": ["Qualify lead", "Discovery call", "Site visit", "Budget discussion", "Confirm decision maker", "Schedule next step"], "kpis": ["Lead-to-opportunity %", "Close %", "Average contract value", "Sales cycle (days)"], "automations": ["Stage change → task + reminder", "Won deal → notify Estimating"], "related_nodes": ["marketing", "pricing_estimating", "lead_not_converted"], "common_mistakes": ["Not confirming decision maker", "No documented next step"], "improvement_ideas": ["Standard qualification scorecard"], "notes": "", "col": 1, "row": 2, "branch": false}, {"id": "lead_not_converted", "title": "Lead Not Converted", "type": "workflow", "department": "Sales", "owner": "Business Development", "status": "yellow", "purpose": "Handle leads that don't convert so the relationship stays warm.", "software": ["pipedrive", "gmail"], "sop_link": "SOP: Lead Not Converted", "templates": [], "checklist": ["Mark lost reason", "Send thank-you email", "Add to nurture list", "Set re-touch date"], "kpis": ["Lost reasons logged %", "Reactivation rate"], "automations": [], "related_nodes": ["send_thank_you", "sales"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 1, "row": 4, "branch": true}, {"id": "send_thank_you", "title": "Send Thank You Email", "type": "workflow", "department": "Marketing", "owner": "Business Development", "status": "green", "purpose": "Acknowledge every lost/closed lead and keep the door open.", "software": ["gmail", "pipedrive"], "sop_link": "SOP: Send Thank You Email", "templates": ["Thank-you email template"], "checklist": ["Trigger thank-you template", "Personalize", "Log activity in CRM"], "kpis": ["Thank-you sent %", "Open rate"], "automations": ["Lost stage → auto thank-you draft"], "related_nodes": ["newsletter", "lead_not_converted"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 2, "row": 4, "branch": true}, {"id": "newsletter", "title": "Newsletter / Email Sequence / Retargeting", "type": "workflow", "department": "Marketing", "owner": "Business Development", "status": "red", "purpose": "Long-term nurture of unconverted leads via newsletter, sequences and retargeting.", "software": ["pipedrive", "gmail"], "sop_link": "SOP: Newsletter / Email Sequence / Retargeting", "templates": [], "checklist": ["Add to newsletter list", "Enroll in email sequence", "Add to retargeting audience", "Track re-engagement"], "kpis": ["List growth", "Sequence open/click", "Reactivated leads"], "automations": [], "related_nodes": ["marketing"], "common_mistakes": ["No nurture cadence in place"], "improvement_ideas": ["Quarterly project newsletter"], "notes": "", "col": 3, "row": 4, "branch": true}, {"id": "pricing_estimating", "title": "Pricing / Estimating", "type": "workflow", "department": "Estimating / Preconstruction", "owner": "Estimator", "status": "green", "purpose": "Produce accurate, defensible estimates and winning proposals.", "software": ["procore", "gdrive", "quickbooks", "spire_tracker"], "sop_link": "SOP: Pricing / Estimating", "templates": ["Bid-leveling workbook (CSI)", "Proposal template", "RFQ template"], "checklist": ["Review plans", "Quantity takeoff", "Send RFQs", "Level bids", "Review scope", "Add contingency", "Review margin", "Generate proposal"], "kpis": ["Estimate turnaround", "Bid accuracy", "Gross margin", "Win rate"], "automations": ["Drawing set → CSI scope (Spire scope-extraction)", "Bid leveling xlsx export"], "related_nodes": ["sales", "contract_signed"], "common_mistakes": ["Missing Division 01 general conditions", "No contingency"], "improvement_ideas": ["Historical cost database from Back Costing"], "notes": "", "col": 2, "row": 2, "branch": false}, {"id": "contract_signed", "title": "Contract Signed", "type": "workflow", "department": "Contracts / Administration", "owner": "Executive", "status": "yellow", "purpose": "Convert accepted proposals into executed contracts.", "software": ["docusign", "gdrive", "quickbooks"], "sop_link": "SOP: Contract Signed", "templates": ["AIA/Owner contract", "Exhibit A scope", "Insurance requirements"], "checklist": ["Prepare contract", "Confirm scope & exclusions", "Confirm price & schedule", "Route for e-signature", "Countersign", "File executed docs", "Issue deposit invoice"], "kpis": ["Contracts executed on time", "Deposit collected %", "Signed-to-start days"], "automations": ["DocuSign complete → create project + notify PM"], "related_nodes": ["pricing_estimating", "schedule", "project_setup"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 3, "row": 2, "branch": false}, {"id": "schedule", "title": "Schedule", "type": "workflow", "department": "Project Management", "owner": "Project Manager", "status": "yellow", "purpose": "Build and baseline the project schedule before mobilization.", "software": ["procore", "gcal", "fieldwire"], "sop_link": "SOP: Schedule", "templates": ["Master schedule template", "Long-lead log"], "checklist": ["Build master schedule", "Identify long-lead items", "Set milestones", "Confirm trade durations", "Baseline schedule", "Distribute to team"], "kpis": ["Schedule baselined before start", "Long-lead items ordered", "Milestone hit rate"], "automations": [], "related_nodes": ["contract_signed", "project_setup"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 4, "row": 2, "branch": false}, {"id": "project_setup", "title": "Project Set-Up", "type": "workflow", "department": "Project Management", "owner": "Project Manager", "status": "green", "purpose": "Stand up the project systems so the field can execute cleanly.", "software": ["procore", "fieldwire", "gdrive", "quickbooks"], "sop_link": "SOP: Project Set-Up", "templates": ["Project setup checklist", "Cost code list", "Kickoff agenda"], "checklist": ["Create Procore project", "Upload plans", "Create cost codes", "Import estimate", "Create budget", "Trade directory", "RFIs", "Submittals", "Schedule", "Kickoff meeting"], "kpis": ["Setup completed before mobilization", "Budget loaded", "Schedule loaded", "Trade directory complete"], "automations": ["Estimate → Procore budget import", "Buyout log auto-created"], "related_nodes": ["schedule", "start_project", "weekly_systems"], "common_mistakes": ["Starting field before setup complete", "Cost codes not aligned to estimate"], "improvement_ideas": [], "notes": "", "col": 5, "row": 2, "branch": false}, {"id": "start_project", "title": "Start Project", "type": "workflow", "department": "Field Operations", "owner": "Superintendent", "status": "yellow", "purpose": "Mobilize the site and begin work under control.", "software": ["procore", "fieldwire", "spire_tracker"], "sop_link": "SOP: Start Project", "templates": ["Site mobilization checklist", "Daily log template"], "checklist": ["Mobilize site", "Safety orientation", "Confirm permits posted", "Pre-construction photos", "Issue daily log routine", "Confirm first deliveries"], "kpis": ["Mobilized on schedule", "Safety orientation 100%", "Daily logs started"], "automations": [], "related_nodes": ["project_setup", "weekly_systems", "update_client"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 6, "row": 2, "branch": false}, {"id": "weekly_systems", "title": "Weekly Systems", "type": "workflow", "department": "Project Management", "owner": "PM / Accounting", "status": "yellow", "purpose": "The weekly operating rhythm that keeps every project on track.", "software": ["procore", "quickbooks", "slack"], "sop_link": "SOP: Weekly Systems", "templates": ["Weekly review agenda", "WIP report"], "checklist": ["Weekly project review", "WIP review", "Budget vs Actual", "Schedule review", "Open RFIs", "Open Submittals", "Change Order Log", "AR/AP Review"], "kpis": ["Projects on schedule", "Margin forecast", "Open COs", "Overdue invoices"], "automations": ["Weekly WIP auto-compiled", "Overdue RFI/submittal digest"], "related_nodes": ["update_client", "protect_margin", "unpaid_project"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 7, "row": 1, "branch": false}, {"id": "update_client", "title": "Update Client", "type": "workflow", "department": "Client Communication", "owner": "Project Manager", "status": "green", "purpose": "Keep the owner informed and decisions moving.", "software": ["procore", "gmail"], "sop_link": "SOP: Update Client", "templates": ["Weekly client update template"], "checklist": ["Weekly update", "Schedule status", "Decisions required", "Progress photos", "Change Orders", "Upcoming milestones"], "kpis": ["Updates sent on time", "Client response time", "Outstanding client decisions"], "automations": ["Weekly update draft from Procore data + photos"], "related_nodes": ["weekly_systems", "variations"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 7, "row": 3, "branch": false}, {"id": "unpaid_project", "title": "Unpaid Project", "type": "workflow", "department": "Finance / Accounting", "owner": "Accounting", "status": "red", "purpose": "Protect cash: manage and recover unpaid/overdue billing.", "software": ["quickbooks", "procore", "gmail"], "sop_link": "SOP: Unpaid Project", "templates": ["Reminder email cadence", "Notice of intent letter"], "checklist": ["Review outstanding invoice", "Confirm payment terms", "Reminder", "Escalate", "Pause work if contract allows"], "kpis": ["AR Aging", "DSO", "Outstanding invoices"], "automations": ["Invoice overdue → reminder sequence"], "related_nodes": ["weekly_systems", "protect_margin"], "common_mistakes": ["Continuing work while unpaid", "No documented follow-up"], "improvement_ideas": [], "notes": "", "col": 8, "row": 3, "branch": false}, {"id": "complete_stage", "title": "Complete Stage", "type": "workflow", "department": "Project Management", "owner": "Project Manager", "status": "yellow", "purpose": "Close out each stage/phase cleanly and bill it.", "software": ["procore", "fieldwire", "quickbooks"], "sop_link": "SOP: Complete Stage", "templates": [], "checklist": ["Confirm stage complete", "Inspection passed", "Photos captured", "Update schedule", "Bill the stage", "Release retention if due"], "kpis": ["Stages billed on time", "Inspection pass rate"], "automations": [], "related_nodes": ["protect_margin", "complete_project"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 8, "row": 1, "branch": false}, {"id": "protect_margin", "title": "Protect Margin on Project", "type": "workflow", "department": "Project Management", "owner": "PM / Executive", "status": "yellow", "purpose": "Actively defend and forecast project profit.", "software": ["procore", "quickbooks"], "sop_link": "SOP: Protect Margin on Project", "templates": ["Margin forecast tracker", "Cost-to-complete worksheet"], "checklist": ["Budget vs Actual", "Labor tracking", "Material tracking", "Subcontractor tracking", "Scope creep review", "Submit COs", "Forecast margin"], "kpis": ["Gross Margin", "Cost Variance", "CO Recovery", "Forecast Profit"], "automations": ["Cost overrun alert vs budget"], "related_nodes": ["variations", "weekly_systems", "back_costing"], "common_mistakes": ["Unbilled change orders", "Late cost tracking"], "improvement_ideas": [], "notes": "", "col": 9, "row": 2, "branch": false}, {"id": "variations", "title": "Variations / Change Orders", "type": "workflow", "department": "Project Management", "owner": "PM / Estimator", "status": "yellow", "purpose": "Capture, price, approve and bill every change.", "software": ["procore", "docusign", "quickbooks"], "sop_link": "SOP: Variations / Change Orders", "templates": ["Change order form", "CO pricing sheet"], "checklist": ["Identify change", "Price change", "Submit to client", "Written approval", "Update budget", "Update schedule", "Bill change"], "kpis": ["Approved COs", "Pending COs", "Approval time"], "automations": ["CO approved → budget + schedule update"], "related_nodes": ["protect_margin", "update_client", "complete_project"], "common_mistakes": ["Doing work before written approval"], "improvement_ideas": [], "notes": "", "col": 10, "row": 2, "branch": false}, {"id": "complete_project", "title": "Complete Project", "type": "workflow", "department": "Project Management", "owner": "PM / Superintendent", "status": "green", "purpose": "Drive the project to substantial completion and final billing.", "software": ["procore", "fieldwire", "gdrive"], "sop_link": "SOP: Complete Project", "templates": ["Punch list template", "Closeout binder index"], "checklist": ["Punch list", "Final inspection", "Final photos", "O&M manuals", "Warranty documents", "Final invoice", "Client signoff"], "kpis": ["Punch completion", "Closeout duration", "Final payment collected"], "automations": [], "related_nodes": ["handover", "back_costing"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 11, "row": 2, "branch": false}, {"id": "handover", "title": "Handover", "type": "workflow", "department": "Client Communication", "owner": "Project Manager", "status": "yellow", "purpose": "Formally hand the finished project to the owner.", "software": ["gdrive", "gmail", "procore"], "sop_link": "SOP: Handover", "templates": ["Handover checklist", "Testimonial request"], "checklist": ["Deliver closeout binder", "Walkthrough with owner", "Keys / access transfer", "Warranty review", "Final signoff", "Request review/testimonial"], "kpis": ["Handover on time", "Warranty package delivered", "Client satisfaction"], "automations": [], "related_nodes": ["complete_project", "back_costing"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 12, "row": 2, "branch": false}, {"id": "back_costing", "title": "Back Costing", "type": "workflow", "department": "Executive / Ownership", "owner": "Executive / Estimator / PM", "status": "red", "purpose": "Compare estimate vs actual and feed lessons back into estimating.", "software": ["procore", "quickbooks"], "sop_link": "SOP: Back Costing", "templates": ["Back-costing worksheet"], "checklist": ["Compare estimate vs actual", "Labor variance", "Material variance", "Subcontractor variance", "Estimating lessons", "Update estimating database"], "kpis": ["Estimate accuracy", "Final gross margin", "Cost code variance"], "automations": [], "related_nodes": ["pricing_estimating", "select_strategy", "financials_kpis"], "common_mistakes": ["Skipping back costing", "Not updating unit costs"], "improvement_ideas": ["Auto cost-code variance report"], "notes": "", "col": 13, "row": 2, "branch": false}, {"id": "select_strategy", "title": "Select Strategy from Roadmap", "type": "system", "department": "Executive / Ownership", "owner": "Executive", "status": "yellow", "purpose": "Choose the next business-improvement initiative from the roadmap.", "software": ["gdrive", "slack"], "sop_link": "SOP: Select Strategy from Roadmap", "templates": [], "checklist": ["Review roadmap", "Pick focus initiative", "Assign owner", "Set target", "Schedule review"], "kpis": ["Initiatives shipped/qtr", "Roadmap adherence"], "automations": [], "related_nodes": ["financials_kpis", "business_improvement"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 14, "row": 1, "branch": false}, {"id": "financials_kpis", "title": "Financials & KPIs", "type": "finance", "department": "Finance / Accounting", "owner": "Executive / Accounting", "status": "yellow", "purpose": "The company scoreboard — financial health and operating KPIs.", "software": ["quickbooks", "procore", "gdrive"], "sop_link": "SOP: Financials & KPIs", "templates": ["Company KPI dashboard", "WIP schedule"], "checklist": ["Update P&L", "Cash flow / runway", "Backlog & pipeline", "Gross margin by project", "WIP schedule", "AR/AP aging", "Owner KPI review"], "kpis": ["Revenue", "Gross margin %", "Net profit %", "Backlog", "Cash on hand / runway", "DSO"], "automations": [], "related_nodes": ["back_costing", "levels_business"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 14, "row": 3, "branch": false}, {"id": "levels_business", "title": "Levels of the Business", "type": "system", "department": "Executive / Ownership", "owner": "Executive", "status": "yellow", "purpose": "Map owner vs manager vs doer work and drive the business up-level.", "software": ["gdrive", "slack"], "sop_link": "SOP: Levels of the Business", "templates": [], "checklist": ["Map org levels", "Identify owner-in-the-weeds work", "Delegate / systemize", "Define accountability chart", "Review quarterly"], "kpis": ["% time on owner-level work", "Roles with clear KPIs"], "automations": [], "related_nodes": ["team_improvement", "select_strategy"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 15, "row": 2, "branch": false}, {"id": "team_improvement", "title": "Team Improvement", "type": "hr", "department": "Executive / Ownership", "owner": "Executive", "status": "yellow", "purpose": "Grow the team's performance through cadence, scorecards and training.", "software": ["slack", "gdrive"], "sop_link": "SOP: Team Improvement", "templates": ["Scorecard template", "Weekly L10 agenda"], "checklist": ["Weekly meeting", "Scorecards", "Performance review", "Training plan", "Lessons learned"], "kpis": ["Employee scorecards", "Training completion", "Project performance"], "automations": [], "related_nodes": ["hiring", "levels_business"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 16, "row": 1, "branch": false}, {"id": "hiring", "title": "Hiring", "type": "hr", "department": "HR / Recruiting", "owner": "Executive / HR", "status": "red", "purpose": "Attract and select A-players with a repeatable process.", "software": ["gmail", "gdrive"], "sop_link": "SOP: Hiring", "templates": ["Job description template", "Interview scorecard", "Offer letter"], "checklist": ["Job description", "Scorecard", "Recruiting", "Interview", "References", "Offer", "Employment agreement"], "kpis": ["Time to hire", "Quality of hire", "Retention"], "automations": ["Application → screening scorecard"], "related_nodes": ["induct_onboarding", "team_improvement"], "common_mistakes": ["Hiring without a scorecard"], "improvement_ideas": [], "notes": "", "col": 16, "row": 3, "branch": false}, {"id": "induct_onboarding", "title": "Induct / Onboarding", "type": "hr", "department": "Training / Onboarding", "owner": "Executive / Department Head", "status": "yellow", "purpose": "Get new hires productive fast and aligned to Spire values.", "software": ["slack", "gdrive", "procore"], "sop_link": "SOP: Induct / Onboarding", "templates": ["Onboarding plan", "Software access checklist", "30/60/90 template"], "checklist": ["Company values", "Org chart", "Software access", "SOP training", "Role expectations", "30/60/90-day plan"], "kpis": ["Onboarding completion", "Time to productivity"], "automations": [], "related_nodes": ["hiring", "team_improvement"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 17, "row": 2, "branch": false}, {"id": "business_improvement", "title": "Business Improvement", "type": "system", "department": "Systems / SOPs", "owner": "Executive", "status": "yellow", "purpose": "Continuous improvement loop — turn lessons into systemized SOPs.", "software": ["gdrive", "slack"], "sop_link": "SOP: Business Improvement", "templates": [], "checklist": ["Collect lessons learned", "Prioritize improvements", "Write/Update SOP", "Assign owner", "Roll out & train", "Measure impact"], "kpis": ["SOPs current %", "Improvements shipped", "Rework reduced"], "automations": [], "related_nodes": ["back_costing", "select_strategy", "levels_business"], "common_mistakes": [], "improvement_ideas": [], "notes": "", "col": 15, "row": 4, "branch": true}], "edges": [["marketing", "sales", "main"], ["sales", "pricing_estimating", "main"], ["sales", "lead_not_converted", "branch"], ["lead_not_converted", "send_thank_you", "branch"], ["send_thank_you", "newsletter", "branch"], ["newsletter", "marketing", "branch"], ["pricing_estimating", "contract_signed", "main"], ["contract_signed", "schedule", "main"], ["schedule", "project_setup", "main"], ["project_setup", "start_project", "main"], ["start_project", "weekly_systems", "main"], ["weekly_systems", "update_client", "branch"], ["weekly_systems", "unpaid_project", "branch"], ["weekly_systems", "complete_stage", "main"], ["complete_stage", "protect_margin", "main"], ["protect_margin", "variations", "main"], ["variations", "complete_project", "main"], ["complete_project", "handover", "main"], ["handover", "back_costing", "main"], ["back_costing", "select_strategy", "main"], ["select_strategy", "financials_kpis", "branch"], ["select_strategy", "levels_business", "main"], ["levels_business", "team_improvement", "main"], ["team_improvement", "hiring", "main"], ["hiring", "induct_onboarding", "main"], ["back_costing", "business_improvement", "branch"], ["business_improvement", "select_strategy", "branch"]]};
-const SW = {}; DATA.software.forEach(s=>SW[s.id]=s);
-const LS='spireos_v1';
-let store = {}; try{store=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){store={}}
+const SW={};DATA.software.forEach(s=>SW[s.id]=s);
+const LS='spireos_v2';
+let store={};try{store=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){store={}}
 function save(){localStorage.setItem(LS,JSON.stringify(store))}
-// merge overrides
-const NODES = DATA.nodes.map(n=>{const o=(store.nodes&&store.nodes[n.id])||{};return Object.assign({},n,o,{checklistState:(store.ck&&store.ck[n.id])||{}})});
-const BYID={}; NODES.forEach(n=>BYID[n.id]=n);
-let admin=false, statusFilter=new Set();
-const VIEWS=[['mm','A-Z Mind Map'],['dept','Departments'],['sop','SOP Library'],['kpi','KPIs'],['ryg','Red / Yellow / Green'],['soft','Software Stack']];
-let view='mm';
-function esc(s){return (s==null?'':''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+const NODES=DATA.nodes.map(n=>{const o=(store.nodes&&store.nodes[n.id])||{};return Object.assign({},n,o,{checklistState:(store.ck&&store.ck[n.id])||{}})});
+const BYID={};NODES.forEach(n=>BYID[n.id]=n);
+const PHASES=[
+ {id:'win',name:'Win Work',desc:'Marketing → signed contract',color:'#2563eb',nodes:['marketing','sales','lead_not_converted','send_thank_you','newsletter','pricing_estimating','contract_signed']},
+ {id:'setup',name:'Set Up',desc:'Schedule & mobilize the job',color:'#7c3aed',nodes:['schedule','project_setup','start_project']},
+ {id:'build',name:'Build',desc:'Run the project profitably',color:'#0FB5AE',nodes:['weekly_systems','update_client','unpaid_project','complete_stage','protect_margin','variations']},
+ {id:'close',name:'Close Out',desc:'Finish, hand over, learn',color:'#059669',nodes:['complete_project','handover','back_costing']},
+ {id:'grow',name:'Grow',desc:'Improve the business',color:'#d97706',nodes:['select_strategy','financials_kpis','levels_business','team_improvement','hiring','induct_onboarding','business_improvement']},
+];
+const PHOF={};PHASES.forEach(p=>p.nodes.forEach(id=>PHOF[id]=p));
+const NAV=[
+ ['home','🏠','Home'],['ops','🧭','Operations'],['dept','🏢','Departments'],
+ ['sop','📋','SOP Library'],['kpi','📊','KPIs'],['status','🚦','Status Board'],
+ ['soft','🧩','Software'],['map','🗺','Mind Map'],
+];
+let view='home',admin=false;
+function esc(s){return(s==null?'':''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function sc(st){return st==='green'?'g':st==='yellow'?'y':'r'}
+function ckpct(n){const t=(n.checklist||[]).length;if(!t)return 0;let d=0;for(let i=0;i<t;i++)if(n.checklistState[i])d++;return Math.round(d/t*100)}
 
-// ---------- build top tabs + filters ----------
-(function(){
-  const tw=document.getElementById('tabs');
-  VIEWS.forEach(([k,l])=>{const b=document.createElement('button');b.className='tab'+(k==='mm'?' on':'');b.textContent=l;b.onclick=()=>setView(k,b);tw.appendChild(b);});
-  const dd=document.getElementById('fdept');[...new Set(NODES.map(n=>n.department))].sort().forEach(d=>dd.append(new Option(d,d)));
-  const od=document.getElementById('fowner');[...new Set(NODES.map(n=>n.owner))].sort().forEach(o=>od.append(new Option(o,o)));
-  const sd=document.getElementById('fsoft');DATA.software.forEach(s=>sd.append(new Option(s.name,s.id)));
+// sidebar nav
+(function(){const w=document.getElementById('navmain');
+ w.innerHTML='<div class="navlbl">Workspace</div>';
+ NAV.forEach(([k,ic,l])=>{const cnt=k==='ops'?NODES.length:'';
+   const b=document.createElement('button');b.className='nav'+(k==='home'?' on':'');b.dataset.k=k;
+   b.innerHTML='<span class="ic">'+ic+'</span><span class="tx">'+l+'</span>'+(cnt?'<span class="ct">'+cnt+'</span>':'');
+   b.onclick=()=>setView(k);w.appendChild(b);});
 })();
-function setView(k,btn){view=k;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));if(btn)btn.classList.add('on');
-  document.getElementById('mm').classList.toggle('on',k==='mm');
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
-  if(k!=='mm')document.getElementById('v_'+k).classList.add('on');
-  render();}
+function setView(k){view=k;document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on',n.dataset.k===k));
+ document.getElementById('mapview').classList.toggle('on',k==='map');
+ document.getElementById('content').style.display=k==='map'?'none':'block';
+ render();}
 
-// ---------- counters ----------
-function renderCounts(){
-  const c={green:0,yellow:0,red:0}; NODES.forEach(n=>c[n.status]++);
-  const tot=NODES.length, pct=Math.round(c.green/tot*100);
-  const byd={}; NODES.forEach(n=>byd[n.department]=(byd[n.department]||0)+1);
-  document.getElementById('counts').innerHTML=
-    kpi(tot,'Total systems','')+kpi(c.green,'Green','g')+kpi(c.yellow,'Yellow','y')+kpi(c.red,'Red','r')+
-    '<div class="kpi"><div class="n">'+pct+'%</div><div class="l">Systemized</div><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
-    '<div class="kpi"><div class="n">'+Object.keys(byd).length+'</div><div class="l">Departments active</div></div>';
+const TITLES={home:['Operations Dashboard','The health of every system, one screen'],ops:['Operations','The A-Z flow, grouped by phase'],dept:['Departments','Systems organized by who owns them'],sop:['SOP Library','Every system, its SOP and checklist'],kpi:['KPI Dashboard','Operating metrics across the business'],status:['Status Board','Red / Yellow / Green at a glance'],soft:['Software Stack','The tools Spire OS ties together'],map:['Mind Map','See every step at once']};
+
+function counts(list){const c={green:0,yellow:0,red:0};list.forEach(n=>c[n.status]++);return c}
+function nodeMatch(n){const q=(document.getElementById('search').value||'').toLowerCase();
+ if(!q)return true;const hay=(n.title+' '+n.purpose+' '+n.department+' '+n.owner+' '+(n.checklist||[]).join(' ')+' '+(n.kpis||[]).join(' ')).toLowerCase();return hay.includes(q)}
+function applyFilters(){if(view==='map'){document.querySelectorAll('.node').forEach(el=>el.classList.toggle('dim',!nodeMatch(BYID[el.dataset.id])));}else render()}
+
+function kpiRow(){const c=counts(NODES),tot=NODES.length,pct=Math.round(c.green/tot*100);
+ const nd=new Set(NODES.map(n=>n.department)).size;
+ return '<div class="kpis">'+
+  kc(tot,'Total systems','')+kc(c.green,'Systemized','g')+kc(c.yellow,'Needs review','y')+kc(c.red,'Missing / urgent','r')+
+  '<div class="kpi"><div class="n">'+pct+'%</div><div class="l">Systemized</div><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
+  kc(nd,'Departments','')+'</div>';}
+function kc(n,l,cl){return '<div class="kpi '+cl+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'}
+function ncard(n){const p=ckpct(n);return '<div class="ncard s'+sc(n.status)+'" onclick="openNode(\''+n.id+'\')">'+
+ '<div class="h"><b>'+esc(n.title)+'</b><span class="st pill '+sc(n.status)+'">'+n.status+'</span></div>'+
+ '<div class="meta">'+esc(n.department)+' · '+esc(n.owner)+'</div>'+
+ '<div class="pg"><i style="width:'+p+'%"></i></div><div class="pgl">'+p+'% of checklist systemized</div></div>'}
+
+function renderHome(){
+ let h=kpiRow();
+ h+='<div class="sect"><h2>Operations pipeline</h2><div class="line"></div><span class="mini">click a phase</span></div><div class="pipe">';
+ PHASES.forEach(p=>{const list=p.nodes.map(id=>BYID[id]).filter(Boolean);const c=counts(list);const pct=Math.round(c.green/list.length*100);
+  h+='<div class="phase" onclick="gotoPhase(\''+p.id+'\')"><div class="top" style="background:'+p.color+'"></div><span class="pct">'+pct+'%</span>'+
+   '<h3>'+esc(p.name)+'</h3><div class="d">'+esc(p.desc)+'</div>'+
+   '<div class="st"><span class="dot g"></span>'+c.green+' <span class="dot y" style="margin-left:8px"></span>'+c.yellow+' <span class="dot r" style="margin-left:8px"></span>'+c.red+' <span style="margin-left:8px">· '+list.length+' systems</span></div></div>';});
+ h+='</div>';
+ // attention + departments
+ const att=NODES.filter(n=>n.status!=='green').sort((a,b)=>(a.status==='red'?0:1)-(b.status==='red'?0:1));
+ h+='<div class="two" style="margin-top:22px"><div class="panelcard"><h3>Needs attention ('+att.length+')</h3>';
+ att.slice(0,9).forEach(n=>h+='<div class="arow" onclick="openNode(\''+n.id+'\')"><span class="dot '+sc(n.status)+'"></span><b>'+esc(n.title)+'</b><span>'+esc(n.department)+'</span></div>');
+ h+='</div>';
+ const byd={};NODES.forEach(n=>{(byd[n.department]=byd[n.department]||[]).push(n)});
+ h+='<div class="panelcard"><h3>Department health</h3>';
+ Object.keys(byd).sort().forEach(d=>{const c=counts(byd[d]),t=byd[d].length;
+  h+='<div class="deph"><div class="r"><span>'+esc(d)+'</span><span style="color:var(--mut)">'+t+'</span></div><div class="b">'+
+   seg(c.green,t,'var(--g)')+seg(c.yellow,t,'var(--y)')+seg(c.red,t,'var(--r)')+'</div></div>';});
+ h+='</div></div>';
+ document.getElementById('content').innerHTML=h;
 }
-function kpi(n,l,cl){return '<div class="kpi '+cl+'"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'}
+function seg(v,t,c){return v?'<i style="width:'+(v/t*100)+'%;background:'+c+'"></i>':''}
+function gotoPhase(pid){setView('ops');setTimeout(()=>{const el=document.getElementById('ph_'+pid);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},60)}
 
-// ---------- filters ----------
-function nodeMatch(n){
-  const q=(document.getElementById('search').value||'').toLowerCase();
-  const d=document.getElementById('fdept').value, o=document.getElementById('fowner').value, s=document.getElementById('fsoft').value;
-  if(d&&n.department!==d)return false;
-  if(o&&n.owner!==o)return false;
-  if(s&&!(n.software||[]).includes(s))return false;
-  if(statusFilter.size&&!statusFilter.has(n.status))return false;
-  if(q){const hay=(n.title+' '+n.purpose+' '+n.department+' '+n.owner+' '+(n.checklist||[]).join(' ')+' '+(n.kpis||[]).join(' ')).toLowerCase();if(!hay.includes(q))return false;}
-  return true;
+function renderOps(){let h='';PHASES.forEach(p=>{const list=p.nodes.map(id=>BYID[id]).filter(Boolean).filter(nodeMatch);if(!list.length)return;
+ h+='<div class="sect" id="ph_'+p.id+'"><span class="dot" style="width:11px;height:11px;background:'+p.color+'"></span><h2>'+esc(p.name)+'</h2><div class="line"></div><span class="mini">'+esc(p.desc)+'</span></div>';
+ h+='<div class="grid">'+list.map(ncard).join('')+'</div>';});
+ document.getElementById('content').innerHTML=h||'<div class="empty">No systems match your search.</div>';}
+
+function renderDept(){const shown=NODES.filter(nodeMatch);const byd={};DATA.departments.forEach(d=>byd[d]=[]);shown.forEach(n=>(byd[n.department]=byd[n.department]||[]).push(n));
+ let h='';Object.keys(byd).forEach(d=>{if(!byd[d].length)return;
+  h+='<div class="sect"><h2>'+esc(d)+'</h2><div class="line"></div><span class="mini">'+byd[d].length+' systems</span></div><div class="grid">'+byd[d].map(ncard).join('')+'</div>';});
+ document.getElementById('content').innerHTML=h||'<div class="empty">No systems match.</div>';}
+
+function renderSOP(){const shown=NODES.filter(nodeMatch);
+ let h='<div class="panelcard" style="padding:0;overflow:hidden"><table class="tbl"><thead><tr><th>System</th><th>Phase</th><th>Owner</th><th>Status</th><th>Checklist</th><th>Templates</th><th>SOP</th></tr></thead><tbody>';
+ shown.forEach(n=>{h+='<tr onclick="openNode(\''+n.id+'\')"><td><b>'+esc(n.title)+'</b></td><td>'+esc((PHOF[n.id]||{}).name||'—')+'</td><td>'+esc(n.owner)+'</td><td><span class="pill '+sc(n.status)+'">'+n.status+'</span></td><td>'+ckpct(n)+'% · '+(n.checklist||[]).length+' steps</td><td>'+(n.templates||[]).length+'</td><td>'+esc(n.sop_link||'')+'</td></tr>';});
+ document.getElementById('content').innerHTML=h+'</tbody></table></div>';}
+
+function renderKPI(){const shown=NODES.filter(nodeMatch);let h='';PHASES.forEach(p=>{const list=p.nodes.map(id=>BYID[id]).filter(n=>n&&shown.includes(n));if(!list.length)return;
+ h+='<div class="sect"><h2>'+esc(p.name)+'</h2><div class="line"></div></div><div class="grid">';
+ list.forEach(n=>{h+='<div class="ncard s'+sc(n.status)+'" onclick="openNode(\''+n.id+'\')"><div class="h"><b>'+esc(n.title)+'</b></div>'+(n.kpis||[]).map(k=>'<div class="meta">• '+esc(k)+'</div>').join('')+'</div>';});h+='</div>';});
+ document.getElementById('content').innerHTML=h;}
+
+function renderStatus(){const shown=NODES.filter(nodeMatch);const cols={red:[],yellow:[],green:[]};shown.forEach(n=>cols[n.status].push(n));
+ const col=(st,lbl,cl)=>'<div><div class="sect"><span class="dot '+cl+'" style="width:11px;height:11px"></span><h2>'+lbl+' ('+cols[st].length+')</h2></div>'+cols[st].map(ncard).join('')+'</div>';
+ document.getElementById('content').innerHTML='<div class="two" style="grid-template-columns:1fr 1fr 1fr">'+col('red','Missing / urgent','r')+col('yellow','Needs review','y')+col('green','Systemized','g')+'</div>';}
+
+function renderSoft(){let h='<div class="swgrid">';DATA.software.forEach(s=>{const u=NODES.filter(n=>(n.software||[]).includes(s.id)).length;
+ h+='<a class="sw" href="'+s.url+'" target="_blank"><span class="sq" style="background:'+s.color+'">'+esc(s.name[0])+'</span><div><b>'+esc(s.name)+'</b><span>'+esc(s.cat)+' · '+u+' systems</span></div></a>';});
+ document.getElementById('content').innerHTML=h+'</div>';}
+
+function render(){const t=TITLES[view];document.getElementById('ptitle').textContent=t[0];document.getElementById('psub').textContent=t[1];
+ if(view==='home')renderHome();else if(view==='ops')renderOps();else if(view==='dept')renderDept();
+ else if(view==='sop')renderSOP();else if(view==='kpi')renderKPI();else if(view==='status')renderStatus();
+ else if(view==='soft')renderSoft();else if(view==='map')renderMM();
 }
-function toggleStatusFilter(st,btn){if(statusFilter.has(st)){statusFilter.delete(st);btn.classList.remove('on')}else{statusFilter.add(st);btn.classList.add('on')}applyFilters()}
-function applyFilters(){ if(view==='mm'){document.querySelectorAll('.node').forEach(el=>{el.classList.toggle('dim',!nodeMatch(BYID[el.dataset.id]))});} else render(); }
 
-// ---------- MIND MAP ----------
+/* ---------- MIND MAP (secondary view) ---------- */
 let tx=40,ty=20,scale=.82;
 function nodePos(n){const o=(store.pos&&store.pos[n.id]);if(o)return o;return {x:60+n.col*230,y:70+n.row*150}}
-function renderMM(){
-  const world=document.getElementById('mmworld'); world.innerHTML='';
-  NODES.forEach(n=>{
-    const p=nodePos(n);
-    const el=document.createElement('div');
-    el.className='node s'+sc(n.status)+(n.branch?' branch':'');el.dataset.id=n.id;
-    el.style.left=p.x+'px';el.style.top=p.y+'px';
-    el.innerHTML='<div class="nt">'+esc(n.title)+'</div><div class="nd"><span class="light '+sc(n.status)+'"></span>'+esc(n.department)+'</div><div class="chip">'+esc(n.owner)+'</div>';
-    world.appendChild(el);
-    el.addEventListener('click',e=>{if(el._moved)return;openNode(n.id)});
-    dragNode(el,n);
-  });
-  applyTransform(); drawEdges();
-  applyFilters();
-}
+function renderMM(){const world=document.getElementById('mmworld');world.innerHTML='';
+ NODES.forEach(n=>{const p=nodePos(n);const el=document.createElement('div');el.className='node s'+sc(n.status)+(n.branch?' branch':'');el.dataset.id=n.id;el.style.left=p.x+'px';el.style.top=p.y+'px';
+  el.innerHTML='<div class="nt">'+esc(n.title)+'</div><div class="nd"><span class="dot '+sc(n.status)+'"></span>'+esc(n.department)+'</div>';
+  world.appendChild(el);el.addEventListener('click',()=>{if(!el._moved)openNode(n.id)});dragNode(el,n);});
+ applyTransform();applyFilters();}
 function applyTransform(){document.getElementById('mmworld').style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';drawEdges()}
-function drawEdges(){
-  const svg=document.getElementById('mmedges');const w=document.getElementById('mm');
-  svg.setAttribute('width',w.clientWidth);svg.setAttribute('height',w.clientHeight);
-  let paths='';
-  DATA.edges.forEach(([a,b,kind])=>{
-    const A=BYID[a],B=BYID[b];if(!A||!B)return;const pa=nodePos(A),pb=nodePos(B);
-    const x1=(pa.x+186)*scale+tx, y1=(pa.y+34)*scale+ty, x2=pb.x*scale+tx, y2=(pb.y+34)*scale+ty;
-    const mx=(x1+x2)/2;
-    const col=kind==='branch'?'#c3b8e6':'#bcd0e6';const dash=kind==='branch'?'5 5':'';
-    paths+='<path d="M'+x1+' '+y1+' C '+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="'+dash+'"/>';
-    paths+='<circle cx="'+x2+'" cy="'+y2+'" r="3" fill="'+col+'"/>';
-  });
-  svg.innerHTML=paths;
-}
-function dragNode(el,n){
-  let sx,sy,ox,oy,down=false;
-  el.addEventListener('mousedown',e=>{e.stopPropagation();down=true;el._moved=false;sx=e.clientX;sy=e.clientY;const p=nodePos(n);ox=p.x;oy=p.y;
-    function mv(ev){const dx=(ev.clientX-sx)/scale,dy=(ev.clientY-sy)/scale;if(Math.abs(dx)+Math.abs(dy)>3)el._moved=true;
-      store.pos=store.pos||{};store.pos[n.id]={x:ox+dx,y:oy+dy};el.style.left=store.pos[n.id].x+'px';el.style.top=store.pos[n.id].y+'px';drawEdges();}
-    function up(){down=false;document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);if(el._moved)save();setTimeout(()=>el._moved=false,50);}
-    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
-  });
-}
-(function mmpan(){
-  const mm=document.getElementById('mm');let down=false,sx,sy,tx0,ty0;
-  mm.addEventListener('mousedown',e=>{if(e.target!==mm&&e.target.id!=='mmedges'&&e.target.tagName!=='svg'&&e.target.tagName!=='path'&&e.target.tagName!=='circle')return;down=true;mm.classList.add('drag');sx=e.clientX;sy=e.clientY;tx0=tx;ty0=ty;});
-  window.addEventListener('mousemove',e=>{if(!down)return;tx=tx0+(e.clientX-sx);ty=ty0+(e.clientY-sy);applyTransform();});
-  window.addEventListener('mouseup',()=>{down=false;mm.classList.remove('drag')});
-  mm.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.1:.9;const r=mm.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
-    const ns=Math.max(.35,Math.min(2.2,scale*f));tx=mx-(mx-tx)*(ns/scale);ty=my-(my-ty)*(ns/scale);scale=ns;applyTransform();},{passive:false});
-})();
+function drawEdges(){const svg=document.getElementById('mmedges');const w=document.getElementById('mm');if(!w)return;svg.setAttribute('width',w.clientWidth);svg.setAttribute('height',w.clientHeight);let paths='';
+ DATA.edges.forEach(([a,b,kind])=>{const A=BYID[a],B=BYID[b];if(!A||!B)return;const pa=nodePos(A),pb=nodePos(B);
+  const x1=(pa.x+184)*scale+tx,y1=(pa.y+30)*scale+ty,x2=pb.x*scale+tx,y2=(pb.y+30)*scale+ty,mx=(x1+x2)/2;
+  const col=kind==='branch'?'#c9bde8':'#bcd0e6',dash=kind==='branch'?'5 5':'';
+  paths+='<path d="M'+x1+' '+y1+' C '+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="'+dash+'"/><circle cx="'+x2+'" cy="'+y2+'" r="3" fill="'+col+'"/>';});
+ svg.innerHTML=paths;}
+function dragNode(el,n){let sx,sy,ox,oy;el.addEventListener('mousedown',e=>{e.stopPropagation();el._moved=false;sx=e.clientX;sy=e.clientY;const p=nodePos(n);ox=p.x;oy=p.y;
+ function mv(ev){const dx=(ev.clientX-sx)/scale,dy=(ev.clientY-sy)/scale;if(Math.abs(dx)+Math.abs(dy)>3)el._moved=true;store.pos=store.pos||{};store.pos[n.id]={x:ox+dx,y:oy+dy};el.style.left=(ox+dx)+'px';el.style.top=(oy+dy)+'px';drawEdges();}
+ function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);if(el._moved)save();setTimeout(()=>el._moved=false,40);}
+ document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});}
+(function(){const mm=document.getElementById('mm');let down=false,sx,sy,tx0,ty0;
+ mm.addEventListener('mousedown',e=>{if(e.target.classList.contains('node')||e.target.closest('.node'))return;down=true;mm.classList.add('drag');sx=e.clientX;sy=e.clientY;tx0=tx;ty0=ty;});
+ window.addEventListener('mousemove',e=>{if(!down)return;tx=tx0+(e.clientX-sx);ty=ty0+(e.clientY-sy);applyTransform();});
+ window.addEventListener('mouseup',()=>{down=false;mm.classList.remove('drag')});
+ mm.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.1:.9,r=mm.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,ns=Math.max(.35,Math.min(2.2,scale*f));tx=mx-(mx-tx)*(ns/scale);ty=my-(my-ty)*(ns/scale);scale=ns;applyTransform();},{passive:false});})();
 function zoomBy(f){scale=Math.max(.35,Math.min(2.2,scale*f));applyTransform()}
 function fitView(){tx=40;ty=20;scale=.82;applyTransform()}
 
-// ---------- DEPARTMENT VIEW ----------
-function renderDept(){
-  const host=document.getElementById('v_dept');const shown=NODES.filter(nodeMatch);
-  const byd={};DATA.departments.forEach(d=>byd[d]=[]);shown.forEach(n=>{(byd[n.department]=byd[n.department]||[]).push(n)});
-  let h='<div class="depgrid">';
-  Object.keys(byd).forEach(d=>{const arr=byd[d];if(!arr.length)return;
-    h+='<div class="depcol"><h3>'+esc(d)+'</h3><div class="cnt">'+arr.length+' system'+(arr.length>1?'s':'')+'</div>';
-    arr.forEach(n=>h+='<div class="dnode s'+sc(n.status)+'" onclick="openNode(\''+n.id+'\')"><b>'+esc(n.title)+'</b><span>'+esc(n.owner)+'</span></div>');
-    h+='</div>';});
-  host.innerHTML=h+'</div>';
-}
-// ---------- SOP LIBRARY ----------
-function renderSOP(){
-  const shown=NODES.filter(nodeMatch);
-  let h='<div class="card"><h3>SOP Library</h3><div class="sub">Every system, its owner, checklist depth and linked SOP. Click a row to open.</div>'+
-    '<table class="tbl"><thead><tr><th>System</th><th>Department</th><th>Owner</th><th>Status</th><th>Checklist</th><th>Templates</th><th>SOP</th></tr></thead><tbody>';
-  shown.forEach(n=>{h+='<tr onclick="openNode(\''+n.id+'\')"><td><b>'+esc(n.title)+'</b></td><td>'+esc(n.department)+'</td><td>'+esc(n.owner)+'</td>'+
-    '<td><span class="pill '+sc(n.status)+'">'+n.status+'</span></td><td>'+(n.checklist||[]).length+' steps</td><td>'+(n.templates||[]).length+'</td><td>'+esc(n.sop_link||'')+'</td></tr>';});
-  document.getElementById('v_sop').innerHTML=h+'</tbody></table></div>';
-}
-// ---------- KPI DASHBOARD ----------
-function renderKPI(){
-  const shown=NODES.filter(nodeMatch);let h='';
-  h+='<div class="card"><h3>KPI Dashboard</h3><div class="sub">All operating KPIs across the system, by node.</div><div class="kgrid">';
-  shown.forEach(n=>{(n.kpis||[]).forEach(k=>{h+='<div class="krow"><b>'+esc(n.title)+'</b><br>'+esc(k)+'</div>';});});
-  h+='</div></div>';
-  document.getElementById('v_kpi').innerHTML=h;
-}
-// ---------- RYG DASHBOARD ----------
-function renderRYG(){
-  const shown=NODES.filter(nodeMatch);const cols={red:[],yellow:[],green:[]};shown.forEach(n=>cols[n.status].push(n));
-  const col=(st,lbl,cl)=>{let h='<div class="rygcol"><h3><span class="light '+cl+'"></span>'+lbl+' ('+cols[st].length+')</h3>';
-    cols[st].forEach(n=>h+='<div class="dnode s'+cl+'" onclick="openNode(\''+n.id+'\')"><b>'+esc(n.title)+'</b><span>'+esc(n.department)+' · '+esc(n.owner)+'</span></div>');return h+'</div>';};
-  document.getElementById('v_ryg').innerHTML='<div class="ryg">'+col('red','Red — needs a system','r')+col('yellow','Yellow — needs review','y')+col('green','Green — systemized','g')+'</div>';
-}
-// ---------- SOFTWARE STACK ----------
-function renderSoft(){
-  let h='<div class="card"><h3>Software Stack</h3><div class="sub">The tools Spire OS ties together. Live API wiring is added per tool (authorize in connector settings).</div><div class="swgrid">';
-  DATA.software.forEach(s=>{const used=NODES.filter(n=>(n.software||[]).includes(s.id)).length;
-    h+='<a class="sw" href="'+s.url+'" target="_blank"><span class="sq" style="background:'+s.color+'">'+esc(s.name[0])+'</span><div><b>'+esc(s.name)+'</b><span>'+esc(s.cat)+' · '+used+' systems</span></div></a>';});
-  document.getElementById('v_soft').innerHTML=h+'</div></div>';
-}
-
-function render(){
-  renderCounts();
-  if(view==='mm')renderMM();
-  else if(view==='dept')renderDept();
-  else if(view==='sop')renderSOP();
-  else if(view==='kpi')renderKPI();
-  else if(view==='ryg')renderRYG();
-  else if(view==='soft')renderSoft();
-  document.getElementById('foot').textContent='Spire OS · '+NODES.length+' systems · single source of truth · v1';
-}
-
-// ---------- DETAIL PANEL ----------
+/* ---------- detail panel ---------- */
 let cur=null;
-function openNode(id){cur=id;const n=BYID[id];const p=document.getElementById('panel');
-  const softHTML=(n.software||[]).map(s=>{const o=SW[s];return o?'<span class="sof"><i style="background:'+o.color+'"></i>'+esc(o.name)+'</span>':''}).join('');
-  const ck=(n.checklist||[]).map((c,i)=>{const done=n.checklistState[i];return '<label class="ck"><input type="checkbox" '+(done?'checked':'')+' onchange="toggleCk(\''+id+'\','+i+',this.checked)"><span>'+esc(c)+'</span></label>'}).join('');
-  const rel=(n.related_nodes||[]).map(r=>BYID[r]?'<span class="tag" style="cursor:pointer" onclick="openNode(\''+r+'\')">'+esc(BYID[r].title)+'</span>':'').join('');
-  p.innerHTML='<div class="phd"><button class="x" onclick="closePanel()">✕</button>'+
-    '<h2>'+esc(n.title)+'</h2><div class="meta">'+
-    '<span class="statusset">'+['green','yellow','red'].map(st=>'<button class="'+sc(st)+(n.status===st?' on':'')+'" onclick="setStatus(\''+id+'\',\''+st+'\')">'+({green:'Green',yellow:'Yellow',red:'Red'}[st])+'</button>').join('')+'</span>'+
-    '<span class="tag">'+esc(n.department)+'</span><span class="tag">Owner: '+esc(n.owner)+'</span></div></div>'+
-    '<div class="pbody">'+
-    sec('Purpose','<p>'+esc(n.purpose)+'</p>')+
-    sec('Software',softHTML||'<span class="sub">—</span>')+
-    sec('Checklist ('+(n.checklist||[]).length+')',ck+(admin?'<div class="editrow"><input id="ckadd" placeholder="Add checklist step…"><button class="mini" onclick="addCk(\''+id+'\')">Add</button></div>':''))+
-    sec('KPIs',(n.kpis||[]).map(k=>'<span class="tag kpi">'+esc(k)+'</span>').join('')||'—')+
-    sec('Templates',(n.templates||[]).map(t=>'<span class="tag tmpl">'+esc(t)+'</span>').join('')+(admin?'<div class="editrow"><input id="tmpadd" placeholder="Add template…"><button class="mini" onclick="addArr(\''+id+'\',\'templates\',\'tmpadd\')">Add</button></div>':'')||'—')+
-    sec('Automations',(n.automations||[]).map(a=>'<span class="tag auto">'+esc(a)+'</span>').join('')||'—')+
-    sec('SOP Link',admin?'<div class="editrow"><input id="sopedit" value="'+esc(n.sop_link||'')+'"><button class="mini" onclick="setField(\''+id+'\',\'sop_link\',document.getElementById(\'sopedit\').value)">Save</button></div>':'<a class="link" href="#">'+esc(n.sop_link||'—')+'</a>')+
-    ((n.common_mistakes&&n.common_mistakes.length)?sec('Common Mistakes',(n.common_mistakes).map(m=>'<div class="ck">⚠️ <span>'+esc(m)+'</span></div>').join('')):'')+
-    ((n.improvement_ideas&&n.improvement_ideas.length)?sec('Improvement Ideas',(n.improvement_ideas).map(m=>'<div class="ck">💡 <span>'+esc(m)+'</span></div>').join('')):'')+
-    (rel?sec('Related',rel):'')+
-    sec('Notes',admin?'<textarea id="noteedit" onchange="setField(\''+id+'\',\'notes\',this.value)">'+esc(n.notes||'')+'</textarea>':('<p>'+(esc(n.notes)||'<span class="sub">—</span>')+'</p>'))+
-    '</div>';
-  document.getElementById('scrim').style.display='block';p.classList.add('open');
-}
-function sec(h,body){return '<div class="sec"><h4>'+h+'</h4>'+body+'</div>'}
+function openNode(id){cur=id;const n=BYID[id];const p=document.getElementById('panel');const ph=PHOF[id];
+ const softHTML=(n.software||[]).map(s=>{const o=SW[s];return o?'<span class="sof"><i style="background:'+o.color+'"></i>'+esc(o.name)+'</span>':''}).join('');
+ const ck=(n.checklist||[]).map((c,i)=>'<label class="ck"><input type="checkbox" '+(n.checklistState[i]?'checked':'')+' onchange="toggleCk(\''+id+'\','+i+',this.checked)"><span>'+esc(c)+'</span></label>').join('');
+ const rel=(n.related_nodes||[]).map(r=>BYID[r]?'<span class="tag" style="cursor:pointer" onclick="openNode(\''+r+'\')">'+esc(BYID[r].title)+'</span>':'').join('');
+ p.innerHTML='<div class="phd"><button class="x" onclick="closePanel()">✕</button><h2>'+esc(n.title)+'</h2>'+
+  '<div class="meta"><span class="statusset">'+['green','yellow','red'].map(st=>'<button class="'+sc(st)+(n.status===st?' on':'')+'" onclick="setStatus(\''+id+'\',\''+st+'\')">'+({green:'Green',yellow:'Yellow',red:'Red'}[st])+'</button>').join('')+'</span>'+
+  (ph?'<span class="tag">'+esc(ph.name)+'</span>':'')+'<span class="tag">'+esc(n.department)+'</span><span class="tag">Owner: '+esc(n.owner)+'</span></div></div><div class="pbody">'+
+  sec('Purpose','<p>'+esc(n.purpose)+'</p>')+
+  sec('Software',softHTML||'<span class="empty">—</span>')+
+  sec('Checklist · '+ckpct(n)+'%',ck+(admin?'<div class="editrow"><input id="ckadd" placeholder="Add step…"><button class="mini" onclick="addCk(\''+id+'\')">Add</button></div>':''))+
+  sec('KPIs',(n.kpis||[]).map(k=>'<span class="tag kpi">'+esc(k)+'</span>').join('')||'—')+
+  sec('Templates',((n.templates||[]).map(t=>'<span class="tag tmpl">'+esc(t)+'</span>').join('')||'—')+(admin?'<div class="editrow"><input id="tmpadd" placeholder="Add template…"><button class="mini" onclick="addArr(\''+id+'\',\'templates\',\'tmpadd\')">Add</button></div>':''))+
+  sec('Automations',(n.automations||[]).map(a=>'<span class="tag auto">'+esc(a)+'</span>').join('')||'—')+
+  sec('SOP Link',admin?'<div class="editrow"><input id="sopedit" value="'+esc(n.sop_link||'')+'"><button class="mini" onclick="setField(\''+id+'\',\'sop_link\',document.getElementById(\'sopedit\').value)">Save</button></div>':'<a class="link" href="#">'+esc(n.sop_link||'—')+'</a>')+
+  ((n.common_mistakes&&n.common_mistakes.length)?sec('Common mistakes',n.common_mistakes.map(m=>'<div class="ck">⚠️ <span>'+esc(m)+'</span></div>').join('')):'')+
+  ((n.improvement_ideas&&n.improvement_ideas.length)?sec('Improvement ideas',n.improvement_ideas.map(m=>'<div class="ck">💡 <span>'+esc(m)+'</span></div>').join('')):'')+
+  (rel?sec('Related',rel):'')+
+  sec('Notes',admin?'<textarea onchange="setField(\''+id+'\',\'notes\',this.value)">'+esc(n.notes||'')+'</textarea>':'<p>'+(esc(n.notes)||'<span class="empty">—</span>')+'</p>')+
+  '</div>';
+ document.getElementById('scrim').style.display='block';p.classList.add('open');}
+function sec(h,b){return '<div class="sec"><h4>'+h+'</h4>'+b+'</div>'}
 function closePanel(){document.getElementById('panel').classList.remove('open');document.getElementById('scrim').style.display='none';cur=null}
-function toggleCk(id,i,on){store.ck=store.ck||{};store.ck[id]=store.ck[id]||{};store.ck[id][i]=on;BYID[id].checklistState[i]=on;save()}
+function toggleCk(id,i,on){store.ck=store.ck||{};store.ck[id]=store.ck[id]||{};store.ck[id][i]=on;BYID[id].checklistState[i]=on;save();if(view!=='map')render()}
 function setStatus(id,st){setField(id,'status',st);BYID[id].status=st;render();openNode(id)}
-function setField(id,f,v){store.nodes=store.nodes||{};store.nodes[id]=store.nodes[id]||{};store.nodes[id][f]=v;BYID[id][f]=v;save();if(f!=='notes'&&f!=='sop_link'){render()}}
-function addArr(id,arr,inputId){const v=document.getElementById(inputId).value.trim();if(!v)return;const a=(BYID[id][arr]||[]).slice();a.push(v);setField(id,arr,a);openNode(id)}
+function setField(id,f,v){store.nodes=store.nodes||{};store.nodes[id]=store.nodes[id]||{};store.nodes[id][f]=v;BYID[id][f]=v;save();if(f!=='notes'&&f!=='sop_link')render()}
+function addArr(id,arr,inp){const v=document.getElementById(inp).value.trim();if(!v)return;const a=(BYID[id][arr]||[]).slice();a.push(v);setField(id,arr,a);openNode(id)}
 function addCk(id){const v=document.getElementById('ckadd').value.trim();if(!v)return;const a=(BYID[id].checklist||[]).slice();a.push(v);setField(id,'checklist',a);openNode(id)}
-function toggleAdmin(){admin=!admin;document.getElementById('adminBtn').classList.toggle('on',admin);if(cur)openNode(cur)}
-
-// ---------- export image ----------
-function exportImage(){
-  const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-  s.onload=()=>{const tgt=view==='mm'?document.getElementById('mm'):document.querySelector('.view.on')||document.getElementById('mm');
-    html2canvas(tgt,{backgroundColor:'#fff',scale:2}).then(cv=>{const a=document.createElement('a');a.download='spire-os-'+view+'.png';a.href=cv.toDataURL('image/png');a.click();});};
-  s.onerror=()=>{alert('Image export needs internet for the render library — using Print → Save as PDF instead.');window.print();};
-  document.body.appendChild(s);
-}
-// keyboard
+function toggleAdmin(){admin=!admin;document.getElementById('adminNav').classList.toggle('on',admin);if(cur)openNode(cur)}
+function exportImage(){const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+ s.onload=()=>{const tgt=view==='map'?document.getElementById('mm'):document.getElementById('content');html2canvas(tgt,{backgroundColor:'#f6f7f9',scale:2}).then(cv=>{const a=document.createElement('a');a.download='spire-os-'+view+'.png';a.href=cv.toDataURL('image/png');a.click();});};
+ s.onerror=()=>{window.print()};document.body.appendChild(s);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
-window.addEventListener('resize',()=>{if(view==='mm')drawEdges()});
+window.addEventListener('resize',()=>{if(view==='map')drawEdges()});
 render();
 </script></body></html>
