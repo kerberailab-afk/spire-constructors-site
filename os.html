@@ -267,7 +267,7 @@ a.link{color:var(--teal-d);font-weight:600;text-decoration:none}
       <div><h1 id="ptitle">Operations Dashboard</h1><div class="sub" id="psub"></div></div>
       <div class="grow"></div>
       <button id="mebtn" class="hbtn mepill" onclick="openGate()">👤 Sign in to sync</button>
-      <input id="search" type="search" placeholder="Search systems…" oninput="applyFilters()" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" name="spireos_search_nofill" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other">
+      <input id="search" type="search" placeholder="Search systems…" oninput="applyFilters()" readonly autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" name="spireos_search_nofill" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other">
       <button class="hbtn" onclick="window.print()">⬇︎ PDF</button>
       <button class="hbtn" onclick="exportImage()">🖼 Image</button>
     </div>
@@ -747,7 +747,20 @@ function exportImage(){const s=document.createElement('script');s.src='https://c
  s.onerror=()=>{window.print()};document.body.appendChild(s);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
 window.addEventListener('resize',()=>{if(view==='map')drawEdges()});
-// guard against browsers auto-filling the search box (which would filter every view to empty)
-(function(){const s=document.getElementById('search');if(s){s.value='';setTimeout(()=>{if(s.value&&document.activeElement!==s){s.value='';if(typeof applyFilters==='function')applyFilters();}},400);}})();
+// Hard guard against browsers / password managers auto-filling the search box
+// (an injected value would filter every view to empty). The field stays readonly
+// until the user actually focuses it, and we scrub any value not typed by the user.
+(function(){var s=document.getElementById('search');if(!s)return;
+ function scrub(){ if(document.activeElement!==s && !s.dataset.typed && s.value){ s.value=''; if(typeof applyFilters==='function') applyFilters(); } }
+ s.setAttribute('readonly','');
+ s.addEventListener('focus',function(){ s.removeAttribute('readonly'); });
+ s.addEventListener('blur',function(){ if(!s.value){ s.setAttribute('readonly',''); } });
+ s.addEventListener('keydown',function(){ s.dataset.typed='1'; });
+ s.addEventListener('input',function(){ if(document.activeElement===s) s.dataset.typed='1'; });
+ s.value='';
+ [0,120,300,600,1000,1800,3000].forEach(function(t){ setTimeout(scrub,t); });
+ window.addEventListener('pageshow',function(){ delete s.dataset.typed; s.value=''; s.setAttribute('readonly',''); scrub(); });
+ document.addEventListener('visibilitychange',function(){ if(!document.hidden) scrub(); });
+})();
 render();seedAsk();updateMe();osLoad();
 </script></body></html>
