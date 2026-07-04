@@ -588,17 +588,21 @@ async function askSend(text){const inp=document.getElementById('askin');const q=
  ASKHIST.push({role:'user',content:q});
  asking=true;const typing=addBubble('ai','<span class="typing"><i></i><i></i><i></i></span>');
  try{
-  const r=await fetch(API+'?ai=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify({who:ME,messages:ASKHIST})});
+  const r=await fetch(API+'?ai=1',{method:'POST',headers:{'x-pass':PASS,'content-type':'application/json'},body:JSON.stringify({who:ME,messages:ASKHIST,nodes:aiNodes()})});
   const d=await r.json();typing.remove();
   const reply=d.reply||'Sorry — I didn’t catch that.';
   ASKHIST.push({role:'assistant',content:reply});
   addBubble('ai',mdlite(reply));
-  if(d.actions&&d.actions.length){let saved=d.actions.filter(a=>a.type==='contact_saved');
-   if(saved.length){saved.forEach(a=>{const c=a.contact;addBubble('ai','<div class="savedcard">📇 Saved to Contacts<br><b>'+esc(c.name||c.company)+'</b>'+(c.company&&c.name?' · '+esc(c.company):'')+(c.trade?'<br>'+esc(c.trade):'')+(c.phone?'<br>'+esc(c.phone):'')+(c.email?'<br>'+esc(c.email):'')+'</div><div style="margin-top:6px"><button class="mini go" onclick="setView(\'contacts\');closeAsk()">Open Contacts →</button></div>');});
-    if(view==='contacts')loadContacts();}}
+  if(d.actions&&d.actions.length){
+   const saved=d.actions.filter(a=>a.type==='contact_saved');
+   saved.forEach(a=>{const c=a.contact;addBubble('ai','<div class="savedcard">📇 Saved to Contacts<br><b>'+esc(c.name||c.company)+'</b>'+(c.company&&c.name?' · '+esc(c.company):'')+(c.trade?'<br>'+esc(c.trade):'')+(c.phone?'<br>'+esc(c.phone):'')+(c.email?'<br>'+esc(c.email):'')+'</div><div style="margin-top:6px"><button class="mini go" onclick="setView(\'contacts\');closeAsk()">Open Contacts →</button></div>');});
+   if(saved.length)loadContacts();
+   if(d.actions.some(a=>a.type==='os_changed')){osLoad();}
+  }
   if(speakOn)speak(reply.replace(/[*#>]/g,''));
  }catch(e){typing.remove();addBubble('ai','I couldn’t reach the assistant just now. Check your connection and try again.');}
  asking=false;}
+function aiNodes(){return NODES.map(n=>({id:n.id,title:n.title,owner:n.owner,department:n.department,phase:(PHOF[n.id]||{}).name||'',status:n.status,checklist:(n.checklist||[]).map((t,i)=>({text:t,done:!!n.checklistState[i]}))}));}
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=1.03;u.pitch=1;speechSynthesis.speak(u);}catch(e){}}
 function toggleSpeak(){speakOn=!speakOn;document.getElementById('spkbtn').classList.toggle('on',speakOn);if(!speakOn)try{speechSynthesis.cancel()}catch(e){}}
 function toggleMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -611,10 +615,10 @@ function toggleMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecog
  recog.onend=()=>{listening=false;btn.classList.remove('on');inp.placeholder='Ask about any feature…';const v=inp.value.trim();if(v)askSend(v);};
  recog.onresult=e=>{let s='';for(let i=0;i<e.results.length;i++)s+=e.results[i][0].transcript;inp.value=s;};
  recog.start();}
-const QCHIPS=['Save a new subcontractor contact','How do I add a new project?','Set up submittals','Show me my electrical subs','How does the audit trail work?'];
+const QCHIPS=['What needs attention right now?','Save a subcontractor contact','Mark Hiring as green','Check off a step on Weekly Systems','What projects do we have?','Show recent activity'];
 function seedAsk(){const c=document.getElementById('askchips');if(c.dataset.done)return;c.dataset.done='1';
  c.innerHTML=QCHIPS.map(q=>'<button class="qchip" onclick="askSend(\''+q.replace(/'/g,"\\'")+'\')">'+esc(q)+'</button>').join('');
- addBubble('ai','Hi — I’m Spire, your AI assistant. Ask me anything about the software, and I can actually <b>do</b> things — like <b>save a subcontractor’s contact info</b> to your directory. Just tell me the details. You can <b>talk</b> (tap the mic) or type.');}
+ addBubble('ai','Hi — I’m Spire, your AI assistant (running on Claude). I can answer anything about the software <b>and take action</b>: save/look up contacts, tell you what needs attention, set a system’s status, check off a checklist step, or pull a project’s RFIs. Just tell me what you need — <b>talk</b> (mic) or type.');}
 
 function render(){const t=TITLES[view];document.getElementById('ptitle').textContent=t[0];document.getElementById('psub').textContent=t[1];
  if(view==='home')renderHome();else if(view==='ops')renderOps();else if(view==='dept')renderDept();
