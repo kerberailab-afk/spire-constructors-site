@@ -53,7 +53,7 @@ export async function onRequest(context){
   if(!digestOk){ if(!PASS || (request.headers.get("x-pass")||"")!==PASS) return json({error:"unauthorized"},401); }
   const kv=env.SCOPE; if(!kv) return json({error:"KV namespace binding 'SCOPE' is missing"},500);
 
-  if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv});
+  if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv,ai:!!env.ANTHROPIC_API_KEY,model:(env.AI_MODEL||"claude-haiku-4-5-20251001")});
 
   // ===== SPIRE OS: shared state + audit log (os:state / os:log / os:roster) =====
   if(url.searchParams.get("os")){
