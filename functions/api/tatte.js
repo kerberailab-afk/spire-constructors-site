@@ -41,7 +41,12 @@ return "You are Spire, the built-in AI assistant for Spire Constructors' softwar
 "3) CONTACTS DIRECTORY (in Spire OS): a company-wide directory of subcontractors, vendors and people. You can SAVE and LOOK UP contacts yourself using your tools.\n\n"+
 "ADDING A NEW CONSTRUCTION PROJECT: the user sends the full drawing set to Claude (in the Cowork chat) and says 'extract scope for [name]'; Claude runs the CSI extraction skill and deploys the project live with a bid-leveling xlsx. You (Spire, the in-app bot) cannot ingest drawings yourself — direct them to that flow.\n"+
 "ADMIN SETUP: team passcode = PASSCODE env; file uploads = Cloudflare R2 FILES binding; email = Resend (RESEND_KEY/MAIL_FROM/DIGEST_KEY).\n\n"+
-"YOUR TOOLS: save_contact (store a sub/vendor/person — use it whenever the user gives you contact details to save, even partial), list_contacts (look up saved contacts). When a user asks to 'enter/add/save a contact', COLLECT what they give and call save_contact; if key details are missing just save what you have and mention what else they can add. After saving, confirm what you saved in one line.\n\n"+
+"YOUR TOOLS — use them proactively instead of guessing:\n"+
+"• Contacts: save_contact, update_contact, list_contacts. When asked to add a contact, collect what's given and save it; mention what else could be added.\n"+
+"• Business systems (Spire OS): get_operations_overview (scorecard + what needs attention), find_system (look up a system's status/owner/checklist BEFORE changing it), set_system_status (green/yellow/red), check_system_step (tick/untick a checklist step). Always find_system first so you use the right id and step index. Every status/step change is logged under the current user — confirm what you changed in one short line.\n"+
+"• Projects (Scope Tracker): list_projects, get_project_rfis.\n"+
+"• recent_activity: who did what lately.\n"+
+"When the user asks you to DO something (change a status, check off a step, save/updated a contact), do it with the tools, then confirm briefly. If a name is ambiguous, look it up and ask which one. Never claim you did something you didn't actually do via a tool.\n\n"+
 "STYLE: 1-4 short sentences unless steps are needed, then a tight numbered list. Sound like a knowledgeable teammate, not a manual. If asked to do something the software can't yet do, say so honestly and suggest the nearest capability.";
 }
 export async function onRequest(context){
@@ -53,7 +58,7 @@ export async function onRequest(context){
   if(!digestOk){ if(!PASS || (request.headers.get("x-pass")||"")!==PASS) return json({error:"unauthorized"},401); }
   const kv=env.SCOPE; if(!kv) return json({error:"KV namespace binding 'SCOPE' is missing"},500);
 
-  if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv,ai:!!env.ANTHROPIC_API_KEY,model:(env.AI_MODEL||"claude-haiku-4-5-20251001")});
+  if(url.searchParams.get("health")) return json({ok:true,files:!!env.FILES,kv:!!kv,ai:!!env.ANTHROPIC_API_KEY,model:(env.AI_MODEL||"claude-sonnet-4-6")});
 
   // ===== SPIRE OS: shared state + audit log (os:state / os:log / os:roster) =====
   if(url.searchParams.get("os")){
@@ -139,24 +144,110 @@ export async function onRequest(context){
     if(!KEY) return json({ok:true,notConfigured:true,reply:"The Claude assistant isn't switched on yet. An admin needs to add an ANTHROPIC_API_KEY in Cloudflare (Pages project → Settings → Variables) and redeploy. Once that's set, I can answer anything and even save your contacts."});
     let b={}; try{ b=await request.json(); }catch(e){}
     const who=(b.who||"a teammate").toString().slice(0,60);
-    const model=(env.AI_MODEL||"claude-haiku-4-5-20251001").toString();
+    const model=(env.AI_MODEL||"claude-sonnet-4-6").toString();
+    const NODESIN=Array.isArray(b.nodes)?b.nodes:[];  // live systems catalog from the front-end
+    function findNode(qy){const q=(qy||"").toString().toLowerCase().trim();if(!q)return null;
+      let n=NODESIN.find(x=>x.id===q)||NODESIN.find(x=>(x.title||"").toLowerCase()===q);
+      if(!n)n=NODESIN.find(x=>(x.title||"").toLowerCase().includes(q));
+      if(!n){const c=NODESIN.filter(x=>((x.title||"")+" "+(x.department||"")+" "+(x.owner||"")).toLowerCase().includes(q));if(c.length===1)n=c[0];}
+      return n||null;}
     const tools=[
       {name:"save_contact",description:"Save a subcontractor, vendor, or person to the company Contacts directory. Use whenever the user gives details to store, even partial.",
        input_schema:{type:"object",properties:{name:{type:"string"},company:{type:"string"},trade:{type:"string",description:"e.g. Electrical, Plumbing, Concrete, Drywall"},phone:{type:"string"},email:{type:"string"},notes:{type:"string"}}}},
+      {name:"update_contact",description:"Update an existing contact. Match by name or company, then set any fields to change.",
+       input_schema:{type:"object",properties:{match:{type:"string",description:"name or company to find the contact"},name:{type:"string"},company:{type:"string"},trade:{type:"string"},phone:{type:"string"},email:{type:"string"},notes:{type:"string"}},required:["match"]}},
       {name:"list_contacts",description:"Look up saved contacts. Optional query filters by name, company or trade.",
-       input_schema:{type:"object",properties:{query:{type:"string"}}}}
+       input_schema:{type:"object",properties:{query:{type:"string"}}}},
+      {name:"get_operations_overview",description:"Get the Spire OS business-systems scorecard: counts of green/yellow/red, percent systemized, and the systems that need attention (yellow/red). Use for 'how are we doing', 'what needs attention', 'what's red'.",
+       input_schema:{type:"object",properties:{}}},
+      {name:"find_system",description:"Find a business system/workflow in Spire OS by name and return its status, owner, department, phase, and checklist steps (with indices and done/not-done). Use before changing a status or checking a step.",
+       input_schema:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+      {name:"set_system_status",description:"Set a business system's traffic-light status. Confirm the system first if unsure. Change is recorded to the audit log under the current user.",
+       input_schema:{type:"object",properties:{system:{type:"string",description:"system name or id"},status:{type:"string",enum:["green","yellow","red"]}},required:["system","status"]}},
+      {name:"check_system_step",description:"Check off or uncheck a checklist step on a business system. Identify the step by its index (from find_system) or by matching text. Recorded to the audit log under the current user.",
+       input_schema:{type:"object",properties:{system:{type:"string"},step_index:{type:"integer"},step_text:{type:"string"},done:{type:"boolean"}},required:["system","done"]}},
+      {name:"recent_activity",description:"Recent audit-log activity across Spire OS: who checked off what or changed which status, and when.",
+       input_schema:{type:"object",properties:{limit:{type:"integer"}}}},
+      {name:"list_projects",description:"List the construction projects in the Scope Tracker with their trade/scope counts.",
+       input_schema:{type:"object",properties:{}}},
+      {name:"get_project_rfis",description:"Get the RFIs (requests for information) logged on a project in the Scope Tracker.",
+       input_schema:{type:"object",properties:{project:{type:"string",description:"project name or id"}},required:["project"]}}
     ];
     let messages=Array.isArray(b.messages)?b.messages.slice(-24):[];
     const actions=[];
     async function callAI(msgs){
       const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
         headers:{"x-api-key":KEY,"anthropic-version":"2023-06-01","content-type":"application/json"},
-        body:JSON.stringify({model:model,max_tokens:900,system:AI_SYSTEM(who),tools:tools,messages:msgs})});
+        body:JSON.stringify({model:model,max_tokens:1024,system:AI_SYSTEM(who),tools:tools,messages:msgs})});
       if(!r.ok){ return {__err:true,status:r.status,text:(await r.text()).slice(0,400)}; }
       return await r.json();
     }
+    async function runTool(name,inp){inp=inp||{};
+      if(name==="save_contact"){
+        const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[];
+        const c={id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:(inp.name||"").toString().slice(0,120),company:(inp.company||"").toString().slice(0,120),trade:(inp.trade||"").toString().slice(0,80),phone:(inp.phone||"").toString().slice(0,40),email:(inp.email||"").toString().slice(0,120),notes:(inp.notes||"").toString().slice(0,600),by:who,ts:Date.now()};
+        if(!c.name&&!c.company)return {error:"need at least a name or company"};
+        list.push(c); await kv.put(CK,JSON.stringify(list)); actions.push({type:"contact_saved",contact:c}); return {ok:true,saved:c};
+      }
+      if(name==="update_contact"){
+        const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[]; const m=(inp.match||"").toString().toLowerCase();
+        const cand=list.filter(c=>((c.name+" "+c.company).toLowerCase().includes(m)));
+        if(!cand.length)return {error:"no contact matches '"+inp.match+"'"};
+        if(cand.length>1)return {ambiguous:true,candidates:cand.map(c=>({name:c.name,company:c.company}))};
+        const c=cand[0];["name","company","trade","phone","email","notes"].forEach(f=>{if(inp[f]!=null&&inp[f]!=="")c[f]=(""+inp[f]).slice(0,600);});c.ts=Date.now();
+        await kv.put(CK,JSON.stringify(list)); actions.push({type:"contact_saved",contact:c}); return {ok:true,updated:c};
+      }
+      if(name==="list_contacts"){
+        const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[]; const q=((inp.query)||"").toString().toLowerCase();
+        const f=q?list.filter(c=>((c.name+" "+c.company+" "+c.trade+" "+c.notes).toLowerCase().includes(q))):list;
+        return {count:f.length,contacts:f.slice(0,60)};
+      }
+      if(name==="get_operations_overview"){
+        const c={green:0,yellow:0,red:0};NODESIN.forEach(n=>{c[n.status]=(c[n.status]||0)+1;});
+        const tot=NODESIN.length||1;const attention=NODESIN.filter(n=>n.status!=="green").map(n=>({id:n.id,title:n.title,status:n.status,owner:n.owner,department:n.department}));
+        return {total:NODESIN.length,green:c.green,yellow:c.yellow,red:c.red,percent_systemized:Math.round((c.green/tot)*100),needs_attention:attention};
+      }
+      if(name==="find_system"){
+        const q=(inp.query||"").toLowerCase();const cand=NODESIN.filter(n=>((n.title||"")+" "+(n.department||"")+" "+(n.owner||"")+" "+(n.phase||"")).toLowerCase().includes(q));
+        return {count:cand.length,systems:cand.slice(0,8).map(n=>({id:n.id,title:n.title,status:n.status,owner:n.owner,department:n.department,phase:n.phase,checklist:(n.checklist||[]).map((s,i)=>({index:i,text:s.text||s,done:!!(s.done)}))}))};
+      }
+      if(name==="set_system_status"){
+        const n=findNode(inp.system);if(!n)return {error:"no system matches '"+inp.system+"'. Try find_system first."};
+        const st=inp.status;if(["green","yellow","red"].indexOf(st)<0)return {error:"status must be green, yellow or red"};
+        const OSK="os:state";const state=(await kv.get(OSK,"json"))||{nodes:{},ck:{},ckmeta:{}};state.nodes=state.nodes||{};state.ck=state.ck||{};state.ckmeta=state.ckmeta||{};
+        state.nodes[n.id]=state.nodes[n.id]||{};const from=state.nodes[n.id].status||n.status||null;state.nodes[n.id].status=st;state.nodes[n.id]._statusBy={who,ts:Date.now()};
+        let log=(await kv.get("os:log","json"))||[];log.push({ts:Date.now(),who,type:"status",node:n.id,title:n.title,from,to:st});if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);
+        await kv.put("os:log",JSON.stringify(log));await kv.put(OSK,JSON.stringify(state));actions.push({type:"os_changed"});
+        return {ok:true,system:n.title,status:st,was:from};
+      }
+      if(name==="check_system_step"){
+        const n=findNode(inp.system);if(!n)return {error:"no system matches '"+inp.system+"'. Try find_system first."};
+        const steps=(n.checklist||[]).map(s=>(s.text||s));let idx=(inp.step_index!=null)?inp.step_index:-1;
+        if(idx<0&&inp.step_text){const t=(""+inp.step_text).toLowerCase();idx=steps.findIndex(s=>(""+s).toLowerCase().includes(t));}
+        if(idx<0||idx>=steps.length)return {error:"couldn't find that step",available:steps.map((s,i)=>({index:i,text:s}))};
+        const done=!!inp.done;const OSK="os:state";const state=(await kv.get(OSK,"json"))||{nodes:{},ck:{},ckmeta:{}};state.nodes=state.nodes||{};state.ck=state.ck||{};state.ckmeta=state.ckmeta||{};
+        state.ck[n.id]=state.ck[n.id]||{};state.ck[n.id][idx]=done;state.ckmeta[n.id]=state.ckmeta[n.id]||{};state.ckmeta[n.id][idx]={who,ts:Date.now(),on:done};
+        let log=(await kv.get("os:log","json"))||[];log.push({ts:Date.now(),who,type:"check",node:n.id,title:n.title,idx,on:done,label:steps[idx]});if(log.length>LOG_KEEP)log=log.slice(-LOG_KEEP);
+        await kv.put("os:log",JSON.stringify(log));await kv.put(OSK,JSON.stringify(state));actions.push({type:"os_changed"});
+        return {ok:true,system:n.title,step:steps[idx],done};
+      }
+      if(name==="recent_activity"){
+        let log=(await kv.get("os:log","json"))||[];const lim=Math.min(Math.max(inp.limit||15,1),60);
+        return {activity:log.slice(-lim).reverse()};
+      }
+      if(name==="list_projects"){
+        return {projects:Object.keys(JOBS).map(id=>{const d=JOBS[id].data||{};const trades=(d.trades||[]);const items=trades.reduce((s,t)=>s+(t.count||0),0);return {id,name:JOBS[id].name,address:JOBS[id].address,trades:trades.length,scope_items:items};})};
+      }
+      if(name==="get_project_rfis"){
+        const q=(inp.project||"").toLowerCase();const id=Object.keys(JOBS).find(k=>k===q)||Object.keys(JOBS).find(k=>(JOBS[k].name||"").toLowerCase().includes(q));
+        if(!id)return {error:"no project matches '"+inp.project+"'",projects:Object.keys(JOBS).map(k=>JOBS[k].name)};
+        const rfis=(await kv.get("rfis:"+id,"json"))||[];
+        return {project:JOBS[id].name,count:rfis.length,rfis:rfis.slice(0,40)};
+      }
+      return {error:"unknown tool"};
+    }
     let guard=0;
-    while(guard++<5){
+    while(guard++<6){
       const resp=await callAI(messages);
       if(resp.__err) return json({ok:true,error:"ai_error",reply:"I hit an error reaching Claude (HTTP "+resp.status+"). "+(resp.status===401?"The ANTHROPIC_API_KEY looks invalid.":"Please try again in a moment."),detail:resp.text});
       const content=resp.content||[];
@@ -165,17 +256,7 @@ export async function onRequest(context){
         messages.push({role:"assistant",content:content});
         const results=[];
         for(const tu of toolUses){
-          let out;
-          if(tu.name==="save_contact"){
-            const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[]; const inp=tu.input||{};
-            const c={id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:(inp.name||"").toString().slice(0,120),company:(inp.company||"").toString().slice(0,120),trade:(inp.trade||"").toString().slice(0,80),phone:(inp.phone||"").toString().slice(0,40),email:(inp.email||"").toString().slice(0,120),notes:(inp.notes||"").toString().slice(0,600),by:who,ts:Date.now()};
-            if(!c.name&&!c.company){ out={error:"need at least a name or company"}; }
-            else { list.push(c); await kv.put(CK,JSON.stringify(list)); actions.push({type:"contact_saved",contact:c}); out={ok:true,saved:c}; }
-          } else if(tu.name==="list_contacts"){
-            const CK="os:contacts"; let list=(await kv.get(CK,"json"))||[]; const q=((tu.input&&tu.input.query)||"").toString().toLowerCase();
-            const f=q?list.filter(c=>((c.name+" "+c.company+" "+c.trade+" "+c.notes).toLowerCase().includes(q))):list;
-            out={count:f.length,contacts:f.slice(0,60)};
-          } else out={error:"unknown tool"};
+          let out; try{ out=await runTool(tu.name,tu.input); }catch(e){ out={error:"tool failed: "+(e&&e.message)}; }
           results.push({type:"tool_result",tool_use_id:tu.id,content:JSON.stringify(out)});
         }
         messages.push({role:"user",content:results});
