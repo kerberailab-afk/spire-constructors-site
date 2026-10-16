@@ -1,239 +1,244 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parachute Plasma Lab — Ground-Up Biomedical Facility | Spire Constructors</title>
-<meta name="description" content="A Spire Constructors case study: a full teardown and ground-up build of a 6,000+ SF plasma lab / biomedical facility — demolition to completion, every trade managed in-house.">
-<link rel="stylesheet" href="styles.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parachute Plasma Lab | Spire Constructors</title>
+<meta name="description" content="Case study: a 6,000+ SF plasma donation lab built from the ground up where an aging former restaurant stood, self-managed by our team from teardown to opening.">
+<meta name="theme-color" content="#0B1B33">
+<link rel="canonical" href="https://spireconstructors.com/parachute-plasma-lab.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Parachute Plasma Lab | Spire Constructors">
+<meta property="og:description" content="Case study: a 6,000+ SF plasma donation lab built from the ground up where an aging former restaurant stood, self-managed by our team from teardown to opening.">
+<meta property="og:url" content="https://spireconstructors.com/parachute-plasma-lab.html">
+<meta property="og:image" content="https://spireconstructors.com/assets/hero-ending.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E2A4F'/%3E%3Cpolygon points='32,8 22,52 32,44' fill='%238FC3EA'/%3E%3Cpolygon points='32,8 42,52 32,44' fill='%231E7BE0'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png?v=a0bd981ee3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=fd77ce9cc8">
+<!-- page-specific CSS only if the page truly needs a rule that is not in site.css -->
 <style>
-.cs-hero{position:relative;min-height:62vh;display:flex;align-items:flex-end;background:#0B1D38 center/cover no-repeat;background-image:linear-gradient(180deg,rgba(8,20,40,.15) 0%,rgba(8,20,40,.78) 100%),url('images/projects/parachute/hero-v2.jpg')}
-.cs-hero .wrap{padding-top:120px;padding-bottom:54px}
-.cs-hero .tag{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#F4D27E,#C0902F);color:#231701;font-weight:700;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;padding:7px 15px;border-radius:999px}
-.cs-hero h1{color:#fff;font-size:clamp(34px,5vw,58px);margin:18px 0 10px;max-width:840px}
-.cs-hero p{color:#D9E4F3;font-size:clamp(16px,2vw,20px);font-weight:500;max-width:620px}
-.crumb{font-size:13px;color:#9fb2cc;font-weight:600;letter-spacing:.04em}
-.crumb a{color:#9fb2cc}.crumb a:hover{color:#fff}
-.intro{padding:84px 0 20px}
-.intro-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
-.intro h2{margin-bottom:16px}
-.intro p{font-size:17px;line-height:1.7;margin-bottom:14px}
-.intro .scopes{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 18px;margin-top:22px}
-.intro .scopes li{display:flex;gap:9px;align-items:flex-start;color:var(--navy);font-weight:500;font-size:14.5px;line-height:1.35}
-.intro .scopes li::before{content:"✓";font-weight:800;color:var(--gold2);flex:0 0 auto}
-.intro-img img{width:100%;border-radius:20px;box-shadow:0 24px 50px -12px rgba(10,30,60,.25)}
-.phase{padding:60px 0;border-top:1px solid var(--line)}
-.phase .ph-head{display:flex;align-items:baseline;gap:16px;margin-bottom:26px;flex-wrap:wrap}
-.phase .step{font-size:13px;font-weight:800;letter-spacing:.16em;color:#9a7a2e;text-transform:uppercase}
-.phase h3{color:var(--navy);font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.01em}
-.phase p{font-size:16px;line-height:1.7;max-width:760px;margin-bottom:26px}
-.grid-imgs{display:grid;gap:16px}
-.g2{grid-template-columns:1fr 1fr}
-.g3{grid-template-columns:repeat(3,1fr)}
-.grid-imgs img{width:100%;height:300px;object-fit:cover;border-radius:14px;box-shadow:0 14px 32px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .25s,box-shadow .25s}
-.grid-imgs img:hover{transform:translateY(-3px);box-shadow:0 22px 44px -12px rgba(13,40,80,.28)}
-.gallery-sec{background:#F7F9FB}
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.gallery img{width:100%;height:320px;object-fit:cover;border-radius:14px;box-shadow:0 14px 32px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .25s,box-shadow .25s}
-.gallery img:hover{transform:translateY(-3px);box-shadow:0 22px 44px -12px rgba(13,40,80,.28)}
-.gallery .tall{grid-row:span 2;height:100%}
-.lb{position:fixed;inset:0;background:rgba(7,16,32,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:30px;cursor:zoom-out}
-.lb.open{display:flex}
-.lb img{max-width:94vw;max-height:90vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.lb .x{position:absolute;top:22px;right:30px;color:#fff;font-size:34px;font-weight:300;cursor:pointer;line-height:1}
-@media(max-width:900px){
-  .cs-hero{min-height:56vh}
-  .intro-grid{grid-template-columns:1fr;gap:34px}
-  .intro{padding:56px 0 8px}
-  .intro .scopes{grid-template-columns:1fr}
-  .g3,.g2,.gallery{grid-template-columns:1fr 1fr}
-  .grid-imgs img,.gallery img{height:210px}
-  .gallery .tall{grid-row:span 1;height:210px}
-  .phase{padding:44px 0}
-}
-@media(max-width:560px){.g3,.g2,.gallery{grid-template-columns:1fr}.grid-imgs img,.gallery img{height:240px}}
-.gallery-full{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.gallery-full img{width:100%;height:190px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .2s,box-shadow .2s}
-.gallery-full img:hover{transform:translateY(-3px);box-shadow:0 18px 36px -12px rgba(13,40,80,.3)}
-@media(max-width:900px){.gallery-full{grid-template-columns:1fr 1fr;gap:10px}.gallery-full img{height:150px}}
+.cs-hero .attrib{margin-top:18px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#C9D6E8;max-width:none}
 </style>
-</head><body>
-<header><div class="nav"><a class="logo" href="index.html"><img src="https://imagedelivery.net/xaKlCos5cTg_1RWzIu_h-A/4494cfaf-227f-4d25-b6b1-f1562ad6ea00/public" alt="Spire Constructors"></a><nav class="nav-links"><a href="about.html">About</a><a href="commercial.html">Commercial</a><a href="residential.html">Residential</a><a href="adu.html">ADUs</a><a href="projects.html">Projects</a><a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a><a class="pill" href="contact.html">Book a Consultation</a></nav><button class="menu-btn">&#9776;</button></div></header>
-
-<section class="cs-hero"><div class="wrap">
-  <div class="crumb"><a href="projects.html">Projects</a> &nbsp;/&nbsp; Parachute Plasma Lab</div>
-  <span class="tag" style="margin-top:14px">National Project</span>
-  <h1>From an old drive-thru to a working <span class="gold">plasma lab.</span></h1>
-  <p>A full teardown and ground-up build of a 6,000+ SF biomedical facility — demolition to completion, every phase under one roof.</p>
-</div></section>
-
-<section class="stats"><div class="wrap"><div class="stats-row">
-  <div class="stat"><b class="gold">6,000+</b><span>Square Feet, Ground-Up</span></div>
-  <div class="stat"><b class="gold">1</b><span>Existing Building Demolished</span></div>
-  <div class="stat"><b class="gold">100%</b><span>Turnkey — Demo to Doors-Open</span></div>
-  <div class="stat"><b class="gold">All</b><span>Trades Managed In-House</span></div>
-</div></div></section>
-
-<section class="intro sec" style="padding-bottom:30px"><div class="wrap"><div class="intro-grid">
-  <div>
-    <div class="eyebrow">The Project</div>
-    <h2>A specialized facility, built from the dirt up.</h2>
-    <p>The site came with a problem most builders don't want: an aging former restaurant sitting exactly where a modern medical facility needed to go. Spire handled the entire arc — tearing down the existing structure, re-engineering the site, and delivering a clean, code-compliant plasma lab ready for patients.</p>
-    <p>A biomedical facility raises the bar at every step: durable, sanitary finishes, medical-grade mechanical and electrical systems, and a layout built around a precise clinical workflow. We self-managed every trade to keep quality and schedule under our control from demolition to doors-open.</p>
-    <ul class="scopes">
-      <li>Demolition &amp; site clearing</li>
-      <li>Civil, grading &amp; underground utilities</li>
-      <li>Foundations &amp; concrete slab</li>
-      <li>Structural steel &amp; framing</li>
-      <li>Building envelope &amp; TPO roofing</li>
-      <li>Full mechanical, electrical &amp; plumbing</li>
-      <li>Interior build-out, casework &amp; finishes</li>
-      <li>Sitework, paving &amp; signage coordination</li>
-    </ul>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html" aria-label="Spire Constructors home"><img class="ld" src="assets/images/spire-logo.png?v=6f1e42d277" alt="Spire Constructors" width="757" height="328"><img class="lw" src="assets/images/spire-logo-white.png?v=ffc5d07853" alt="" width="757" height="328" aria-hidden="true"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="about.html">About</a>
+      <a href="commercial.html">Commercial</a>
+      <a href="residential.html">Residential</a>
+      <a href="adu.html">ADUs</a>
+      <a href="projects.html">Projects</a>
+      <a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a>
+      <a class="pill" href="contact.html">Book a Consultation</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
   </div>
-  <div class="intro-img"><img src="images/projects/parachute/20-finished-dusk-v2.jpg" alt="Finished Parachute plasma lab at dusk" loading="lazy"></div>
-</div></div></section>
+</header>
 
-<section class="sec" style="padding-top:24px"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">Start to Finish</div><h2>How it came together.</h2></div>
 
-  <div class="phase" style="border-top:none">
-    <div class="ph-head"><span class="step">01 — The Teardown</span><h3>Clearing the way</h3></div>
-    <p>Before anything new could go up, the existing restaurant had to come down. We demolished the old structure, hauled it off, and stripped the site back to raw ground — a clean slate to build on.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/parachute/01-existing.jpg" alt="Existing building before demolition" loading="lazy">
-      <img src="images/projects/parachute/02-demolition.jpg" alt="Demolition of the existing structure" loading="lazy">
+<main id="main" tabindex="-1">
+
+<section class="cs-hero" data-floor="00 · Case study" style="background-image:url(assets/images/projects/parachute/hero-v2.jpg?v=24d913b890)">
+  <div class="wrap">
+    <div class="crumb"><a href="projects.html">Projects</a> &nbsp;/&nbsp; Parachute Plasma Lab</div>
+    <span class="tag" style="margin-top:14px">Missouri · Ground-up</span>
+    <h1>From an old restaurant to a working <span class="gold">plasma lab</span>, ground up.</h1>
+    <p>A full teardown and ground-up build of a 6,000+ SF plasma donation facility, self-managed from teardown to opening.</p>
+    <p class="attrib">Delivered by Spire's principals, Bill Breunig and Gary Kerber, before founding Spire in 2025.</p>
+  </div>
+</section>
+
+<section class="stats" data-floor="01 · Parachute">
+  <div class="wrap">
+    <div class="stats-row stagger">
+      <div class="stat"><b class="gold">6,000+</b><span>Square feet, ground-up</span></div>
+      <div class="stat"><b class="gold">1</b><span>Aging former restaurant demolished</span></div>
+      <div class="stat"><b class="gold">6</b><span>Build phases, teardown to opening</span></div>
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">02 — Site &amp; Foundation</span><h3>New infrastructure underground</h3></div>
-    <p>With the lot cleared, we re-graded the site and ran all-new underground utilities, then formed and poured the foundation and slab — the base every system above would tie into.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/parachute/03-utilities.jpg" alt="New underground utilities being installed" loading="lazy">
-      <img src="images/projects/parachute/04-slab.jpg" alt="Foundation and concrete slab" loading="lazy">
+<section class="intro sec" data-floor="02 · The project" style="padding-bottom:30px">
+  <div class="wrap">
+    <div class="intro-grid">
+      <div class="rise">
+        <div class="eyebrow">The project</div>
+        <h2>A specialized facility, built from the <span class="gold">dirt up</span>.</h2>
+        <p>The site came with a problem most builders would rather not take on: an aging former restaurant sitting exactly where a modern medical facility needed to go. Our team handled the whole arc, taking down the existing structure, re-engineering the site, and delivering a clean, code-compliant plasma lab ready to open.</p>
+        <p>A biomedical facility raises the bar at every step: durable, sanitary finishes, medical-grade mechanical and electrical systems, and a layout built around a precise clinical workflow. Our team self-managed the job from teardown to opening to keep quality and schedule under control.</p>
+        <ul class="scopes">
+          <li>Demolition and site clearing</li>
+          <li>Civil, grading and underground utilities</li>
+          <li>Foundations and concrete slab</li>
+          <li>Structural steel and framing</li>
+          <li>Building envelope and TPO roofing</li>
+          <li>Full mechanical, electrical and plumbing</li>
+          <li>Interior build-out, casework and finishes</li>
+          <li>Sitework, paving and signage coordination</li>
+        </ul>
+      </div>
+      <div class="intro-img dim" data-dim="6,000+ SF · Ground-up"><img src="assets/images/projects/parachute/20-finished-dusk-v2.jpg?v=fc2426f8dd" alt="Finished Parachute plasma lab at dusk" loading="lazy" width="1050" height="1400"></div>
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">03 — Structure</span><h3>Steel goes vertical</h3></div>
-    <p>Structural steel and trusses went up fast, defining the footprint and roofline of the new building. Within weeks the shape of the facility was standing against the sky.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/parachute/05-steel-trusses.jpg" alt="Structural steel trusses being set" loading="lazy">
-      <img src="images/projects/parachute/06-steel-frame.jpg" alt="Steel frame erected" loading="lazy">
-      <img src="images/projects/parachute/07-structure.jpg" alt="Completed structural frame" loading="lazy">
+<section class="sec" data-floor="03 · The build" style="padding-top:24px">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">Start to finish</div><h2>How it came <span class="gold">together</span>.</h2></div>
+
+    <div class="phase" style="border-top:none">
+      <div class="ph-head rise"><span class="step">01 · The teardown</span><h3>Clearing the way</h3></div>
+      <p class="rise">Before anything new could go up, the old restaurant had to come down. Our team demolished the structure, hauled it off, and stripped the site back to raw ground, a clean slate to build on.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/parachute/01-existing.jpg?v=009e0f1a92" alt="The aging former restaurant standing on the site before demolition" loading="lazy" width="1280" height="960">
+        <img src="assets/images/projects/parachute/02-demolition.jpg?v=62211c5156" alt="Demolition of the former restaurant in progress" loading="lazy" width="723" height="542">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">02 · Site and foundation</span><h3>New infrastructure underground</h3></div>
+      <p class="rise">With the lot cleared, we re-graded the site and ran all-new underground utilities, then formed and poured the foundation and slab, the base every system above would tie into.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/parachute/03-utilities.jpg?v=7e29c630e2" alt="New underground utilities being installed on the cleared lot" loading="lazy" width="767" height="1023">
+        <img src="assets/images/projects/parachute/04-slab.jpg?v=7a8c1345c0" alt="Foundation and concrete slab formed and poured" loading="lazy" width="1024" height="768">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">03 · Structure</span><h3>Steel goes vertical</h3></div>
+      <p class="rise">Structural steel and trusses went up fast, defining the footprint and roofline of the new building. Within weeks the shape of the facility was standing against the sky.</p>
+      <div class="grid-imgs g3 stagger">
+        <img src="assets/images/projects/parachute/05-steel-trusses.jpg?v=657c65b945" alt="Structural steel trusses being set" loading="lazy" width="1400" height="1050">
+        <img src="assets/images/projects/parachute/06-steel-frame.jpg?v=533acf5206" alt="Steel frame erected on the new slab" loading="lazy" width="1400" height="1050">
+        <img src="assets/images/projects/parachute/07-structure.jpg?v=9d225a84c9" alt="Completed structural frame with roof deck" loading="lazy" width="1050" height="1400">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">04 · Envelope and roof</span><h3>Dried in and weather-tight</h3></div>
+      <p class="rise">Sheathing, weather barrier, exterior panels and a white TPO roof sealed the building from the elements, protecting the work inside and setting up the interior trades.</p>
+      <div class="grid-imgs g3 stagger">
+        <img src="assets/images/projects/parachute/08-envelope.jpg?v=0c796256c7" alt="Building envelope and weather barrier going on" loading="lazy" width="1050" height="1400">
+        <img src="assets/images/projects/parachute/09-roof.jpg?v=f8d850a58e" alt="White TPO roofing installed" loading="lazy" width="1050" height="1400">
+        <img src="assets/images/projects/parachute/10-exterior-progress.jpg?v=230fb0fed7" alt="Exterior finish taking shape" loading="lazy" width="1050" height="1400">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">05 · Systems and interior</span><h3>Where a lab gets its precision</h3></div>
+      <p class="rise">Inside, the build got technical: medical-grade mechanical, electrical and plumbing rough-ins, interior framing, and the clinical layout that makes a plasma facility work, coordinated trade by trade.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/parachute/11-interior-framing.jpg?v=2e4353ce7d" alt="Interior metal stud framing" loading="lazy" width="1050" height="1400">
+        <img src="assets/images/projects/parachute/12-mep.jpg?v=32c01146ba" alt="Mechanical, electrical and plumbing rough-ins" loading="lazy" width="1050" height="1400">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">06 · The finish</span><h3>Doors open</h3></div>
+      <p class="rise">Finishes, casework, branding, paving and a polished exterior brought it home. The facility was handed over complete and ready to operate.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/parachute/18-reception.jpg?v=dc02a418a0" alt="Finished reception with Parachute branding" loading="lazy" width="1050" height="1400">
+        <img src="assets/images/projects/parachute/17-exterior-day-v2.jpg?v=8925feb6b1" alt="Finished exterior in daylight" loading="lazy" width="1050" height="1400">
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">04 — Envelope &amp; Roof</span><h3>Dried in and weather-tight</h3></div>
-    <p>Sheathing, weather barrier, exterior panels, and a white TPO roof sealed the building from the elements — protecting the work inside and setting up the interior trades.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/parachute/08-envelope.jpg" alt="Building envelope and weather barrier" loading="lazy">
-      <img src="images/projects/parachute/09-roof.jpg" alt="White TPO roofing installed" loading="lazy">
-      <img src="images/projects/parachute/10-exterior-progress.jpg" alt="Exterior taking shape" loading="lazy">
+<section class="sec" data-floor="04 · Every step" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">The full build</div><h2>Every step, start to <span class="gold">finish</span>.</h2><p>A deeper look behind the scenes: the teardown, structure, systems and finish-out.</p></div>
+    <div class="gallery-full stagger">
+      <img src="assets/images/projects/parachute/g01.jpg?v=a0a6bd1fb8" alt="Excavator clearing demolition rubble from the old restaurant site" loading="lazy" width="1023" height="767">
+      <img src="assets/images/projects/parachute/g02.jpg?v=44bfd0047d" alt="Excavator trenching for underground utilities while a crew member checks grade" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g03.jpg?v=ad71b90aa0" alt="Aerial view of the cleared site with silt fence and drainage line" loading="lazy" width="784" height="439">
+      <img src="assets/images/projects/parachute/g04.jpg?v=5881775879" alt="Underground plumbing stub-ups set in gravel before the slab pour" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g05.jpg?v=9143721b7c" alt="Vapor barrier and rebar mesh laid out ahead of the slab pour" loading="lazy" width="480" height="640">
+      <img src="assets/images/projects/parachute/g06.jpg?v=923e646486" alt="Freshly poured concrete slab with utility stubs in place" loading="lazy" width="1024" height="768">
+      <img src="assets/images/projects/parachute/g07.jpg?v=b21d5525ff" alt="First structural steel columns standing on the new slab" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g08.jpg?v=f4b420871a" alt="Structural steel frame with beams set against a blue sky" loading="lazy" width="1200" height="900">
+      <img src="assets/images/projects/parachute/g09.jpg?v=ddd942722f" alt="Steel frame with roof deck in place and lifts working below" loading="lazy" width="1200" height="900">
+      <img src="assets/images/projects/parachute/g10.jpg?v=8025746f3d" alt="Bundles of cold-formed steel framing delivered to the site" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g11.jpg?v=38951f25ed" alt="Crew cutting metal studs under the new roof deck" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g12.jpg?v=e371fc1b4d" alt="Exterior wall panels and blue insulation board going in under the steel deck" loading="lazy" width="1200" height="900">
+      <img src="assets/images/projects/parachute/g13.jpg?v=2c1c8bf2d9" alt="Cross-braced exterior stud wall framed around the entry" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g14.jpg?v=b6b00c2744" alt="Drywall, insulation and framing stock staged on site" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g15.jpg?v=1e4dca152a" alt="Exterior stud walls framed with sheathing starting at the base" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g16.jpg?v=1e683840d8" alt="Roof insulation and cover board laid over the metal deck" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g17.jpg?v=41f68fcf9d" alt="Roofing crew laying cover board and white TPO membrane" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g18.jpg?v=182a7c5c6e" alt="Finished white TPO roof and parapet under a storm sky" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g19.jpg?v=a5623c0b03" alt="Interior framing under temporary work lights" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g20.jpg?v=81da6cee32" alt="Electrical conduit stubs rising through the metal stud framing" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g21.jpg?v=664d0a88c3" alt="Copper water lines routed through the ceiling framing" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g22.jpg?v=988d25df0c" alt="Insulated ductwork hung from the roof structure" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g23.jpg?v=b316cdcdf0" alt="Interior partition framing with a scissor lift on the slab" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g24.jpg?v=9d997587d9" alt="Scaffolding along the exterior wall for the stucco base coat" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g25.jpg?v=adabcfcf6b" alt="Lath and exterior wall system going on over the sheathing" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g26.jpg?v=93251700c4" alt="Utility trench cut beside the finished exterior wall" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g27.jpg?v=49c9a60915" alt="Textured stucco base coat curing behind scaffolding" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g28.jpg?v=08748d3896" alt="Insulated floor panels for the walk-in cold room being set" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g29.jpg?v=82d42c7438" alt="Refrigeration evaporator mounted in the cold storage room" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g30.jpg?v=143bdee55d" alt="Restroom floor tile set with leveling clips" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g31.jpg?v=9ca8d92792" alt="Bank of tankless water heaters with copper supply lines" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g32.jpg?v=fc829be368" alt="Drywall column and suspended ceiling grid taking shape" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g33.jpg?v=7915eea6c4" alt="Ceiling grid and ductwork above a corridor opening" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g34.jpg?v=dc46ff531e" alt="Suspended ceiling grid and light panels over the donor floor" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g35.jpg?v=e42b8ae097" alt="Wood baffle ceiling being hung over the donor floor during fit-out" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g36.jpg?v=6cdf3d0c4e" alt="Wood doors with glass lites staged for hanging" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g37.jpg?v=232ad4c31b" alt="Wood baffle ceiling feature installed over the donor stations" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g39.jpg?v=d932517986" alt="Finished restroom with subway tile and quartz vanity" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g40.jpg?v=76c4245fcc" alt="Reception desk casework with the wood baffle ceiling above" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g41.jpg?v=c43f960c96" alt="Keypad-locked biohazard room door in the finished corridor" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g42.jpg?v=33571d2964" alt="Lab casework with eye wash station and pass-through window" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g43.jpg?v=a7ba2dd370" alt="Roof access ladder and electrical disconnects on the exterior wall" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g44.jpg?v=7b6dc750eb" alt="Screening rooms with glass-lite doors and wall protection" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g45.jpg?v=d962a9f102" alt="Biohazard door with fire alarm pull and card reader" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g46.jpg?v=812bf1fdf7" alt="Screening cubicle with quartz counter and stainless corner guard" loading="lazy" width="900" height="1200">
+      <img src="assets/images/projects/parachute/g47.jpg?v=9de6e14c6f" alt="Donor stations with glass dividers and stainless trim" loading="lazy" width="900" height="1200">
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">05 — Systems &amp; Interior</span><h3>Where a lab gets its precision</h3></div>
-    <p>Inside, the build got technical: medical-grade mechanical, electrical, and plumbing rough-ins, interior framing, and the clinical layout that makes a plasma facility actually work — all coordinated trade-by-trade.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/parachute/11-interior-framing.jpg" alt="Interior framing" loading="lazy">
-      <img src="images/projects/parachute/12-mep.jpg" alt="Mechanical, electrical and plumbing systems" loading="lazy">
+<section class="sec gallery-sec" data-floor="05 · Finished">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">The finished facility</div><h2>Built to a <span class="gold">higher standard</span>.</h2></div>
+    <div class="gallery stagger">
+      <img class="tall" src="assets/images/projects/parachute/15-storefront-dusk.jpg?v=1448a6f3ec" alt="Glass storefront lit at dusk" loading="lazy" width="1050" height="1400">
+      <img src="assets/images/projects/parachute/18-reception.jpg?v=dc02a418a0" alt="Reception desk and waiting area, finished" loading="lazy" width="1050" height="1400">
+      <img src="assets/images/projects/parachute/16-casework.jpg?v=e142da8a24" alt="Interior casework and millwork" loading="lazy" width="1050" height="1400">
+      <img src="assets/images/projects/parachute/19-stations.jpg?v=06ebd473f4" alt="Clinical donor stations, finished" loading="lazy" width="1050" height="1400">
+      <img class="tall" src="assets/images/projects/parachute/20-finished-dusk-v2.jpg?v=fc2426f8dd" alt="Finished facility exterior at dusk, full view" loading="lazy" width="1050" height="1400">
+      <img src="assets/images/projects/parachute/21-interior-finished.jpg?v=0d8e87f2a5" alt="Finished interior, donor floor" loading="lazy" width="1050" height="1400">
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">06 — The Finish</span><h3>Doors open</h3></div>
-    <p>Finishes, casework, branding, paving, and a polished exterior brought it home — a turnkey biomedical facility, handed over complete and ready to operate.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/parachute/18-reception.jpg" alt="Finished reception with branding" loading="lazy">
-      <img src="images/projects/parachute/17-exterior-day-v2.jpg" alt="Finished exterior in daylight" loading="lazy">
+<section class="cta" data-floor="06 · Start"><div class="wrap rise"><div class="eyebrow" style="color:#F2D07C">Ready to build?</div><h2>Have a <span class="gold">ground-up</span> build in mind?</h2><p>Free consultation, no obligation. You will talk to someone who has built what you are planning.</p><a class="btn btn-gold" href="contact.html">Book a Free Consultation <span aria-hidden="true">&rarr;</span></a><small>or call <a href="tel:18447747342">(844) SPIRE-GC</a></small></div></section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged project photo"><span class="x" aria-hidden="true">&times;</span><img id="lbimg" src="" alt="Enlarged project photo"></div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot">
+        <img class="foot-logo" src="assets/images/spire-logo-white.png?v=ffc5d07853" alt="Spire Constructors" width="757" height="328">
+        <p>Built to a Higher Standard. Florida general contractor for commercial construction, custom homes and ADUs. Delray Beach, Florida.</p>
+      </div>
+      <div class="foot"><h4>Quick links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="scope.html" rel="nofollow">Team Login</a></li></ul></div>
+      <div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-up construction</a></li><li><a href="commercial.html">Fit-outs and build-outs</a></li><li><a href="residential.html">Custom homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="design-build.html">Design-build</a></li><li><a href="preconstruction.html">Pre-construction</a></li><li><a href="consulting.html">Consulting</a></li></ul></div>
+      <div class="foot"><h4>Get in touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Delray Beach, FL · Serving all of Florida</li><li>Mon to Fri, 7AM to 6PM</li></ul></div>
     </div>
+    <div class="foot-bottom"><span>Licensed &amp; Insured · FL CGC1539625</span><span>&copy; 2026 Spire Constructors, LLC. All rights reserved.</span></div>
   </div>
-</div></section>
-
-<section class="sec" style="padding-top:20px"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">The Full Build</div><h2>Every step, start to finish.</h2><p style="margin-top:10px">A deeper look behind the scenes — the teardown, structure, systems, and finish-out.</p></div>
-  <div class="gallery-full">
-    <img src="images/projects/parachute/g01.jpg" alt="Parachute build — site clearing" loading="lazy">
-    <img src="images/projects/parachute/g02.jpg" alt="Parachute build — sitework" loading="lazy">
-    <img src="images/projects/parachute/g03.jpg" alt="Parachute build — grading" loading="lazy">
-    <img src="images/projects/parachute/g04.jpg" alt="Parachute build — foundation prep" loading="lazy">
-    <img src="images/projects/parachute/g05.jpg" alt="Parachute build — slab prep" loading="lazy">
-    <img src="images/projects/parachute/g06.jpg" alt="Parachute build — slab" loading="lazy">
-    <img src="images/projects/parachute/g07.jpg" alt="Parachute build — slab complete" loading="lazy">
-    <img src="images/projects/parachute/g08.jpg" alt="Parachute build — steel erection" loading="lazy">
-    <img src="images/projects/parachute/g09.jpg" alt="Parachute build — steel frame" loading="lazy">
-    <img src="images/projects/parachute/g10.jpg" alt="Parachute build — structure" loading="lazy">
-    <img src="images/projects/parachute/g11.jpg" alt="Parachute build — interior structure" loading="lazy">
-    <img src="images/projects/parachute/g12.jpg" alt="Parachute build — framing" loading="lazy">
-    <img src="images/projects/parachute/g13.jpg" alt="Parachute build — steel detail" loading="lazy">
-    <img src="images/projects/parachute/g14.jpg" alt="Parachute build — panels" loading="lazy">
-    <img src="images/projects/parachute/g15.jpg" alt="Parachute build — envelope" loading="lazy">
-    <img src="images/projects/parachute/g16.jpg" alt="Parachute build — roofing" loading="lazy">
-    <img src="images/projects/parachute/g17.jpg" alt="Parachute build — roof decking" loading="lazy">
-    <img src="images/projects/parachute/g18.jpg" alt="Parachute build — roof" loading="lazy">
-    <img src="images/projects/parachute/g19.jpg" alt="Parachute build — interior framing" loading="lazy">
-    <img src="images/projects/parachute/g20.jpg" alt="Parachute build — metal framing" loading="lazy">
-    <img src="images/projects/parachute/g21.jpg" alt="Parachute build — framing" loading="lazy">
-    <img src="images/projects/parachute/g22.jpg" alt="Parachute build — interior" loading="lazy">
-    <img src="images/projects/parachute/g23.jpg" alt="Parachute build — crew framing" loading="lazy">
-    <img src="images/projects/parachute/g24.jpg" alt="Parachute build — framing" loading="lazy">
-    <img src="images/projects/parachute/g25.jpg" alt="Parachute build — interior work" loading="lazy">
-    <img src="images/projects/parachute/g26.jpg" alt="Parachute build — exterior masonry" loading="lazy">
-    <img src="images/projects/parachute/g27.jpg" alt="Parachute build — exterior walls" loading="lazy">
-    <img src="images/projects/parachute/g28.jpg" alt="Parachute build — drywall" loading="lazy">
-    <img src="images/projects/parachute/g29.jpg" alt="Parachute build — mechanical" loading="lazy">
-    <img src="images/projects/parachute/g30.jpg" alt="Parachute build — flooring" loading="lazy">
-    <img src="images/projects/parachute/g31.jpg" alt="Parachute build — plumbing systems" loading="lazy">
-    <img src="images/projects/parachute/g32.jpg" alt="Parachute build — ceiling grid" loading="lazy">
-    <img src="images/projects/parachute/g33.jpg" alt="Parachute build — ductwork" loading="lazy">
-    <img src="images/projects/parachute/g34.jpg" alt="Parachute build — interior fit-out" loading="lazy">
-    <img src="images/projects/parachute/g35.jpg" alt="Parachute build — interior progress" loading="lazy">
-    <img src="images/projects/parachute/g36.jpg" alt="Parachute build — millwork doors" loading="lazy">
-    <img src="images/projects/parachute/g37.jpg" alt="Parachute build — interior buildout" loading="lazy">
-    <img src="images/projects/parachute/g39.jpg" alt="Parachute build — finished interior" loading="lazy">
-    <img src="images/projects/parachute/g40.jpg" alt="Parachute build — reception casework" loading="lazy">
-    <img src="images/projects/parachute/g41.jpg" alt="Parachute build — corridor" loading="lazy">
-    <img src="images/projects/parachute/g42.jpg" alt="Parachute build — interior finish" loading="lazy">
-    <img src="images/projects/parachute/g43.jpg" alt="Parachute build — detail" loading="lazy">
-    <img src="images/projects/parachute/g44.jpg" alt="Parachute build — finished room" loading="lazy">
-    <img src="images/projects/parachute/g45.jpg" alt="Parachute build — interior finish" loading="lazy">
-    <img src="images/projects/parachute/g46.jpg" alt="Parachute build — restroom finish" loading="lazy">
-    <img src="images/projects/parachute/g47.jpg" alt="Parachute build — stations" loading="lazy">
-  </div>
-</div></section>
-
-<section class="sec gallery-sec"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">The Finished Facility</div><h2>Built to a higher standard.</h2></div>
-  <div class="gallery">
-    <img class="tall" src="images/projects/parachute/15-storefront-dusk.jpg" alt="Glass storefront lit at dusk" loading="lazy">
-    <img src="images/projects/parachute/18-reception.jpg" alt="Reception desk with branding" loading="lazy">
-    <img src="images/projects/parachute/16-casework.jpg" alt="Interior casework and millwork" loading="lazy">
-    <img src="images/projects/parachute/19-stations.jpg" alt="Clinical donor stations" loading="lazy">
-    <img class="tall" src="images/projects/parachute/20-finished-dusk-v2.jpg" alt="Finished facility exterior at dusk" loading="lazy">
-    <img src="images/projects/parachute/21-interior-finished.jpg" alt="Finished interior" loading="lazy">
-  </div>
-</div></section>
-
-<section class="cta"><div class="wrap">
-  <h2>Have a ground-up build in mind?</h2>
-  <p>From teardown to turnkey, Spire self-manages every trade so your project stays on schedule and built to a higher standard.</p>
-  <div><a class="btn btn-gold" href="contact.html">Start Your Project <span>&rarr;</span></a></div>
-  <small>Commercial &middot; Medical &middot; Ground-Up &middot; Design-Build</small>
-</div></section>
-
-<footer><div class="wrap"><div class="foot-grid"><div class="foot"><div class="bm"><span class="y">SPIRE</span> <span class="w">CONSTRUCTORS</span></div><p>Built to a Higher Standard. Serving all of Florida.</p></div><div class="foot"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li></ul></div><div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-Up</a></li><li><a href="commercial.html">Fit-Outs</a></li><li><a href="residential.html">Custom Homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="design-build.html">Design-Build</a></li><li><a href="preconstruction.html">Pre-Construction</a></li><li><a href="consulting.html">Consulting</a></li></ul></div><div class="foot"><h4>Get in Touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Serving All of Florida</li><li>Mon&ndash;Fri: 7AM &ndash; 6PM</li></ul></div></div><div class="foot-bottom"><span>Licensed &amp; Insured &middot; FL CGC1539625</span><span>&copy; 2025 Spire Constructors. All rights reserved.</span></div></div></footer>
-<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
-<div class="lb" id="lb"><span class="x">&times;</span><img id="lbimg" src="" alt="Enlarged project photo"></div>
-<script src="app.js"></script>
-<script>
-(function(){
-  var lb=document.getElementById('lb'), lbimg=document.getElementById('lbimg');
-  document.querySelectorAll('.grid-imgs img, .gallery img, .gallery-full img').forEach(function(im){
-    im.addEventListener('click', function(){ lbimg.src=im.src; lb.classList.add('open'); });
-  });
-  lb.addEventListener('click', function(){ lb.classList.remove('open'); lbimg.src=''; });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ lb.classList.remove('open'); } });
-})();
-</script>
-</body></html>
+</footer>
+<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<script src="assets/site.js?v=ec46ca6a68"></script>
+</body>
+</html>

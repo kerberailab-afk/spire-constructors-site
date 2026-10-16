@@ -1,233 +1,237 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mall at Millenia — Site &amp; Infrastructure for Chase &amp; Diamonds Direct | Spire Constructors</title>
-<meta name="description" content="A Spire Constructors case study: demolition of an old bank and the complete site and infrastructure — wet and dry utilities, paving, and finishes — for two retail pads (Chase Bank &amp; Diamonds Direct) at Orlando's Mall at Millenia.">
-<link rel="stylesheet" href="styles.css">
-<style>
-.cs-hero{position:relative;min-height:62vh;display:flex;align-items:flex-end;background:#0B1D38 center/cover no-repeat;background-image:linear-gradient(180deg,rgba(8,20,40,.2) 0%,rgba(8,20,40,.8) 100%),url('images/projects/millenia/hero.jpg')}
-.cs-hero .wrap{padding-top:120px;padding-bottom:54px}
-.cs-hero .tag{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#F4D27E,#C0902F);color:#231701;font-weight:700;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;padding:7px 15px;border-radius:999px}
-.cs-hero h1{color:#fff;font-size:clamp(34px,5vw,58px);margin:18px 0 10px;max-width:860px}
-.cs-hero p{color:#D9E4F3;font-size:clamp(16px,2vw,20px);font-weight:500;max-width:660px}
-.crumb{font-size:13px;color:#9fb2cc;font-weight:600;letter-spacing:.04em}
-.crumb a{color:#9fb2cc}.crumb a:hover{color:#fff}
-.intro{padding:84px 0 20px}
-.intro-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
-.intro h2{margin-bottom:16px}
-.intro p{font-size:17px;line-height:1.7;margin-bottom:14px}
-.intro .scopes{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:9px 18px;margin-top:22px}
-.intro .scopes li{display:flex;gap:9px;align-items:flex-start;color:var(--navy);font-weight:500;font-size:14.5px;line-height:1.35}
-.intro .scopes li::before{content:"✓";font-weight:800;color:var(--gold2);flex:0 0 auto}
-.intro-img img{width:100%;border-radius:20px;box-shadow:0 24px 50px -12px rgba(10,30,60,.25)}
-.phase{padding:60px 0;border-top:1px solid var(--line)}
-.phase .ph-head{display:flex;align-items:baseline;gap:16px;margin-bottom:26px;flex-wrap:wrap}
-.phase .step{font-size:13px;font-weight:800;letter-spacing:.16em;color:#9a7a2e;text-transform:uppercase}
-.phase h3{color:var(--navy);font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.01em}
-.phase p{font-size:16px;line-height:1.7;max-width:760px;margin-bottom:26px}
-.grid-imgs{display:grid;gap:16px}
-.g2{grid-template-columns:1fr 1fr}
-.g3{grid-template-columns:repeat(3,1fr)}
-.grid-imgs img{width:100%;height:300px;object-fit:cover;border-radius:14px;box-shadow:0 14px 32px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .25s,box-shadow .25s}
-.grid-imgs img:hover{transform:translateY(-3px);box-shadow:0 22px 44px -12px rgba(13,40,80,.28)}
-.gallery-sec{background:#F7F9FB}
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.gallery img{width:100%;height:320px;object-fit:cover;border-radius:14px;box-shadow:0 14px 32px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .25s,box-shadow .25s}
-.gallery img:hover{transform:translateY(-3px);box-shadow:0 22px 44px -12px rgba(13,40,80,.28)}
-.gallery .tall{grid-row:span 2;height:100%}
-.gallery-full{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.gallery-full img{width:100%;height:190px;object-fit:cover;border-radius:10px;box-shadow:0 10px 24px -12px rgba(13,40,80,.18);cursor:zoom-in;transition:transform .2s,box-shadow .2s}
-.gallery-full img:hover{transform:translateY(-3px);box-shadow:0 18px 36px -12px rgba(13,40,80,.3)}
-.lb{position:fixed;inset:0;background:rgba(7,16,32,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:30px;cursor:zoom-out}
-.lb.open{display:flex}
-.lb img{max-width:94vw;max-height:90vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.lb .x{position:absolute;top:22px;right:30px;color:#fff;font-size:34px;font-weight:300;cursor:pointer;line-height:1}
-@media(max-width:900px){
-  .cs-hero{min-height:56vh}
-  .intro-grid{grid-template-columns:1fr;gap:34px}.intro{padding:56px 0 8px}
-  .intro .scopes{grid-template-columns:1fr}
-  .g3,.g2,.gallery{grid-template-columns:1fr 1fr}
-  .grid-imgs img,.gallery img{height:210px}
-  .gallery .tall{grid-row:span 1;height:210px}
-  .gallery-full{grid-template-columns:1fr 1fr;gap:10px}.gallery-full img{height:150px}
-  .phase{padding:44px 0}
-}
-@media(max-width:560px){.g3,.g2,.gallery{grid-template-columns:1fr}.grid-imgs img,.gallery img{height:240px}}
-</style>
-</head><body>
-<header><div class="nav"><a class="logo" href="index.html"><img src="https://imagedelivery.net/xaKlCos5cTg_1RWzIu_h-A/4494cfaf-227f-4d25-b6b1-f1562ad6ea00/public" alt="Spire Constructors"></a><nav class="nav-links"><a href="about.html">About</a><a href="commercial.html">Commercial</a><a href="residential.html">Residential</a><a href="adu.html">ADUs</a><a href="projects.html">Projects</a><a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a><a class="pill" href="contact.html">Book a Consultation</a></nav><button class="menu-btn">&#9776;</button></div></header>
-
-<section class="cs-hero"><div class="wrap">
-  <div class="crumb"><a href="projects.html">Projects</a> &nbsp;/&nbsp; Mall at Millenia &middot; Orlando</div>
-  <span class="tag" style="margin-top:14px">Orlando, Florida</span>
-  <h1>Everything beneath two new <span class="gold">storefronts.</span></h1>
-  <p>Demolition of an old bank and the complete site &amp; infrastructure — wet and dry utilities, paving, and finishes — for two retail pads at Orlando's Mall at Millenia.</p>
-</div></section>
-
-<section class="stats"><div class="wrap"><div class="stats-row">
-  <div class="stat"><b class="gold">2</b><span>Retail Pads — Chase &amp; Diamonds Direct</span></div>
-  <div class="stat"><b class="gold">1</b><span>Bank Demolished &amp; Cleared</span></div>
-  <div class="stat"><b class="gold">8&Prime;</b><span>Underground Fire-Water Main</span></div>
-  <div class="stat"><b class="gold">Full</b><span>Site Infrastructure — Demo to Striping</span></div>
-</div></div></section>
-
-<section class="intro sec" style="padding-bottom:30px"><div class="wrap"><div class="intro-grid">
-  <div>
-    <div class="eyebrow">The Project</div>
-    <h2>We built everything the buildings stand on.</h2>
-    <p>Spire took down an aging bank at Orlando's <strong>Mall at Millenia</strong> and delivered the complete site and infrastructure for two new retail pads — the future homes of <strong>Chase Bank</strong> and <strong>Diamonds Direct</strong>. The tenant buildings are theirs. Everything below grade and across the site is ours.</p>
-    <p>That meant the work most people never see: domestic and sanitary sewer, potable and reclaim water, an 8-inch underground fire-water system, and electrical feeds from the transformer to each building — then curb and gutter, paving, flatwork, site lighting, striping, landscaping, irrigation, and the trash enclosure. A complete site package, self-managed from demolition to final striping.</p>
-    <ul class="scopes">
-      <li>Demolition &amp; site clearing</li>
-      <li>Domestic &amp; sanitary sewer</li>
-      <li>Potable &amp; reclaim water</li>
-      <li>8&Prime; underground fire-water system</li>
-      <li>Electrical feeds, transformer to buildings</li>
-      <li>Curb &amp; gutter</li>
-      <li>Paving &amp; concrete flatwork</li>
-      <li>Site lighting &amp; striping</li>
-      <li>Landscaping, irrigation &amp; trash enclosure</li>
-    </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mall at Millenia Site Work, Orlando | Spire Constructors</title>
+<meta name="description" content="Demolition of an old bank and the full site and infrastructure package, utilities, paving and finishes, for two retail pads at Orlando's Mall at Millenia.">
+<meta name="theme-color" content="#0B1B33">
+<link rel="canonical" href="https://spireconstructors.com/mall-at-millenia.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mall at Millenia Site Work, Orlando | Spire Constructors">
+<meta property="og:description" content="Demolition of an old bank and the full site and infrastructure package, utilities, paving and finishes, for two retail pads at Orlando's Mall at Millenia.">
+<meta property="og:url" content="https://spireconstructors.com/mall-at-millenia.html">
+<meta property="og:image" content="https://spireconstructors.com/assets/hero-ending.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E2A4F'/%3E%3Cpolygon points='32,8 22,52 32,44' fill='%238FC3EA'/%3E%3Cpolygon points='32,8 42,52 32,44' fill='%231E7BE0'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png?v=a0bd981ee3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=fd77ce9cc8">
+<!-- page-specific: .cs-hero p outranks .crumb in site.css, so the attribution line keeps its crumb size and colour -->
+<style>.cs-hero p.crumb{font-size:12px;color:#9fb2cc;max-width:none}</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html" aria-label="Spire Constructors home"><img class="ld" src="assets/images/spire-logo.png?v=6f1e42d277" alt="Spire Constructors" width="757" height="328"><img class="lw" src="assets/images/spire-logo-white.png?v=ffc5d07853" alt="" width="757" height="328" aria-hidden="true"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="about.html">About</a>
+      <a href="commercial.html">Commercial</a>
+      <a href="residential.html">Residential</a>
+      <a href="adu.html">ADUs</a>
+      <a href="projects.html">Projects</a>
+      <a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a>
+      <a class="pill" href="contact.html">Book a Consultation</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
   </div>
-  <div class="intro-img"><img src="images/projects/millenia/m13-delivered1.jpg" alt="Delivered retail pad at Mall at Millenia" loading="lazy"></div>
-</div></div></section>
+</header>
 
-<section class="sec" style="padding-top:24px"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">Start to Finish</div><h2>How the site came together.</h2></div>
 
-  <div class="phase" style="border-top:none">
-    <div class="ph-head"><span class="step">01 — Demo &amp; Clearing</span><h3>Down with the old bank</h3></div>
-    <p>An aging bank stood on the pad. We demolished it and cleared the site to grade — a clean canvas for two new buildings.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/millenia/m01-bank.jpg" alt="The existing bank before demolition" loading="lazy">
-      <img src="images/projects/millenia/m02-cleared.jpg" alt="Site cleared to grade" loading="lazy">
+<main id="main" tabindex="-1">
+
+<section class="cs-hero" data-floor="00 · Orlando" style="background-image:url(assets/images/projects/millenia/hero.jpg?v=eea6095974)">
+  <div class="wrap">
+    <div class="crumb"><a href="projects.html">Projects</a> &nbsp;/&nbsp; Mall at Millenia &middot; Orlando</div>
+    <span class="tag" style="margin-top:14px">Orlando, Florida</span>
+    <h1>Everything beneath two new <span class="gold">storefronts.</span></h1>
+    <p>Demolition of an old bank and the complete site and infrastructure package, wet and dry utilities, paving and finishes, for two retail pads at Orlando's Mall at Millenia.</p>
+    <p class="crumb" style="margin-top:12px">Delivered by Spire's principals, Bill Breunig and Gary Kerber, before founding Spire in 2025.</p>
+  </div>
+</section>
+
+<section class="stats" data-floor="01 · Millenia">
+  <div class="wrap">
+    <div class="stats-row stagger">
+      <div class="stat"><b class="gold">2</b><span>Retail pads · Chase &amp; Diamonds Direct</span></div>
+      <div class="stat"><b class="gold">1</b><span>Bank demolished and cleared</span></div>
+      <div class="stat"><b class="gold">8&Prime;</b><span>Underground fire-water main</span></div>
+      <div class="stat"><b class="gold">Full</b><span>Site infrastructure, demo to striping</span></div>
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">02 — Underground Utilities</span><h3>The work you never see</h3></div>
-    <p>Domestic and sanitary sewer, potable and reclaim water, an 8-inch fire-water main, and electrical feeds from the transformer to each building — the full wet-and-dry utility package, all below grade.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/millenia/m03-utility-trench.jpg" alt="Underground utility mains in a deep trench" loading="lazy">
-      <img src="images/projects/millenia/m04-water-tie.jpg" alt="Water main tie-in" loading="lazy">
-      <img src="images/projects/millenia/m05-electrical.jpg" alt="Electrical feeds from transformer to building" loading="lazy">
+<section class="intro sec" data-floor="02 · The project" style="padding-bottom:30px">
+  <div class="wrap">
+    <div class="intro-grid">
+      <div class="rise">
+        <div class="eyebrow">The project</div>
+        <h2>We built everything the buildings stand on.</h2>
+        <p>Our team took down an aging bank at Orlando's <strong>Mall at Millenia</strong> and delivered the complete site and infrastructure for two new retail pads, the future homes of <strong>Chase Bank</strong> and <strong>Diamonds Direct</strong>. The tenant buildings are theirs. Everything below grade and across the site was ours.</p>
+        <p>That meant the work most people never see: domestic water and sanitary sewer, potable and reclaim water, an 8-inch underground fire-water system, and electrical feeds from the transformer to each building. Then curb and gutter, paving, flatwork, site lighting, striping, landscaping, irrigation, and the trash enclosure. A complete site package, self-managed from demolition to final striping.</p>
+        <ul class="scopes">
+          <li>Demolition &amp; site clearing</li>
+          <li>Domestic water &amp; sanitary sewer</li>
+          <li>Potable &amp; reclaim water</li>
+          <li>8&Prime; underground fire-water system</li>
+          <li>Electrical feeds, transformer to buildings</li>
+          <li>Curb &amp; gutter</li>
+          <li>Paving &amp; concrete flatwork</li>
+          <li>Site lighting &amp; striping</li>
+          <li>Landscaping, irrigation &amp; trash enclosure</li>
+        </ul>
+      </div>
+      <div class="intro-img dim" data-dim="Delivered pad · Orlando"><img src="assets/images/projects/millenia/m13-delivered1.jpg?v=4097564aea" alt="Delivered retail pad at Mall at Millenia, ready for the tenant building" width="1050" height="1400"></div>
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">03 — Curb, Gutter &amp; Flatwork</span><h3>Shaping the site</h3></div>
-    <p>Curb and gutter, sidewalks, and concrete flatwork gave the site its structure — defining every drive, walkway, and building approach.</p>
-    <div class="grid-imgs g3">
-      <img src="images/projects/millenia/m06-sidewalk-pour.jpg" alt="Concrete sidewalk pour" loading="lazy">
-      <img src="images/projects/millenia/m07-curb-flatwork.jpg" alt="Curb and concrete flatwork" loading="lazy">
-      <img src="images/projects/millenia/m08-flatwork.jpg" alt="Concrete flatwork" loading="lazy">
+<section class="sec" data-floor="03 · The build" style="padding-top:24px">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">Start to finish</div><h2>How the site came together.</h2></div>
+
+    <div class="phase" style="border-top:none">
+      <div class="ph-head rise"><span class="step">01 · Demo &amp; Clearing</span><h3>Down with the old bank</h3></div>
+      <p class="rise">An aging bank stood on the pad. Our team demolished it and cleared the site to grade, a clean start for two new buildings.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/millenia/m01-bank.jpg?v=46859abcc5" alt="The existing bank building before demolition" width="1400" height="578" loading="lazy">
+        <img src="assets/images/projects/millenia/m02-cleared.jpg?v=1dc5332338" alt="Site cleared to grade after demolition" width="1050" height="1400" loading="lazy">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">02 · Underground Utilities</span><h3>The work you never see</h3></div>
+      <p class="rise">Domestic water and sanitary sewer, potable and reclaim water, an 8-inch fire-water main, and electrical feeds from the transformer to each building. The full wet and dry utility package, all below grade.</p>
+      <div class="grid-imgs g3 stagger">
+        <img src="assets/images/projects/millenia/m03-utility-trench.jpg?v=152654e7f3" alt="Underground utility mains in a deep trench" width="360" height="778" loading="lazy">
+        <img src="assets/images/projects/millenia/m04-water-tie.jpg?v=83e2ed181d" alt="Water main tie-in" width="780" height="359" loading="lazy">
+        <img src="assets/images/projects/millenia/m05-electrical.jpg?v=01176fc890" alt="Electrical feeds run from the transformer to the building" width="1050" height="1400" loading="lazy">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">03 · Curb, Gutter &amp; Flatwork</span><h3>Shaping the site</h3></div>
+      <p class="rise">Curb and gutter, sidewalks, and concrete flatwork gave the site its structure, defining every drive, walkway, and building approach.</p>
+      <div class="grid-imgs g3 stagger">
+        <img src="assets/images/projects/millenia/m06-sidewalk-pour.jpg?v=b4eb825f00" alt="Concrete sidewalk pour in progress" width="1050" height="1400" loading="lazy">
+        <img src="assets/images/projects/millenia/m07-curb-flatwork.jpg?v=1f9040d70b" alt="Curb and concrete flatwork taking shape" width="1050" height="1400" loading="lazy">
+        <img src="assets/images/projects/millenia/m08-flatwork.jpg?v=5ca15c364b" alt="Finished concrete flatwork" width="1050" height="1400" loading="lazy">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">04 · Paving</span><h3>Laying the lot</h3></div>
+      <p class="rise">Asphalt paving tied the pads, drive aisles, and parking together into a finished surface.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/millenia/m09-paving.jpg?v=63fef25bfb" alt="Asphalt paving under way" width="1050" height="1400" loading="lazy">
+        <img src="assets/images/projects/millenia/m10-paving2.jpg?v=602111ab94" alt="Paved drive aisles and parking" width="1050" height="1400" loading="lazy">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">05 · Site Finishes</span><h3>The details that finish a site</h3></div>
+      <p class="rise">Site lighting, striping, landscaping, irrigation, and a finished masonry trash enclosure brought the project home.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/millenia/m11-trash-enclosure.jpg?v=a884d67f9f" alt="Finished masonry trash enclosure" width="1400" height="1050" loading="lazy">
+        <img src="assets/images/projects/millenia/m12-landscaping.jpg?v=000bebbc6d" alt="Landscaping and irrigation at the finished site" width="1050" height="1400" loading="lazy">
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="ph-head rise"><span class="step">06 · Delivered</span><h3>Two pads, ready for business</h3></div>
+      <p class="rise">A complete, turnkey site, handed over for Chase Bank and Diamonds Direct to open their doors.</p>
+      <div class="grid-imgs g2 stagger">
+        <img src="assets/images/projects/millenia/m13-delivered1.jpg?v=4097564aea" alt="Delivered retail pad with paving and striping complete" width="1050" height="1400" loading="lazy">
+        <img src="assets/images/projects/millenia/m14-delivered2.jpg?v=6d72acb8d1" alt="Finished flatwork at the storefront" width="1050" height="1400" loading="lazy">
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">04 — Paving</span><h3>Laying the lot</h3></div>
-    <p>Asphalt paving tied the pads, drive aisles, and parking together into a finished surface.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/millenia/m09-paving.jpg" alt="Asphalt paving" loading="lazy">
-      <img src="images/projects/millenia/m10-paving2.jpg" alt="Paving and site" loading="lazy">
+<section class="sec" data-floor="04 · Full build" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">The full build</div><h2>Every step, start to finish.</h2><p style="margin-top:10px">A deeper look behind the scenes: demolition, deep utilities, hardscape, paving, and finishes.</p></div>
+    <div class="gallery-full stagger">
+      <img src="assets/images/projects/millenia/mg01.jpg?v=ae7d903e4f" alt="Mall at Millenia site work, photo 1 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg02.jpg?v=2061993e10" alt="Mall at Millenia site work, photo 2 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg03.jpg?v=31ae302cec" alt="Mall at Millenia site work, photo 3 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg04.jpg?v=bcde3e94bd" alt="Mall at Millenia site work, photo 4 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg05.jpg?v=c1c87ff7b6" alt="Mall at Millenia site work, photo 5 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg06.jpg?v=f8cc8a1cca" alt="Mall at Millenia site work, photo 6 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg07.jpg?v=45e6c13473" alt="Mall at Millenia site work, photo 7 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg08.jpg?v=7961688d56" alt="Mall at Millenia site work, photo 8 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg09.jpg?v=3afe260d00" alt="Mall at Millenia site work, photo 9 of 40" width="1200" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg10.jpg?v=564de283b7" alt="Mall at Millenia site work, photo 10 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg11.jpg?v=dc966986e7" alt="Mall at Millenia site work, photo 11 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg12.jpg?v=0a7f95ab27" alt="Mall at Millenia site work, photo 12 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg13.jpg?v=0ddd52ca03" alt="Mall at Millenia site work, photo 13 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg14.jpg?v=324eeed13c" alt="Mall at Millenia site work, photo 14 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg15.jpg?v=0817e236c3" alt="Mall at Millenia site work, photo 15 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg16.jpg?v=01a5a9834c" alt="Mall at Millenia site work, photo 16 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg17.jpg?v=0e0d8f9125" alt="Mall at Millenia site work, photo 17 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg18.jpg?v=e95194ba79" alt="Mall at Millenia site work, photo 18 of 40" width="1200" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg19.jpg?v=bad399ab12" alt="Mall at Millenia site work, photo 19 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg20.jpg?v=cee4a1cfa9" alt="Mall at Millenia site work, photo 20 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg21.jpg?v=332855e9d8" alt="Mall at Millenia site work, photo 21 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg22.jpg?v=fe11337075" alt="Mall at Millenia site work, photo 22 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg23.jpg?v=7dc59747d1" alt="Mall at Millenia site work, photo 23 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg24.jpg?v=6821c89697" alt="Mall at Millenia site work, photo 24 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg25.jpg?v=8fbaa92007" alt="Mall at Millenia site work, photo 25 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg26.jpg?v=f63512f812" alt="Mall at Millenia site work, photo 26 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg27.jpg?v=9a665b51cc" alt="Mall at Millenia site work, photo 27 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg28.jpg?v=ed6588343a" alt="Mall at Millenia site work, photo 28 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg29.jpg?v=591615eeb2" alt="Mall at Millenia site work, photo 29 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg30.jpg?v=6a047988c3" alt="Mall at Millenia site work, photo 30 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg31.jpg?v=c1f182c2c0" alt="Mall at Millenia site work, photo 31 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg32.jpg?v=44d09cefa9" alt="Mall at Millenia site work, photo 32 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg33.jpg?v=9e64875d74" alt="Mall at Millenia site work, photo 33 of 40" width="900" height="1200" loading="lazy">
+      <img src="assets/images/projects/millenia/mg34.jpg?v=6752772f4a" alt="Mall at Millenia site work, photo 34 of 40" width="480" height="360" loading="lazy">
+      <img src="assets/images/projects/millenia/mg35.jpg?v=b8c1b3dd96" alt="Mall at Millenia site work, photo 35 of 40" width="360" height="778" loading="lazy">
+      <img src="assets/images/projects/millenia/mg36.jpg?v=ecfa51adb4" alt="Mall at Millenia site work, photo 36 of 40" width="640" height="360" loading="lazy">
+      <img src="assets/images/projects/millenia/mg37.jpg?v=4e1ff6c8ea" alt="Mall at Millenia site work, photo 37 of 40" width="360" height="778" loading="lazy">
+      <img src="assets/images/projects/millenia/mg38.jpg?v=904e7caa38" alt="Mall at Millenia site work, photo 38 of 40" width="359" height="780" loading="lazy">
+      <img src="assets/images/projects/millenia/mg39.jpg?v=3c144bc9c4" alt="Mall at Millenia site work, photo 39 of 40" width="360" height="480" loading="lazy">
+      <img src="assets/images/projects/millenia/mg40.jpg?v=12689f6e76" alt="Mall at Millenia site work, photo 40 of 40" width="780" height="359" loading="lazy">
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">05 — Site Finishes</span><h3>The details that finish a site</h3></div>
-    <p>Site lighting, striping, landscaping, irrigation, and a finished masonry trash enclosure brought the project home.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/millenia/m11-trash-enclosure.jpg" alt="Finished masonry trash enclosure" loading="lazy">
-      <img src="images/projects/millenia/m12-landscaping.jpg" alt="Landscaping and site finishes" loading="lazy">
+<section class="sec gallery-sec" data-floor="05 · Finished">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">The finished site</div><h2>Built to a higher standard.</h2></div>
+    <div class="gallery stagger">
+      <img class="tall" src="assets/images/projects/millenia/m13-delivered1.jpg?v=4097564aea" alt="Finished retail pad, full height view" width="1050" height="1400" loading="lazy">
+      <img src="assets/images/projects/millenia/m11-trash-enclosure.jpg?v=a884d67f9f" alt="Masonry trash enclosure at the finished site" width="1400" height="1050" loading="lazy">
+      <img src="assets/images/projects/millenia/m14-delivered2.jpg?v=6d72acb8d1" alt="Storefront flatwork, finished and striped" width="1050" height="1400" loading="lazy">
+      <img src="assets/images/projects/millenia/m09-paving.jpg?v=63fef25bfb" alt="Finished asphalt paving" width="1050" height="1400" loading="lazy">
+      <img class="tall" src="assets/images/projects/millenia/m03-utility-trench.jpg?v=152654e7f3" alt="Underground utility mains before backfill" width="360" height="778" loading="lazy">
+      <img src="assets/images/projects/millenia/m05-electrical.jpg?v=01176fc890" alt="Electrical feed conduit at the building" width="1050" height="1400" loading="lazy">
     </div>
   </div>
+</section>
 
-  <div class="phase">
-    <div class="ph-head"><span class="step">06 — Delivered</span><h3>Two pads, ready for business</h3></div>
-    <p>A complete, turnkey site — handed over for Chase Bank and Diamonds Direct to open their doors.</p>
-    <div class="grid-imgs g2">
-      <img src="images/projects/millenia/m13-delivered1.jpg" alt="Delivered retail pad" loading="lazy">
-      <img src="images/projects/millenia/m14-delivered2.jpg" alt="Finished flatwork at storefront" loading="lazy">
+<section class="cta" data-floor="06 · Start"><div class="wrap rise"><div class="eyebrow" style="color:#F2D07C">Ready to build?</div><h2>Have a site or civil package to <span class="gold">build</span>?</h2><p>Free consultation, no obligation. You will talk to someone who has built what you are planning.</p><a class="btn btn-gold" href="contact.html">Book a Free Consultation <span aria-hidden="true">&rarr;</span></a><small>or call <a href="tel:18447747342">(844) SPIRE-GC</a></small></div></section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged project photo"><span class="x" aria-hidden="true">&times;</span><img id="lbimg" src="" alt="Enlarged project photo"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot">
+        <img class="foot-logo" src="assets/images/spire-logo-white.png?v=ffc5d07853" alt="Spire Constructors" width="757" height="328">
+        <p>Built to a Higher Standard. Florida general contractor for commercial construction, custom homes and ADUs. Delray Beach, Florida.</p>
+      </div>
+      <div class="foot"><h4>Quick links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="scope.html" rel="nofollow">Team Login</a></li></ul></div>
+      <div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-up construction</a></li><li><a href="commercial.html">Fit-outs and build-outs</a></li><li><a href="residential.html">Custom homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="design-build.html">Design-build</a></li><li><a href="preconstruction.html">Pre-construction</a></li><li><a href="consulting.html">Consulting</a></li></ul></div>
+      <div class="foot"><h4>Get in touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Delray Beach, FL · Serving all of Florida</li><li>Mon to Fri, 7AM to 6PM</li></ul></div>
     </div>
+    <div class="foot-bottom"><span>Licensed &amp; Insured · FL CGC1539625</span><span>&copy; 2026 Spire Constructors, LLC. All rights reserved.</span></div>
   </div>
-</div></section>
-
-<section class="sec" style="padding-top:20px"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">The Full Build</div><h2>Every step, start to finish.</h2><p style="margin-top:10px">A deeper look behind the scenes — demolition, deep utilities, hardscape, paving, and finishes.</p></div>
-  <div class="gallery-full">
-    <img src="images/projects/millenia/mg01.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg02.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg03.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg04.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg05.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg06.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg07.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg08.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg09.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg10.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg11.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg12.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg13.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg14.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg15.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg16.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg17.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg18.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg19.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg20.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg21.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg22.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg23.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg24.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg25.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg26.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg27.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg28.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg29.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg30.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg31.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg32.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg33.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg34.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg35.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg36.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg37.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg38.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg39.jpg" alt="Millenia site work" loading="lazy">
-    <img src="images/projects/millenia/mg40.jpg" alt="Millenia site work" loading="lazy">
-  </div>
-</div></section>
-
-<section class="sec gallery-sec"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">The Finished Site</div><h2>Built to a higher standard.</h2></div>
-  <div class="gallery">
-    <img class="tall" src="images/projects/millenia/m13-delivered1.jpg" alt="Delivered retail pad" loading="lazy">
-    <img src="images/projects/millenia/m11-trash-enclosure.jpg" alt="Finished masonry trash enclosure" loading="lazy">
-    <img src="images/projects/millenia/m14-delivered2.jpg" alt="Finished flatwork at storefront" loading="lazy">
-    <img src="images/projects/millenia/m09-paving.jpg" alt="Finished paving" loading="lazy">
-    <img class="tall" src="images/projects/millenia/m03-utility-trench.jpg" alt="Underground utility mains" loading="lazy">
-    <img src="images/projects/millenia/m05-electrical.jpg" alt="Electrical feeds" loading="lazy">
-  </div>
-</div></section>
-
-<section class="cta"><div class="wrap">
-  <h2>Have a site or civil package to build?</h2>
-  <p>From demolition to final striping, Spire self-manages the full scope of site and infrastructure work — wet and dry utilities, hardscape, paving, and finishes.</p>
-  <div><a class="btn btn-gold" href="contact.html">Start Your Project <span>&rarr;</span></a></div>
-  <small>Site &amp; Civil &middot; Commercial &middot; Demolition &middot; Infrastructure</small>
-</div></section>
-
-<footer><div class="wrap"><div class="foot-grid"><div class="foot"><div class="bm"><span class="y">SPIRE</span> <span class="w">CONSTRUCTORS</span></div><p>Built to a Higher Standard. Serving all of Florida.</p></div><div class="foot"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li></ul></div><div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-Up</a></li><li><a href="commercial.html">Fit-Outs</a></li><li><a href="residential.html">Custom Homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="design-build.html">Design-Build</a></li><li><a href="preconstruction.html">Pre-Construction</a></li><li><a href="consulting.html">Consulting</a></li></ul></div><div class="foot"><h4>Get in Touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Serving All of Florida</li><li>Mon&ndash;Fri: 7AM &ndash; 6PM</li></ul></div></div><div class="foot-bottom"><span>Licensed &amp; Insured &middot; FL CGC1539625</span><span>&copy; 2025 Spire Constructors. All rights reserved.</span></div></div></footer>
-<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
-<div class="lb" id="lb"><span class="x">&times;</span><img id="lbimg" src="" alt="Enlarged project photo"></div>
-<script src="app.js"></script>
-<script>
-(function(){
-  var lb=document.getElementById('lb'), lbimg=document.getElementById('lbimg');
-  document.querySelectorAll('.grid-imgs img, .gallery img, .gallery-full img').forEach(function(im){
-    im.addEventListener('click', function(){ lbimg.src=im.src; lb.classList.add('open'); });
-  });
-  lb.addEventListener('click', function(){ lb.classList.remove('open'); lbimg.src=''; });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ lb.classList.remove('open'); } });
-})();
-</script>
-</body></html>
+</footer>
+<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<script src="assets/site.js?v=ec46ca6a68"></script>
+</body>
+</html>

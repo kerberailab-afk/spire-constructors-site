@@ -1,9 +1,30 @@
-# Always revalidate these so updates aren't served stale from cache.
-/app.js
-  Cache-Control: no-cache
+# Static assets are fingerprinted with ?v= in every reference, so they can be cached for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Pages: always revalidate so an update is never served stale.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Security headers on everything.
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Internal tools: never cached, never indexed.
 /scope.html
   Cache-Control: no-cache
+  X-Robots-Tag: noindex, nofollow
 /os.html
   Cache-Control: no-cache
+  X-Robots-Tag: noindex, nofollow
 /os
   Cache-Control: no-cache
+  X-Robots-Tag: noindex, nofollow
+/drawings/*
+  X-Robots-Tag: noindex
