@@ -49,7 +49,7 @@ button{font-family:inherit}
 .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:8px;z-index:300}
 .skip:focus{left:12px}
 .wrap{max-width:1280px;margin:0 auto;padding:0 40px}
-.gold{background:linear-gradient(120deg,var(--metal1),var(--metal2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.gold{background:linear-gradient(120deg,var(--metal1),var(--metal2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding:0 .12em;margin:0 -.12em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .eyebrow{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.18em;color:var(--metal-deep);text-transform:uppercase}
 h1,h2,h3{font-family:var(--display);color:var(--ink);font-weight:800;letter-spacing:-.02em;line-height:1.06;font-stretch:112%}
 h2{font-size:clamp(30px,3.6vw,46px)}
