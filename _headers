@@ -2,12 +2,6 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Pages: always revalidate so an update is never served stale.
-/*.html
-  Cache-Control: public, max-age=0, must-revalidate
-/
-  Cache-Control: public, max-age=0, must-revalidate
-
 # Security headers on everything.
 /*
   Strict-Transport-Security: max-age=31536000
@@ -16,14 +10,17 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-# Internal tools: never cached, never indexed.
+# Internal tools: never cached, never indexed. Pages serves them extensionless.
+/scope
+  Cache-Control: no-cache
+  X-Robots-Tag: noindex, nofollow
 /scope.html
   Cache-Control: no-cache
   X-Robots-Tag: noindex, nofollow
-/os.html
+/os
   Cache-Control: no-cache
   X-Robots-Tag: noindex, nofollow
-/os
+/os.html
   Cache-Control: no-cache
   X-Robots-Tag: noindex, nofollow
 /drawings/*

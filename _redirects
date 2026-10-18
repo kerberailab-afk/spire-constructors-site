@@ -1,4 +1,2 @@
-# Canonical host is the apex; the canonical tags on every page agree.
-https://www.spireconstructors.com/* https://spireconstructors.com/:splat 301
 # The ADU guide moved under /assets/ in the new site.
 /adu-guide.pdf /assets/adu-guide.pdf 301
