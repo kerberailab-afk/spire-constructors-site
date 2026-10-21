@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Gary Kerber | Spire Constructors</title>
+<meta name="description" content="Gary Kerber, co-owner of Spire Constructors, a Florida Certified General Contractor (CGC1539625). Call, email, save my contact, or see our work.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B1B33">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Gary Kerber | Spire Constructors">
+<meta property="og:description" content="Co-owner of Spire Constructors, a Florida Certified General Contractor (CGC1539625). See our work or get in touch.">
+<meta property="og:url" content="https://spireconstructors.com/gary">
+<meta property="og:image" content="https://spireconstructors.com/assets/hero-ending.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E2A4F'/%3E%3Cpolygon points='32,8 22,52 32,44' fill='%238FC3EA'/%3E%3Cpolygon points='32,8 42,52 32,44' fill='%231E7BE0'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png?v=a0bd981ee3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=979b89c234">
+<link rel="preload" as="image" href="/assets/hero-ending.jpg?v=4e3dc23659">
+<style>
+/* Gary's Blinq card landing page. Tokens, fonts and buttons come from site.css; these rules are page-only. */
+body.cardpage{background:var(--deep);padding-bottom:0}
+body.cardpage::before,body.cardpage::after{display:none}
+.backdrop{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--deep)}
+.backdrop img{width:100%;height:100%;object-fit:cover;filter:blur(3px) brightness(.62) saturate(1.05);transform:scale(1.04)}
+.backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,51,.45),rgba(11,27,51,.82))}
+.card{max-width:460px;margin:0 auto;background:#fff;min-height:100vh;min-height:100dvh;position:relative;overflow:hidden}
+@media(min-width:560px){.card{margin:44px auto;min-height:0;border-radius:28px;box-shadow:0 40px 90px -30px rgba(0,0,0,.65)}}
+
+/* cover photo with the logo plate where a profile photo would sit */
+.cover{position:relative;height:214px;background:var(--deep2)}
+.cover img{width:100%;height:100%;object-fit:cover;object-position:64% 58%;filter:brightness(1.14) saturate(1.06)}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,27,51,.10),rgba(11,27,51,0) 45%,rgba(11,27,51,.32))}
+.plate{position:absolute;left:50%;bottom:-50px;transform:translateX(-50%);z-index:2;background:#fff;border-radius:20px;padding:15px 22px;box-shadow:0 18px 40px -14px rgba(11,27,51,.45),0 0 0 1px rgba(11,27,51,.05)}
+.plate img{width:176px;height:auto}
+
+/* name, title, license */
+.who{text-align:center;padding:64px 22px 4px}
+.who h1{font-size:38px;line-height:1.02}
+.role{margin-top:8px;font-size:16.5px;font-weight:600;color:var(--grey)}
+.lic{display:inline-flex;align-items:center;gap:10px;margin-top:16px;padding:10px 16px 10px 12px;border-radius:14px;background:#FBF6EA;border:1px solid rgba(185,133,43,.32);text-align:left}
+.lic svg{flex:0 0 auto;color:var(--metal2)}
+.lic b{display:block;font-size:14px;line-height:1.3;color:var(--ink);font-weight:700}
+.lic span{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--metal-deep);margin-top:2px}
+
+/* contact actions */
+.actions{display:grid;gap:10px;padding:22px 18px 4px}
+.act{display:flex;align-items:center;gap:14px;min-height:62px;padding:12px 14px;border-radius:16px;background:#fff;border:1px solid var(--line);transition:transform .2s var(--ease),box-shadow .2s var(--ease),border-color .2s var(--ease)}
+.act:hover{transform:translateY(-1px);border-color:var(--line-strong);box-shadow:var(--shadow-card)}
+.act .ic{flex:0 0 42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--band);color:var(--primary)}
+.act .tx{min-width:0}
+.act b{display:block;font-size:16.5px;line-height:1.25;color:var(--ink)}
+.act small{display:block;font-size:14px;line-height:1.35;color:var(--grey);font-weight:500;overflow-wrap:anywhere}
+.act .chev{margin-left:auto;flex:0 0 auto;color:var(--grey2)}
+.act.main{background:linear-gradient(120deg,var(--primary),var(--primary2));border-color:transparent;box-shadow:0 16px 30px -14px rgba(0,87,184,.7)}
+.act.main .ic{background:rgba(255,255,255,.16);color:#fff}
+.act.main b,.act.main .chev{color:#fff}
+.act.main small{color:rgba(255,255,255,.86)}
+
+/* the route to the portfolio page */
+.route{display:block;margin:18px 18px 0;border-radius:20px;overflow:hidden;background:var(--deep);color:#fff;box-shadow:0 22px 44px -20px rgba(11,27,51,.6);transition:transform .25s var(--ease)}
+.route:hover{transform:translateY(-2px)}
+.mosaic{display:grid;grid-template-columns:1.7fr 1fr;grid-template-rows:1fr 1fr;gap:3px;height:196px;background:var(--deep)}
+.mosaic img{width:100%;height:100%;object-fit:cover}
+.mosaic img:first-child{grid-row:1 / 3}
+.route-tx{display:flex;align-items:center;gap:14px;padding:16px 16px 18px 18px}
+.route-tx .eyebrow{color:#F2D07C}
+.route-tx b{display:block;margin-top:4px;font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.02em;font-stretch:112%;line-height:1.05}
+.route-tx small{display:block;margin-top:5px;font-size:14px;line-height:1.4;color:rgba(255,255,255,.78)}
+.route-tx .go{margin-left:auto;flex:0 0 48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(120deg,#F2D07C,var(--metal2));color:#1c1402}
+
+/* short pitch and the consultation button */
+.pitch{text-align:center;padding:34px 22px 6px}
+.pitch h2{font-size:31px;line-height:1.08}
+.pitch p{margin:12px auto 22px;font-size:16px;line-height:1.6;max-width:34ch}
+.pitch .btn{width:100%}
+.pitch small{display:block;margin-top:12px;font-size:13.5px;color:var(--grey)}
+
+.cardfoot{margin-top:30px;padding:22px 22px 30px;border-top:1px solid var(--line);text-align:center;font-size:13.5px;line-height:1.6;color:var(--grey)}
+.cardfoot a{color:var(--primary);font-weight:700}
+.cardfoot .mono{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--metal-deep);margin-top:6px}
+</style>
+</head>
+<body class="cardpage">
+<a class="skip" href="#main">Skip to content</a>
+<div class="backdrop" aria-hidden="true"><img src="/assets/hero-ending.jpg?v=4e3dc23659" alt="" width="1920" height="1080"></div>
+
+<main id="main" class="card" tabindex="-1">
+  <div class="cover">
+    <img src="/assets/hero-ending.jpg?v=4e3dc23659" alt="" width="1920" height="1080" fetchpriority="high">
+    <div class="plate"><img src="/assets/images/spire-logo.png?v=6f1e42d277" alt="Spire Constructors" width="757" height="328"></div>
+  </div>
+
+  <section class="who">
+    <h1>Gary Kerber</h1>
+    <p class="role">Co-owner, Spire Constructors</p>
+    <div class="lic">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 12l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 12l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 12zm-12.91 4.72l-3.8-3.81 1.48-1.48 2.32 2.33 5.85-5.87 1.48 1.48-7.33 7.35z"/></svg>
+      <div><b>Florida Certified General Contractor</b><span>License CGC1539625</span></div>
+    </div>
+  </section>
+
+  <nav class="actions" aria-label="Get in touch">
+    <a class="act main" href="tel:+17184900678">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></span>
+      <span class="tx"><b>Call Gary</b><small>718-490-0678 · cell</small></span>
+      <svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </a>
+    <a class="act" href="tel:+18447747342">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg></span>
+      <span class="tx"><b>Call the office</b><small>(844) SPIRE-GC · company line</small></span>
+      <svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </a>
+    <a class="act" href="mailto:info@spireconstructors.com">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>
+      <span class="tx"><b>Email</b><small>info@spireconstructors.com</small></span>
+      <svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </a>
+    <a class="act" href="/gary.vcf?v=a7a50eb906">
+      <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+      <span class="tx"><b>Save my contact</b><small>Adds me to your phone's contacts</small></span>
+      <svg class="chev" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </a>
+  </nav>
+
+  <a class="route" href="/portfolio">
+    <div class="mosaic" aria-hidden="true">
+      <img src="/assets/images/portfolio/delray-str.jpg?v=a91cf95dea" alt="" width="960" height="640">
+      <img src="/assets/images/portfolio/parachute-mo.jpg?v=f70baf911f" alt="" width="960" height="640">
+      <img src="/assets/images/portfolio/aesc.jpg?v=14608597ad" alt="" width="960" height="640">
+    </div>
+    <div class="route-tx">
+      <div><span class="eyebrow">Portfolio</span><b>See our work</b><small>Projects, company info and a quick contact form</small></div>
+      <span class="go" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></span>
+    </div>
+  </a>
+
+  <section class="pitch">
+    <h2>Built to a <span class="gold">Higher Standard</span>.</h2>
+    <p>Commercial buildings, tenant fit-outs, custom homes and ADUs across Florida. One price up front, a daily log of your job, and owners who run it themselves.</p>
+    <a class="btn btn-gold" href="/portfolio#contact">Book a Free Consultation <span aria-hidden="true">&rarr;</span></a>
+    <small>Free and no obligation. You'll talk with an owner.</small>
+  </section>
+
+  <div class="cardfoot">
+    <p>Spire Constructors · Delray Beach, Florida<br>Serving all of Florida</p>
+    <p class="mono">FL CGC1539625</p>
+    <p style="margin-top:10px"><a href="/">Visit spireconstructors.com</a></p>
+  </div>
+</main>
+</body>
+</html>

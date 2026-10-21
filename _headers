@@ -25,3 +25,8 @@
   X-Robots-Tag: noindex, nofollow
 /drawings/*
   X-Robots-Tag: noindex
+
+# Gary's contact card (linked from /gary): served as a vCard so phones offer "Add to Contacts".
+/gary.vcf
+  Content-Type: text/vcard; charset=utf-8
+  Content-Disposition: inline; filename="Gary-Kerber-Spire-Constructors.vcf"

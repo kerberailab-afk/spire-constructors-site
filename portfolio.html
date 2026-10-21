@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Portfolio | Spire Constructors</title>
+<meta name="description" content="Spire Constructors portfolio: commercial, healthcare, site work and custom homes, plus company info and a free consultation form. Florida Certified General Contractor CGC1539625.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0B1B33">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Portfolio | Spire Constructors">
+<meta property="og:description" content="Real photos, named jobs, and a free consultation with an owner. Florida Certified General Contractor CGC1539625.">
+<meta property="og:url" content="https://spireconstructors.com/portfolio">
+<meta property="og:image" content="https://spireconstructors.com/assets/hero-ending.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E2A4F'/%3E%3Cpolygon points='32,8 22,52 32,44' fill='%238FC3EA'/%3E%3Cpolygon points='32,8 42,52 32,44' fill='%231E7BE0'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png?v=a0bd981ee3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=979b89c234">
+<style>
+/* Portfolio page for Gary's Blinq card. Tokens, fonts, buttons and the form come from site.css; these rules are page-only. */
+html{scroll-padding-top:84px}
+.pf .wrap{max-width:1180px}
+
+/* slim top bar */
+.pf-bar{position:sticky;top:0;z-index:50;background:rgba(11,27,51,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+.pf-bar-in{max-width:1180px;margin:0 auto;padding:10px 40px;min-height:66px;display:flex;align-items:center;gap:28px}
+.pf-logo img{height:40px;width:auto}
+.pf-nav{display:flex;gap:26px;margin-left:auto}
+.pf-nav a{color:rgba(255,255,255,.84);font-weight:600;font-size:15px;transition:color .2s var(--ease)}
+.pf-nav a:hover{color:#fff}
+.pf-call{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:linear-gradient(120deg,var(--primary),var(--primary2));color:#fff;font-weight:700;font-size:14.5px;white-space:nowrap}
+
+/* hero */
+.pf-hero{position:relative;overflow:hidden;background:var(--deep);padding:60px 0 58px}
+.pf-hero .bg{position:absolute;inset:0}
+.pf-hero .bg img{width:100%;height:100%;object-fit:cover;object-position:62% 58%;filter:brightness(1.12) saturate(1.05)}
+.pf-hero .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,27,51,.95) 0%,rgba(11,27,51,.84) 46%,rgba(11,27,51,.42) 100%)}
+.pf-hero .wrap{position:relative}
+.back{display:inline-flex;align-items:center;gap:4px;color:#F2D07C;font-weight:700;font-size:14.5px;margin-bottom:26px}
+.back:hover{color:#fff}
+.pf-hero .eyebrow{color:#F2D07C}
+.pf-hero h1{color:#fff;font-size:clamp(40px,6vw,68px);margin:14px 0 16px;max-width:13ch}
+.pf-hero .lede{color:#C9D6E8;font-size:18px;line-height:1.6;max-width:50ch}
+.facts{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:34px;max-width:880px}
+.facts li{background:rgba(11,27,51,.55);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:16px 18px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.facts b{display:block;font-family:var(--display);font-size:23px;font-weight:800;font-stretch:112%;letter-spacing:-.01em;color:#fff;line-height:1.15}
+.facts span{display:block;margin-top:4px;font-size:14px;line-height:1.4;color:#BFD2EC}
+
+/* sections */
+.pf-sec{padding:76px 0}
+.pf-sec + .pf-sec{padding-top:0}
+.head-l{margin-bottom:26px}
+.head-l h2{margin-top:10px}
+.head-l p{margin-top:10px;font-size:16.5px;max-width:62ch}
+.note{font-size:14.5px;line-height:1.55;color:var(--grey);max-width:70ch;margin:0 0 30px;padding-left:14px;border-left:3px solid var(--metal1)}
+
+/* project cards */
+.pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.pgrid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pcard{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-card);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.pcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lift)}
+.pimg{position:relative;aspect-ratio:3 / 2;overflow:hidden;background:var(--band2)}
+.pimg img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.pcard:hover .pimg img{transform:scale(1.04)}
+.pbody{display:flex;flex-direction:column;flex:1;padding:18px 20px 20px}
+.ptag{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--metal-deep)}
+.pcard h3{font-size:21px;line-height:1.15;margin-top:8px}
+.loc{display:block;margin-top:4px;font-size:14px;font-weight:600;color:var(--grey2)}
+.pcard p{margin-top:10px;font-size:15px;line-height:1.55}
+.plink{margin-top:auto;padding-top:14px;display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--primary)}
+.pcard:hover .plink{gap:10px}
+.caption{text-align:left}
+@media(min-width:641px){
+  .pcard.feat{grid-column:span 2;flex-direction:row}
+  .pcard.feat .pimg{flex:0 0 56%;aspect-ratio:auto;min-height:300px}
+  .pcard.feat .pbody{justify-content:center;padding:28px 28px 26px}
+  .pcard.feat h3{font-size:27px}
+  .pcard.feat p{font-size:16px}
+}
+
+/* how we work */
+.rules-band{background:linear-gradient(180deg,rgba(255,255,255,.55),var(--band))}
+.rules-band .pf-sec{padding:76px 0}
+.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.rule{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 22px 24px;box-shadow:var(--shadow-card)}
+.rule .num{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--metal-deep)}
+.rule h3{font-size:20px;margin:10px 0 8px;line-height:1.15}
+.rule p{font-size:15px;line-height:1.55}
+
+/* company info */
+.co{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:start}
+.co-text p{margin-top:14px;font-size:17px;line-height:1.65}
+.co-text .link{margin-top:18px}
+.co-facts{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-card);padding:6px 24px}
+.co-facts div{display:grid;grid-template-columns:132px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.co-facts div:last-child{border-bottom:0}
+.co-facts dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--metal-deep);padding-top:3px}
+.co-facts dd{font-size:15.5px;line-height:1.5;color:var(--ink);font-weight:600}
+.co-facts dd a{color:var(--primary)}
+.co-facts .mono{font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:.06em;color:var(--ink)}
+
+/* contact */
+.ct{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:start}
+.ct-side p{margin-top:14px;font-size:17px;line-height:1.6}
+.ct-quick{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:26px}
+.ct-quick .btn{margin-bottom:4px}
+.ct-quick small{font-size:14px;color:var(--grey)}
+
+/* footer content (base footer styles come from site.css) */
+.pf-foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;align-items:flex-start}
+.pf-foot img{height:44px;width:auto;margin-bottom:14px}
+.pf-foot p{color:#B4C2D4;font-size:14px;line-height:1.7}
+.pf-foot .fl{display:flex;flex-direction:column;gap:10px}
+.pf-foot .fl a{color:#F2D07C;font-weight:700;font-size:15px}
+.pf-foot .fl a:hover{color:#fff}
+.pf-foot .copy{flex-basis:100%;border-top:1px solid rgba(255,255,255,.12);padding-top:20px;font-size:13px}
+
+@media(max-width:1000px){
+  .pf-bar-in{padding:10px 22px}
+  .rules{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .co,.ct{grid-template-columns:1fr;gap:32px}
+}
+@media(max-width:980px){.pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){
+  .pf-nav{display:none}
+  .pf-call{margin-left:auto;padding:9px 14px}
+  .pf-logo img{height:34px}
+  .pf-hero{padding:40px 0 44px}
+  .pf-hero .bg::after{background:linear-gradient(180deg,rgba(11,27,51,.68),rgba(11,27,51,.9))}
+  .pf-hero .lede{font-size:16.5px}
+  .facts{grid-template-columns:1fr;gap:10px;margin-top:26px}
+  .facts li{display:flex;align-items:baseline;gap:12px;padding:12px 16px}
+  .facts b{font-size:19px;flex:0 0 auto}
+  .facts span{margin-top:0;font-size:13.5px}
+  .pf-sec,.rules-band .pf-sec{padding:56px 0}
+  .co-facts{padding:4px 18px}
+  .co-facts div{grid-template-columns:1fr;gap:4px;padding:13px 0}
+  .form{padding:26px 20px}
+}
+@media(max-width:640px){
+  .pgrid,.pgrid.two,.rules{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body class="pf">
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="pf-bar">
+  <div class="pf-bar-in">
+    <a class="pf-logo" href="/" aria-label="Spire Constructors home"><img src="/assets/images/spire-logo-white.png?v=ffc5d07853" alt="Spire Constructors" width="757" height="328"></a>
+    <nav class="pf-nav" aria-label="On this page">
+      <a href="#work">Work</a><a href="#company">Company</a><a href="#contact">Contact</a>
+    </nav>
+    <a class="pf-call" href="tel:+17184900678"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>Call Gary</a>
+  </div>
+</div>
+
+<main id="main" tabindex="-1">
+  <section class="pf-hero">
+    <div class="bg" aria-hidden="true"><img src="/assets/hero-ending.jpg?v=4e3dc23659" alt="" width="1920" height="1080" fetchpriority="high"></div>
+    <div class="wrap">
+      <a class="back" href="/gary"><span aria-hidden="true">&lsaquo;</span> Gary Kerber's card</a>
+      <div class="eyebrow">Spire Constructors · Portfolio</div>
+      <h1>Here's what we <span class="gold">build</span>.</h1>
+      <p class="lede">Commercial buildings, healthcare build-outs, site work and custom homes. Real photos and named jobs, plus two Delray Beach homes on the way.</p>
+      <ul class="facts">
+        <li><b>50+ years</b><span>of building between the two owners</span></li>
+        <li><b>CGC1539625</b><span>Florida Certified General Contractor</span></li>
+        <li><b>All of Florida</b><span>Based in Delray Beach</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="pf-sec" id="work">
+    <div class="wrap">
+      <div class="head-l"><div class="eyebrow">Delivered</div><h2>Real photos, named jobs.</h2></div>
+      <p class="note">Projects delivered by Spire's owners, Bill Breunig and Gary Kerber, over their careers.</p>
+      <div class="pgrid">
+        <a class="pcard feat" href="/delray-str">
+          <div class="pimg"><img src="/assets/images/portfolio/delray-str.jpg?v=a91cf95dea" alt="Resort-style pool and mural backyard at the Delray Beach short-term rental" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Residential · Short-term rental</div>
+            <h3>Delray Beach STR</h3><span class="loc">Investor build · Delray Beach, FL</span>
+            <p>An investor wanted a rental that stands out from the look-alike listings around it. We designed and built it start to finish: a full interior rebuild, custom pool, murals and a turnkey handover.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+        <a class="pcard" href="/parachute-plasma-lab">
+          <div class="pimg"><img src="/assets/images/portfolio/parachute-mo.jpg?v=f70baf911f" alt="Finished Parachute plasma lab at dusk after the teardown and ground-up build" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Commercial · Ground-up</div>
+            <h3>Parachute Plasma Lab</h3><span class="loc">Missouri</span>
+            <p>A 6,000+ SF plasma donation lab built ground-up where an old restaurant stood, managed by our team from teardown to opening.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+        <a class="pcard" href="/parachute-kentucky">
+          <div class="pimg"><img src="/assets/images/portfolio/parachute-ky.jpg?v=994d1f41c2" alt="Finished Parachute plasma lab exterior in Kentucky" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Commercial · Ground-up biomedical</div>
+            <h3>Parachute Plasma Lab</h3><span class="loc">Radcliff, Kentucky</span>
+            <p>A 6,500 SF plasma lab taken from raw woods to opening day: clearing, sitework, steel, medical-grade MEP and finish.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+        <a class="pcard" href="/mall-at-millenia">
+          <div class="pimg"><img src="/assets/images/portfolio/millenia.jpg?v=1039185945" alt="Storefront shell going up over the new utilities at the Mall at Millenia" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Commercial · Site and civil</div>
+            <h3>Mall at Millenia</h3><span class="loc">Orlando, Florida</span>
+            <p>Demolition of an old bank, then the full site package for two new retail pads: wet and dry utilities, paving and finishes.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+        <a class="pcard" href="/animal-hospital-springdale">
+          <div class="pimg"><img src="/assets/images/portfolio/aesc.jpg?v=14608597ad" alt="Entrance canopy of the AESC animal hospital in Springdale, Arkansas" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Commercial · Healthcare</div>
+            <h3>AESC Animal Hospital</h3><span class="loc">Springdale, Arkansas</span>
+            <p>A 20,000+ SF event center rebuilt as a specialty and emergency animal hospital, with MRI, CT, X-ray, medical gas and a chiller plant.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pf-sec" id="upcoming">
+    <div class="wrap">
+      <div class="head-l"><div class="eyebrow">Renderings from the permitted sets</div><h2>Coming next in Delray Beach.</h2></div>
+      <div class="pgrid two">
+        <a class="pcard" href="/809-nw-2nd-delray">
+          <div class="pimg"><span class="ribbon">Upcoming</span><img src="/assets/images/portfolio/809-nw-2nd.jpg?v=f8977f1c1e" alt="Rendering of 809 NW 2nd, a custom modern residence in downtown Delray Beach, seen from the street" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Residential · Ground-up</div>
+            <h3>809 NW 2nd</h3><span class="loc">Downtown Delray Beach</span>
+            <p>A custom two-story modern home on an infill lot two blocks off Atlantic Avenue: 2,390 SF under air, four bedrooms and a private pool.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+        <a class="pcard" href="/201-sw-2nd-delray">
+          <div class="pimg"><span class="ribbon">Upcoming</span><img src="/assets/images/portfolio/201-sw-2nd.jpg?v=5b2a88c03a" alt="Rendering of 201 SW 2nd, a three-story modern residence with a rear ADU near Sundy Village in Delray Beach" width="960" height="640" loading="lazy"></div>
+          <div class="pbody">
+            <div class="ptag">Residential · Ground-up + ADU</div>
+            <h3>201 SW 2nd</h3><span class="loc">Downtown Delray Beach</span>
+            <p>Three modern stories with a covered rooftop lounge and a detached 883 SF ADU, around the corner from Sundy Village.</p>
+            <span class="plink">See the project <span aria-hidden="true">&rsaquo;</span></span>
+          </div>
+        </a>
+      </div>
+      <p class="caption">Both images are renderings from the permitted drawing sets, not photographs.</p>
+    </div>
+  </section>
+
+  <div class="rules-band">
+    <section class="pf-sec">
+      <div class="wrap">
+        <div class="head-l"><div class="eyebrow">How we work</div><h2>Level. Plumb. Square. On the <span class="gold">number</span>.</h2><p>The same four rules on every job, from a medical build-out to a backyard ADU.</p></div>
+        <div class="rules">
+          <div class="rule"><span class="num">01</span><h3>One price, in writing</h3><p>We price the whole scope up front and show you the breakdown. If something changes, you see the cost and sign off before any work starts.</p></div>
+          <div class="rule"><span class="num">02</span><h3>Daily logs you can read</h3><p>Every workday ends with a log in your client portal: what got done, photos from the site, and what's next.</p></div>
+          <div class="rule"><span class="num">03</span><h3>Owners on every job</h3><p>The people who own the company run your project, start to finish. You won't get handed off to a junior super.</p></div>
+          <div class="rule"><span class="num">04</span><h3>Permits, handled</h3><p>We pull the permits, schedule the inspections and deal with the city. If your building is open for business, it stays open while we work.</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="pf-sec" id="company" style="padding-top:76px">
+    <div class="wrap co">
+      <div class="co-text">
+        <div class="eyebrow">Company info</div>
+        <h2>Who you're <span class="gold">hiring</span>.</h2>
+        <p>Spire Constructors is a Florida general contractor owned and run by Bill Breunig and Gary Kerber, with more than fifty years of building between them: high-rises and healthcare facilities, ground-up development and commercial build-outs. The owners run every job themselves, start to finish.</p>
+        <a class="link" href="/about">More about the company <span class="c" aria-hidden="true">&rsaquo;</span></a>
+      </div>
+      <dl class="co-facts">
+        <div><dt>License</dt><dd>Florida Certified General Contractor<br><span class="mono">CGC1539625</span></dd></div>
+        <div><dt>Based in</dt><dd>Delray Beach, Florida</dd></div>
+        <div><dt>Service area</dt><dd>All of Florida</dd></div>
+        <div><dt>What we build</dt><dd>Commercial ground-up, fit-outs and build-outs, custom homes and ADUs</dd></div>
+        <div><dt>Services</dt><dd>Design-build, pre-construction and consulting</dd></div>
+        <div><dt>Hours</dt><dd>Mon to Fri, 7AM to 6PM</dd></div>
+        <div><dt>Phone</dt><dd><a href="tel:+17184900678">Gary's cell: 718-490-0678</a><br><a href="tel:+18447747342">Office: (844) SPIRE-GC</a></dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></dd></div>
+        <div><dt>Founded</dt><dd>2025</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="pf-sec" id="contact">
+    <div class="wrap ct">
+      <div class="ct-side">
+        <div class="eyebrow">Free consultation</div>
+        <h2>Tell us about your <span class="gold">project</span>.</h2>
+        <p>Free consultation, no obligation. You'll talk with an owner who has built what you're planning.</p>
+        <div class="ct-quick">
+          <a class="btn btn-blue" href="tel:+17184900678">Call Gary · 718-490-0678</a>
+          <a class="link" href="tel:+18447747342">Office: (844) SPIRE-GC <span class="c" aria-hidden="true">&rsaquo;</span></a>
+          <a class="link" href="mailto:info@spireconstructors.com">info@spireconstructors.com <span class="c" aria-hidden="true">&rsaquo;</span></a>
+          <small>Mon to Fri, 7AM to 6PM</small>
+        </div>
+      </div>
+      <form class="form" id="leadForm" data-lead="Blinq card (Gary Kerber)">
+        <div class="fields">
+          <div class="field"><label for="f-name">Full name</label><input id="f-name" name="fullName" type="text" placeholder="Your name" autocomplete="name" required></div>
+          <div class="row2">
+            <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" placeholder="you@email.com" autocomplete="email" required></div>
+            <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" placeholder="(555) 555-5555" autocomplete="tel"></div>
+          </div>
+          <div class="field"><label for="f-service">What are you building?</label><select id="f-service" name="service"><option value="">Select a service</option><option>Commercial ground-up</option><option>Commercial fit-out or build-out</option><option>ADU (accessory dwelling unit)</option><option>Custom home</option><option>Design-build</option><option>Pre-construction or consulting</option><option>Renovation</option><option>Other</option></select></div>
+          <div class="field"><label for="f-budget">Estimated budget</label><select id="f-budget" name="budget"><option value="">Select a range</option><option>Under $100k</option><option>$100k to $250k</option><option>$250k to $500k</option><option>$500k to $1M</option><option>$1M to $5M</option><option>$5M+</option><option>Not sure yet</option></select></div>
+          <div class="field"><label for="f-details">Project details</label><textarea id="f-details" name="details" placeholder="Where is it, what is it, and when do you want to open or move in?"></textarea></div>
+          <div class="hp" aria-hidden="true"><label>Company website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <button class="btn btn-blue" type="submit">Book My Free Consultation <span aria-hidden="true">&rarr;</span></button>
+          <div class="msg" role="status"></div>
+        </div>
+        <div class="thanks" role="status"><svg width="52" height="52" viewBox="0 0 24 24" aria-hidden="true" style="margin:0 auto"><circle cx="12" cy="12" r="11" fill="#E4BC62"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#1c1402" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Thanks, we've got it.</h3><p>We'll be in touch within one business day. Need us sooner? Call Gary at <a href="tel:+17184900678" style="color:var(--primary);font-weight:700">718-490-0678</a>.</p></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="pf-foot">
+  <div class="wrap">
+    <div>
+      <img src="/assets/images/spire-logo-white.png?v=ffc5d07853" alt="Spire Constructors" width="757" height="328">
+      <p>Florida Certified General Contractor · License CGC1539625<br>Delray Beach, Florida · Serving all of Florida</p>
+    </div>
+    <div class="fl">
+      <a href="/gary">&lsaquo; Back to Gary's card</a>
+      <a href="/">Visit the full website &rsaquo;</a>
+    </div>
+    <p class="copy">&copy; 2026 Spire Constructors</p>
+  </div>
+</footer>
+
+<div class="mobilecall"><a class="call" href="tel:+17184900678"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> Call Gary</a><a class="book" href="#contact">Free Consultation</a></div>
+<script src="/assets/site.js?v=ec46ca6a68"></script>
+</body>
+</html>
