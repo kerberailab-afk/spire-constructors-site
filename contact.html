@@ -20,6 +20,17 @@
 <link rel="stylesheet" href="assets/site.css?v=979b89c234">
 <!-- page-specific CSS only if the page truly needs a rule that is not in site.css -->
 <style>
+/* the office: address card beside a live Google map */
+.office-sec{background:linear-gradient(180deg,var(--canvas),var(--band2))}
+.office-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center;padding:20px 0 96px}
+.wrap.office-grid{padding-left:40px;padding-right:40px}
+.office-card h2{margin:12px 0 18px}
+.office-card address{font-style:normal;font-family:var(--display);font-stretch:106%;font-weight:700;font-size:22px;line-height:1.35;color:var(--ink);margin-bottom:10px}
+.office-card p{font-size:16px;margin-bottom:24px}
+.office-map{border-radius:22px;overflow:hidden;box-shadow:var(--shadow-lift);border:1px solid #EAEEF2;background:var(--band);height:420px}
+.office-map iframe{display:block;width:100%;height:100%;border:0}
+.info .line .v a{color:inherit}
+@media(max-width:900px){.office-grid{grid-template-columns:1fr;gap:32px;padding:0 0 64px}.wrap.office-grid{padding-left:22px;padding-right:22px}.office-map{height:340px}}
 /* drawing upload: the drop zone and the file list */
 .form label .opt{font-weight:500;color:var(--grey2)}
 .drop{position:relative;border:1.5px dashed #B9C4D2;border-radius:14px;background:#F7FAFE;padding:24px 18px;text-align:center;color:var(--primary);transition:border-color .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease)}
@@ -89,6 +100,7 @@
       <p style="font-size:17px">One conversation, straight answers, and a clear next step. We reply within one business day.</p>
       <div class="line"><div class="l">Call</div><div class="v"><a href="tel:18447747342">(844) SPIRE-GC</a></div></div>
       <div class="line"><div class="l">Email</div><div class="v"><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></div></div>
+      <div class="line"><div class="l">Office</div><div class="v"><a href="https://www.google.com/maps/search/?api=1&amp;query=1555%20Palm%20Beach%20Lakes%20Blvd%2C%20West%20Palm%20Beach%2C%20FL%2033401" target="_blank" rel="noopener">1555 Palm Beach Lakes Blvd<br>West Palm Beach, FL 33401</a></div></div>
       <div class="line"><div class="l">Service area</div><div class="v">Serving all of Florida</div></div>
       <div class="line"><div class="l">Hours</div><div class="v">Mon to Fri, 7AM to 6PM</div></div>
     </div>
@@ -121,6 +133,25 @@
   </div>
 </section>
 
+<!-- ================= OFFICE + MAP ================= -->
+<section class="office-sec" data-floor="02 · Office" id="office">
+  <div class="wrap office-grid">
+    <div class="office-card rise">
+      <div class="eyebrow">Our office</div>
+      <h2>Where to <span class="gold">find us</span>.</h2>
+      <address>1555 Palm Beach Lakes Blvd<br>West Palm Beach, FL 33401</address>
+      <p>Serving all of Florida. Mon to Fri, 7AM to 6PM.</p>
+      <div class="hero-cta">
+        <a class="btn btn-blue" href="https://www.google.com/maps/dir/?api=1&amp;destination=1555%20Palm%20Beach%20Lakes%20Blvd%2C%20West%20Palm%20Beach%2C%20FL%2033401" target="_blank" rel="noopener">Get Directions <span aria-hidden="true">&rarr;</span></a>
+        <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=1555%20Palm%20Beach%20Lakes%20Blvd%2C%20West%20Palm%20Beach%2C%20FL%2033401" target="_blank" rel="noopener">Open in Google Maps <span class="c" aria-hidden="true">&rsaquo;</span></a>
+      </div>
+    </div>
+    <div class="office-map rise">
+      <iframe title="Google map of Spire Constructors at 1555 Palm Beach Lakes Blvd, West Palm Beach, FL 33401" src="https://www.google.com/maps?q=1555+Palm+Beach+Lakes+Blvd,+West+Palm+Beach,+FL+33401&amp;z=16&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer>
@@ -132,7 +163,7 @@
       </div>
       <div class="foot"><h4>Quick links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="scope.html" rel="nofollow">Team Login</a></li></ul></div>
       <div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-up construction</a></li><li><a href="commercial.html">Fit-outs and build-outs</a></li><li><a href="residential.html">Custom homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="design-build.html">Design-build</a></li><li><a href="preconstruction.html">Pre-construction</a></li><li><a href="consulting.html">Consulting</a></li></ul></div>
-      <div class="foot"><h4>Get in touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Serving all of Florida</li><li>Mon to Fri, 7AM to 6PM</li></ul></div>
+      <div class="foot"><h4>Get in touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li><a href="https://www.google.com/maps/search/?api=1&amp;query=1555%20Palm%20Beach%20Lakes%20Blvd%2C%20West%20Palm%20Beach%2C%20FL%2033401" target="_blank" rel="noopener">1555 Palm Beach Lakes Blvd<br>West Palm Beach, FL 33401</a></li><li>Serving all of Florida</li><li>Mon to Fri, 7AM to 6PM</li></ul></div>
     </div>
     <div class="foot-bottom"><span>Licensed &amp; Insured · FL CGC1539625</span><span>&copy; 2026 Spire Constructors, LLC. All rights reserved.</span></div>
   </div>
