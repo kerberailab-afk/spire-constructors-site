@@ -50,6 +50,7 @@ export async function onRequestPost({ request, env }) {
     tags: ["Website Lead"],
   };
 
+  const base = env.GHL_BASE || GHL_BASE; // GHL_BASE is only set when testing against a local stand-in
   const headers = {
     Authorization: `Bearer ${env.GHL_TOKEN}`,
     Version: VERSION,
@@ -60,7 +61,7 @@ export async function onRequestPost({ request, env }) {
   // Create / upsert the contact
   let created;
   try {
-    const res = await fetch(`${GHL_BASE}/contacts/`, {
+    const res = await fetch(`${base}/contacts/`, {
       method: "POST",
       headers,
       body: JSON.stringify(contactBody),
@@ -86,9 +87,13 @@ export async function onRequestPost({ request, env }) {
   if (d.service) noteLines.push(`Service: ${d.service}`);
   if (d.budget) noteLines.push(`Budget: ${d.budget}`);
   if (d.details) noteLines.push(`Details: ${d.details}`);
+  if (Array.isArray(d.files) && d.files.length) {
+    const names = d.files.slice(0, 25).map((f) => String((f && f.name) || "").slice(0, 120)).filter(Boolean);
+    noteLines.push(`Drawings sent with the form: ${d.files.length} file${d.files.length === 1 ? "" : "s"} (${names.join(", ")}). Download links follow in a separate note when the upload finishes.`);
+  }
   if (contactId && noteLines.length) {
     try {
-      await fetch(`${GHL_BASE}/contacts/${contactId}/notes`, {
+      await fetch(`${base}/contacts/${contactId}/notes`, {
         method: "POST",
         headers,
         body: JSON.stringify({ body: noteLines.join("\n") }),
@@ -98,7 +103,23 @@ export async function onRequestPost({ request, env }) {
     }
   }
 
-  return json({ ok: true, contactId: contactId || null }, 200, cors);
+  // A signed, six-hour upload token lets this lead's drawings go to /api/upload.
+  let uploadToken = null;
+  if (contactId && /^[A-Za-z0-9_-]{1,64}$/.test(contactId)) {
+    const exp = Math.floor(Date.now() / 1000) + 6 * 3600;
+    uploadToken = `${contactId}.${exp}.${await sign(env.GHL_TOKEN, `spire-upload|${contactId}|${exp}`)}`;
+  }
+
+  return json({ ok: true, contactId: contactId || null, uploadToken, uploads: Boolean(env.FILES && uploadToken) }, 200, cors);
+}
+
+async function sign(secret, msg) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(msg)));
+  let s = "";
+  for (const b of sig) s += String.fromCharCode(b);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
 // Preflight

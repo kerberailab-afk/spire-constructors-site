@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawing Review with GC Level | Spire Constructors</title>
+<meta name="description" content="Before Spire prices your project, GC Level reads every sheet of your drawings and flags the conflicts, gaps and missing details that become change orders, so they are settled before you sign.">
+<meta name="theme-color" content="#0B1B33">
+<link rel="canonical" href="https://spireconstructors.com/gc-level">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Drawing Review with GC Level | Spire Constructors">
+<meta property="og:description" content="Before Spire prices your project, GC Level reads every sheet of your drawings and flags the conflicts, gaps and missing details that become change orders, so they are settled before you sign.">
+<meta property="og:url" content="https://spireconstructors.com/gc-level">
+<meta property="og:image" content="https://spireconstructors.com/assets/hero-ending.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E2A4F'/%3E%3Cpolygon points='32,8 22,52 32,44' fill='%238FC3EA'/%3E%3Cpolygon points='32,8 42,52 32,44' fill='%231E7BE0'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png?v=a0bd981ee3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=979b89c234">
+<!-- page-specific CSS: the example findings card, the numbered steps, three-up features, source notes -->
+<style>
+:root{
+  --flag-conflict-bg:#FBEAE7;--flag-conflict-fg:#8E2A1C;
+  --flag-missing-bg:#FBF1DC;--flag-missing-fg:#7A5410;
+  --flag-gap-bg:#E6EEF9;--flag-gap-fg:#103A73;
+  --flag-ok-bg:#E5F3EA;--flag-ok-fg:#1D6B3C;
+}
+/* the body font joins f+l and f+i into one glyph (the "fl" in "floor" touched); keep the letters apart */
+body{font-variant-ligatures:no-common-ligatures}
+/* links: on hover only the arrow slides; the link keeps its size, so it can't wrap to the next line and jitter */
+.link,.link:hover{gap:6px}
+.link .c{transition:transform .25s var(--ease)}
+.link:hover .c{transform:translateX(4px)}
+.feat-row.feat3{grid-template-columns:repeat(3,1fr)}
+.feat .step{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.16em;color:var(--metal-deep);text-transform:uppercase;margin-bottom:8px}
+
+/* example findings card (hero visual) */
+.finds{background:var(--panel);border:1px solid #EAEEF2;border-radius:22px;box-shadow:var(--shadow-lift);overflow:hidden;position:relative}
+.finds .fh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 24px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--metal-deep)}
+.finds .ex{background:var(--band);color:var(--navy);border-radius:999px;padding:5px 12px;font-size:11px;letter-spacing:.12em}
+.finds ul{list-style:none}
+.finds li{display:grid;grid-template-columns:118px 1fr;gap:6px 16px;padding:17px 24px;border-bottom:1px solid var(--line)}
+.finds .tag{grid-row:span 2;align-self:start;justify-self:start;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:6px 9px;border-radius:8px;white-space:nowrap}
+.tag.conflict{background:var(--flag-conflict-bg);color:var(--flag-conflict-fg)}
+.tag.missing{background:var(--flag-missing-bg);color:var(--flag-missing-fg)}
+.tag.gap{background:var(--flag-gap-bg);color:var(--flag-gap-fg)}
+.tag.ok{background:var(--flag-ok-bg);color:var(--flag-ok-fg)}
+.finds .what{font-weight:600;color:var(--ink);font-size:15px;line-height:1.45;min-width:0}
+.finds .meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--grey2);letter-spacing:.06em;min-width:0}
+.finds .meta .to{color:var(--primary)}
+.finds .ff{padding:16px 24px;font-weight:700;color:var(--ink);font-size:14.5px;background:var(--band2)}
+
+/* how it works: steps beside the drawing */
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.steps{list-style:none;display:grid;gap:30px}
+.steps li{display:grid;grid-template-columns:40px 1fr;gap:20px;align-items:start}
+.steps .n{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-family:var(--display);font-size:16px;font-weight:700;line-height:1;color:var(--primary);background:rgba(0,87,184,.10);box-shadow:inset 0 0 0 1px rgba(0,87,184,.14)}
+.steps li > div{padding-top:7px}
+.steps h3{font-size:21px;margin-bottom:6px}
+.steps p{font-size:15.5px}
+.how-fig img{width:100%;border-radius:20px;box-shadow:var(--shadow-lift)}
+
+/* lost time: each figure with what it measures */
+.time-row{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.time .fig{display:inline-block;font-family:var(--display);font-size:46px;font-weight:800;letter-spacing:-.02em;line-height:1.05;font-stretch:112%}
+.time .what{font-size:14px;font-weight:600;color:var(--grey);margin:8px 0 18px}
+.time .what sup{font-family:var(--mono);font-size:10px;color:var(--metal-deep);margin-left:2px}
+.time .what sup a{color:inherit}
+.time h3{margin:0 0 8px}
+.time p{margin-bottom:0}
+
+/* the numbers band heading, its footnote marker and the source notes */
+.stat-head{text-align:center;padding-top:40px;margin-bottom:-16px}
+.stat-head sup{font-size:10px;margin-left:2px}
+.stat-head sup a{color:inherit}
+.sources{max-width:840px;margin:44px auto 0;font-size:13px;line-height:1.6;color:var(--grey2)}
+.sources h4{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--metal-deep);margin-bottom:10px}
+.sources ol{padding-left:18px;display:grid;gap:6px}
+.sources li{color:var(--grey)}
+.sources a,.faq .ans a{color:var(--primary);text-decoration:underline;text-underline-offset:2px}
+
+@media(max-width:900px){
+  .feat-row.feat3,.how-grid,.time-row{grid-template-columns:1fr}
+  .how-grid{gap:44px}
+}
+@media(max-width:560px){
+  .finds li{grid-template-columns:1fr;gap:8px;padding:16px 18px}
+  .finds .tag{grid-row:auto}
+  .finds .fh,.finds .ff{padding-left:18px;padding-right:18px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html" aria-label="Spire Constructors home"><img class="ld" src="assets/images/spire-logo.png?v=6f1e42d277" alt="Spire Constructors" width="757" height="328"><img class="lw" src="assets/images/spire-logo-white.png?v=ffc5d07853" alt="" width="757" height="328" aria-hidden="true"></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="about.html">About</a>
+      <a href="commercial.html">Commercial</a>
+      <a href="residential.html">Residential</a>
+      <a href="adu.html">ADUs</a>
+      <a href="projects.html">Projects</a>
+      <a class="callbtn" href="tel:18447747342"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call (844) SPIRE-GC</a>
+      <a class="pill" href="contact.html">Book a Consultation</a>
+    </nav>
+    <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">&#9776;</button>
+  </div>
+</header>
+
+
+<main id="main" tabindex="-1">
+
+<!-- ================= HERO ================= -->
+<section class="split-hero" data-floor="00 · Site" id="top">
+  <div class="wrap hero-grid">
+    <div class="rise">
+      <div class="eyebrow">Powered by GC Level</div>
+      <h1 style="margin-top:14px">We read every sheet <span class="gold">before we price it.</span></h1>
+      <p class="sub">Before we give you a number, we run your whole drawing set through GC Level, the drawing review and bid leveling platform behind our estimates. It finds the conflicts, gaps and missing details that usually turn into change orders. We settle them on paper, put them in the price, and show you all of it before you sign.</p>
+      <div class="hero-cta">
+        <a class="btn btn-blue" href="contact.html#contact">Send Us Your Drawings <span aria-hidden="true">&rarr;</span></a>
+        <a class="link" href="#how">See how it works <span class="c" aria-hidden="true">&rsaquo;</span></a>
+      </div>
+    </div>
+    <figure class="hero-visual rise" style="margin:0">
+      <div class="finds" role="group" aria-label="Example of what GC Level flags in a drawing set">
+        <div class="fh"><span>GC Level · Findings</span><span class="ex">Example</span></div>
+        <ul>
+          <li><span class="tag conflict">Conflict</span><span class="what">Finish schedule calls for porcelain tile. The floor plan says LVT.</span><span class="meta"><span>A9.1 vs A2.1</span><span class="to">&rarr; RFI to architect</span></span></li>
+          <li><span class="tag missing">Missing info</span><span class="what">Grease interceptor shown on the plan. No size given.</span><span class="meta"><span>P1.0</span><span class="to">&rarr; RFI to engineer</span></span></li>
+          <li><span class="tag gap">Nobody's job</span><span class="what">Rooftop unit disconnects. Electrical says by mechanical. Mechanical says by electrical.</span><span class="meta"><span>E2.0 vs M1.0</span><span class="to">&rarr; Assigned to electrical</span></span></li>
+          <li><span class="tag ok">Scheduled</span><span class="what">14 light fixture types, each priced by its tag.</span><span class="meta"><span>E0.1</span><span class="to">&rarr; In the price</span></span></li>
+        </ul>
+        <div class="ff">Settled before bid day.</div>
+      </div>
+      <figcaption class="caption">An illustration of the kinds of items GC Level flags. Sheet numbers are examples.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= THE LOW BID ================= -->
+<section class="sec" data-floor="01 · The low bid" id="low-bid">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">How low bids get paid for</div>
+      <h2>The lowest bid is rarely <span class="gold">the lowest cost</span>.</h2>
+      <p>Every drawing set has gaps: two sheets that disagree, a detail nobody drew, work each trade thinks the other one carries. Some contractors price around them, come in low and wait. The gaps don't go away. They come back as change orders.</p>
+    </div>
+    <div class="feat-row feat3 stagger">
+      <div class="feat"><div class="bar"></div><div class="step">Bid day</div><h3>Price what's easy to see</h3><p>The number covers what's clearly drawn. Everything unclear is left out, or tucked into an exclusion you won't read until it matters.</p></div>
+      <div class="feat"><div class="bar"></div><div class="step">Contract</div><h3>The low number wins</h3><p>Your budget, your loan and your schedule are now built around a price that was never complete.</p></div>
+      <div class="feat"><div class="bar"></div><div class="step">Construction</div><h3>The gaps come due</h3><p>Each one returns as a change order, priced when there are no other bids to compare it to and a crew is waiting on an answer. The markup goes to the contractor. The overrun goes to you.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE NUMBERS ================= -->
+<div class="stats" data-floor="02 · The numbers">
+  <p class="eyebrow stat-head wrap">Change orders on 18,229 completed U.S. building projects<sup><a href="#sources">1</a></sup></p>
+  <div class="wrap stats-row stagger">
+    <div class="stat"><b class="gold">5%</b><span>Average cost added on a $1M to $5M project</span></div>
+    <div class="stat"><b class="gold">15%+</b><span>Added on 1 in 10 projects that size</span></div>
+    <div class="stat"><b class="gold">2nd half</b><span>Of the job, when most change orders arrive</span></div>
+  </div>
+</div>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="sec" data-floor="03 · How it works" id="how">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">What happens to your drawings</div>
+      <h2>From drawing set to <span class="gold">a number you can trust</span>.</h2>
+      <p>GC Level does the reading. A Spire owner reviews what it finds and makes every call.</p>
+    </div>
+    <div class="how-grid">
+      <ol class="steps stagger">
+        <li><span class="n">1</span><div><h3>Read every sheet</h3><p>Architectural, structural, civil, mechanical, electrical and plumbing. Every note, schedule, tag and detail callout, including the ones on the last sheet of the set.</p></div></li>
+        <li><span class="n">2</span><div><h3>Build each trade's scope</h3><p>Each requirement goes to the trade that carries it, as a checklist line tied to the sheet and note it came from.</p></div></li>
+        <li><span class="n">3</span><div><h3>Flag what doesn't add up</h3><p>Conflicts, missing information and work no trade picks up are flagged as potential RFIs and go to your design team before we price.</p></div></li>
+        <li><span class="n">4</span><div><h3>Level the sub bids</h3><p>Every subcontractor prices the same checklist. We line their bids up item by item, so an exclusion can't hide. If a bid doesn't mention an item, we don't assume it's in the price.</p></div></li>
+        <li><span class="n">5</span><div><h3>Show you the list</h3><p>You see what we see: what's in the price, what's excluded and what's still waiting on an answer. In writing, before you sign.</p></div></li>
+      </ol>
+      <figure class="how-fig rise" style="margin:0">
+        <img src="assets/images/projects/delray/plan-first-floor.jpg?v=ac200a1d20" alt="First floor plan of 809 NW 2nd with door, window and keynote tags" loading="lazy" width="1500" height="1312">
+        <figcaption class="caption"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BC882C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M8 5v14"/></svg><span>Drawing. 809 NW 2nd, Delray Beach. Every door, window and keynote tag on a sheet belongs in somebody's scope.</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHAT IT CATCHES ================= -->
+<section class="sec svc-bg" data-floor="04 · Caught on paper" id="catches">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">Caught on paper</div>
+      <h2>Four problems that <span class="gold">become change orders</span>.</h2>
+      <p>Found before bid day, each one costs a question to your design team. Found during construction, each one costs a change order.</p>
+    </div>
+    <div class="two stagger">
+      <article class="svc"><div class="num">Conflicts</div><h3>Two sheets that disagree</h3><p>The finish schedule says one material and the floor plan says another. Both sheets get flagged and the question goes to your architect, so the price carries the answer.</p></article>
+      <article class="svc"><div class="num">Missing information</div><h3>Details nobody drew</h3><p>Equipment with no size, or a note pointing to a detail that isn't in the set. Found now, it's an RFI. Found in the field, it's a delay and a change order.</p></article>
+      <article class="svc"><div class="num">Gaps between trades</div><h3>Work that's nobody's job</h3><p>Electrical says by mechanical. Mechanical says by electrical. Every requirement is assigned to exactly one trade, and anything left over is settled before bid day.</p></article>
+      <article class="svc"><div class="num">Schedules</div><h3>Priced by the tag</h3><p>Every door, fixture and finish in a schedule is priced item by item. A bid that says "per plans" is where scope goes missing.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOST TIME ================= -->
+<section class="sec" data-floor="05 · Lost time" id="lost-time">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">Lost time</div>
+      <h2>Not every problem is a change order. <span class="gold">Some just cost you time.</span></h2>
+      <p>A question with a free answer can still stop the work while everyone waits on it. It may never become a change order, but you pay for the time: more loan interest, more insurance, and a later day to open or start collecting rent.</p>
+    </div>
+    <div class="time-row stagger">
+      <article class="svc time">
+        <div class="fig gold">7.3 days</div>
+        <div class="what">Average wait for a first reply to a question (RFI)<sup><a href="#sources">2</a></sup></div>
+        <h3>Questions asked mid-job</h3>
+        <p>A question raised during construction can hold up a crew until the design team answers. GC Level finds the questions in your drawings before bid day, and they go to your design team while nothing is waiting on the answer.</p>
+      </article>
+      <article class="svc time">
+        <div class="fig gold">9.2%</div>
+        <div class="what">Of submittals come back rejected or marked revise and resubmit<sup><a href="#sources">2</a></sup></div>
+        <h3>Submittals that bounce</h3>
+        <p>A submittal round trip averages 10 days, and the material isn't ordered until it's approved. Every product your drawings name is on that trade's checklist before they price, so the product they price is the one your drawings call for.</p>
+      </article>
+      <article class="svc time">
+        <div class="fig gold">6.3%</div>
+        <div class="what">Past the contracted schedule, on the average design-bid-build project<sup><a href="#sources">3</a></sup></div>
+        <h3>Finish dates that slip</h3>
+        <p>That's how far the average design-bid-build project ran past the schedule in its contract. Every question settled on paper is one less reason for yours to run long.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= OPEN BOOKS ================= -->
+<section class="money" data-floor="06 · Open books" id="open-books">
+  <div class="wrap money-grid">
+    <figure class="rise" style="margin:0">
+      <img src="assets/images/projects/aesc/mep-roughin.jpg?v=84491bf961" alt="Dense overhead mechanical, electrical and plumbing rough-in above the framed rooms" loading="lazy" width="1500" height="1125">
+      <figcaption class="caption"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BC882C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.2"/></svg><span>Rough-in. AESC Animal Hospital, Springdale, AR.</span></figcaption>
+    </figure>
+    <div class="rise">
+      <div class="eyebrow">Open books</div>
+      <h2>You see what <span class="gold">we see</span>.</h2>
+      <p class="lead">The scope we price from is the scope you read. Nothing is held back to be found later.</p>
+      <ul class="checks">
+        <li>Every line of scope traced to the sheet it came from</li>
+        <li>Every sub bid leveled line by line, with exclusions in plain sight</li>
+        <li>Every open question listed, with who owes the answer</li>
+        <li>Change orders in writing, priced and signed by you before the work happens</li>
+      </ul>
+      <div class="hero-cta">
+        <a class="btn btn-blue" href="contact.html">Book a Consultation <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ON THE NUMBER ================= -->
+<section class="sec story" data-floor="07 · On the number" id="next-project">
+  <div class="wrap rise">
+    <div class="eyebrow">Why we work this way</div>
+    <h2 style="margin-top:12px">Level. Plumb. Square. <span class="gold">On the number.</span></h2>
+    <p>A contractor who expects to see you once can afford to win low and make it up on change orders. We're after your next project, and the one after that. That only happens when your final cost looks like the number we gave you, so that's the number we work to give you.</p>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec svc-bg" data-floor="08 · Questions" id="faq">
+  <div class="wrap">
+    <div class="sec-head rise"><div class="eyebrow">Straight answers</div><h2>What owners ask <span class="gold">about GC Level</span>.</h2></div>
+    <div class="faq rise">
+      <details><summary>Does this mean no change orders? <span class="pm" aria-hidden="true">+</span></summary><div class="ans">No. If you change the design, or we open a wall and find something no drawing could show, that's a change. It comes to you in writing, priced, and you sign it before the work happens. What goes away are the change orders that were already sitting in the drawings on bid day.</div></details>
+      <details><summary>Why might your number be higher than another bid? <span class="pm" aria-hidden="true">+</span></summary><div class="ans">Because it includes the work your drawings actually call for. Put the bids side by side and ask each contractor for their exclusions. We'll walk you through ours, line by line.</div></details>
+      <details><summary>Who makes the calls, the software or you? <span class="pm" aria-hidden="true">+</span></summary><div class="ans">We do. GC Level reads and flags. A Spire owner reviews what it finds, decides how each item is priced, and sends the open questions to your design team in writing.</div></details>
+      <details><summary>What do you need from me? <span class="pm" aria-hidden="true">+</span></summary><div class="ans">The full drawing set and specifications, as PDFs. If you're still in design, send what you have. Questions found early cost the least to answer.</div></details>
+      <details><summary>We already have a contractor's bid. Can you check it? <span class="pm" aria-hidden="true">+</span></summary><div class="ans">Yes. Bid leveling is part of our <a href="consulting.html">consulting work</a>. We'll compare the bids you have against what your drawings call for and show you what's missing.</div></details>
+    </div>
+    <div class="sources rise" id="sources">
+      <h4>Sources</h4>
+      <ol>
+        <li>AIA Contract Documents, powered by Catina, <a href="https://learn.aiacontracts.com/wp-content/uploads/2023/07/The-Truth-About-Change-Orders.pdf" rel="noopener" target="_blank"><em>The Truth about Change Orders</em></a>, Research Note Series: Follow the Data. Drawn from 892,457 change orders and 243,120 substantial completion certifications, the study covers 18,229 completed U.S. projects from the last ten years, in 22 building types. Commercial/retail is the largest group, at 20.53% of projects. On projects of $1 million to $5 million, the average change in cost was 5.04%. The middle 80% of those projects ranged from a 2.39% decrease to a 15.19% increase, so 1 in 10 rose by more than 15%. Most change orders came in the final half of the project.</li>
+        <li>Procore, <a href="https://www.procore.com/blog/procore-benchmark" rel="noopener" target="_blank"><em>Procore Construction Benchmarks: Setting a new bar for project performance</em></a>, December 11, 2020. The average time from an RFI being opened to its first response was 7.3 calendar days. Submittals averaged 10 calendar days from first sent to final return, and 9.2% were rejected or marked revise and resubmit. The post presents these as industry benchmarks and doesn't say how many projects they cover.</li>
+        <li>Keith Molenaar (University of Colorado Boulder) and Bryan Franz (University of Florida), <a href="https://des.wa.gov/sites/default/files/2024-05/WDSOT-PDMRTF-RevisitingPerformanceResearch-FinalReport-CII-Pankow2018.pdf" rel="noopener" target="_blank"><em>Revisiting Project Delivery Performance</em></a>, final report, December 2018, supported by the Charles Pankow Foundation and the Construction Industry Institute. A study of 212 U.S. projects completed after 2008. Schedule growth is the change in project duration, from the start of design to final completion, against the duration first contracted. On the 53 design-bid-build projects it averaged 6.29%, with a median of 2.49%.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta" data-floor="09 · Start" id="start"><div class="wrap rise"><div class="eyebrow" style="color:#F2D07C">Ready to build?</div><h2>Send us your drawings. <span class="gold">We'll show you what's in them.</span></h2><p>Free consultation, no obligation. You'll talk with an owner who has built what you're planning.</p><a class="btn btn-gold" href="contact.html">Book a Free Consultation <span aria-hidden="true">&rarr;</span></a><small>or call <a href="tel:18447747342">(844) SPIRE-GC</a></small></div></section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot">
+        <img class="foot-logo" src="assets/images/spire-logo-white.png?v=ffc5d07853" alt="Spire Constructors" width="757" height="328">
+        <p>Built to a Higher Standard. Florida general contractor for commercial construction, custom homes and ADUs. Delray Beach, Florida.</p>
+      </div>
+      <div class="foot"><h4>Quick links</h4><ul><li><a href="index.html">Home</a></li><li><a href="commercial.html">Commercial</a></li><li><a href="residential.html">Residential</a></li><li><a href="adu.html">ADUs</a></li><li><a href="projects.html">Projects</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="scope.html" rel="nofollow">Team Login</a></li></ul></div>
+      <div class="foot"><h4>Services</h4><ul><li><a href="commercial.html">Ground-up construction</a></li><li><a href="commercial.html">Fit-outs and build-outs</a></li><li><a href="residential.html">Custom homes</a></li><li><a href="adu.html">ADUs</a></li><li><a href="design-build.html">Design-build</a></li><li><a href="preconstruction.html">Pre-construction</a></li><li><a href="consulting.html">Consulting</a></li></ul></div>
+      <div class="foot"><h4>Get in touch</h4><ul><li><a href="tel:18447747342">(844) SPIRE-GC</a></li><li><a href="mailto:info@spireconstructors.com">info@spireconstructors.com</a></li><li>Delray Beach, FL · Serving all of Florida</li><li>Mon to Fri, 7AM to 6PM</li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>Licensed &amp; Insured · FL CGC1539625</span><span>&copy; 2026 Spire Constructors, LLC. All rights reserved.</span></div>
+  </div>
+</footer>
+<div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
+<script src="assets/site.js?v=ec46ca6a68"></script>
+</body>
+</html>

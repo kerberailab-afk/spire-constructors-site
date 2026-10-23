@@ -19,6 +19,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css?v=979b89c234">
 <!-- page-specific CSS only if the page truly needs a rule that is not in site.css -->
+<style>
+/* drawing upload: the drop zone and the file list */
+.form label .opt{font-weight:500;color:var(--grey2)}
+.drop{position:relative;border:1.5px dashed #B9C4D2;border-radius:14px;background:#F7FAFE;padding:24px 18px;text-align:center;color:var(--primary);transition:border-color .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease)}
+.drop:hover,.drop.over{border-color:var(--primary);background:#EEF4FC}
+.drop:focus-within{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,87,184,.12)}
+.drop.locked{opacity:.6}
+.form .drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:0}
+.drop svg{display:block;margin:0 auto 8px}
+.drop .t{font-size:15px;color:var(--ink);font-weight:500}
+.drop .t b{font-weight:700}
+.drop .t .browse{color:var(--primary);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.drop .s{font-size:13px;color:var(--grey2);margin-top:4px}
+.files{list-style:none;display:grid;gap:8px;margin-top:10px}
+.files:empty{display:none}
+.files li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:6px 12px;background:#FAFBFC;border:1px solid #E3E8EF;border-radius:10px;padding:10px 12px;font-size:14px}
+.files .nm{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.files .sz{color:var(--grey2);font-size:13px;white-space:nowrap}
+.form .files .rm{background:none;border:none;color:var(--grey2);font-size:22px;line-height:1;cursor:pointer;padding:0 4px;width:auto;margin:0}
+.form .files .rm:hover{color:#B00020}
+.files li.up .rm,.files li.done .rm{visibility:hidden}
+.files .bar{grid-column:1/-1;height:4px;border-radius:2px;background:#E3E8EF;overflow:hidden;display:none}
+.files li.up .bar,.files li.done .bar,.files li.retry .bar{display:block}
+.files .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .2s linear}
+.files li.done .bar i{background:#1D6B3C}
+.files li.retry{border-color:#F1C6C0}
+.files li.bad{border-color:#F1C6C0;background:#FDF3F1}
+.files .err{grid-column:1/-1;color:#B00020;font-size:13px;font-weight:600}
+.form .thanks .thanks-files{margin-top:10px;font-weight:600;color:var(--ink)}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -62,7 +92,7 @@
       <div class="line"><div class="l">Based in</div><div class="v">Delray Beach, serving all of Florida</div></div>
       <div class="line"><div class="l">Hours</div><div class="v">Mon to Fri, 7AM to 6PM</div></div>
     </div>
-    <form class="form rise" id="leadForm" data-lead="contact form" novalidate>
+    <form class="form rise" id="leadForm" data-lead-upload="contact form" novalidate>
       <div class="fields">
         <div class="field"><label for="f-name">Full name</label><input id="f-name" name="fullName" type="text" placeholder="Your name" autocomplete="name" required></div>
         <div class="row2">
@@ -72,11 +102,21 @@
         <div class="field"><label for="f-service">What are you building?</label><select id="f-service" name="service"><option value="">Select a service</option><option>Commercial ground-up</option><option>Commercial fit-out or build-out</option><option>ADU (accessory dwelling unit)</option><option>Custom home</option><option>Design-build</option><option>Pre-construction or consulting</option><option>Renovation</option><option>Other</option></select></div>
         <div class="field"><label for="f-budget">Estimated budget</label><select id="f-budget" name="budget"><option value="">Select a range</option><option>Under $100k</option><option>$100k to $250k</option><option>$250k to $500k</option><option>$500k to $1M</option><option>$1M to $5M</option><option>$5M+</option><option>Not sure yet</option></select></div>
         <div class="field"><label for="f-details">Project details</label><textarea id="f-details" name="details" placeholder="Where is it, what is it, and when do you want to open or move in?"></textarea></div>
+        <div class="field" id="drawings">
+          <label for="f-files">Drawings <span class="opt">(optional)</span></label>
+          <div class="drop" data-drop>
+            <input id="f-files" name="files" type="file" multiple accept=".pdf,.dwg,.dxf,.dwf,.dwfx,.rvt,.rfa,.ifc,.skp,.zip,.png,.jpg,.jpeg,.tif,.tiff,.heic,.xls,.xlsx,.csv,.doc,.docx,.txt" aria-describedby="f-files-hint">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6.5"/><path d="M9.5 14 12 11.5l2.5 2.5"/></svg>
+            <div class="t"><b>Drag your drawing set here</b> or <span class="browse">browse your files</span></div>
+            <div class="s" id="f-files-hint">PDF, DWG, DXF or ZIP, up to 1 GB per file</div>
+          </div>
+          <ul class="files"></ul>
+        </div>
         <div class="hp" aria-hidden="true"><label>Company website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <button class="btn btn-blue" type="submit">Book My Free Consultation <span aria-hidden="true">&rarr;</span></button>
         <div class="msg" role="status"></div>
       </div>
-      <div class="thanks" role="status"><svg width="52" height="52" viewBox="0 0 24 24" aria-hidden="true" style="margin:0 auto"><circle cx="12" cy="12" r="11" fill="#E4BC62"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#1c1402" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Thanks, we've got it.</h3><p>We'll be in touch within one business day. Need us sooner? Call <a href="tel:18447747342" style="color:var(--primary);font-weight:700">(844) SPIRE-GC</a>.</p></div>
+      <div class="thanks" role="status"><svg width="52" height="52" viewBox="0 0 24 24" aria-hidden="true" style="margin:0 auto"><circle cx="12" cy="12" r="11" fill="#E4BC62"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#1c1402" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Thanks, we've got it.</h3><p>We'll be in touch within one business day. Need us sooner? Call <a href="tel:18447747342" style="color:var(--primary);font-weight:700">(844) SPIRE-GC</a>.</p><p class="thanks-files" hidden></p></div>
     </form>
   </div>
 </section>
@@ -99,5 +139,6 @@
 </footer>
 <div class="mobilecall"><a class="call" href="tel:18447747342"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex:0 0 auto"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm-5 21c-.83 0-1.5-.67-1.5-1.5S11.17 19 12 19s1.5.67 1.5 1.5S12.83 22 12 22zm5-4H7V4h10v14z"/></svg> Call Now</a><a class="book" href="contact.html">Book Free</a></div>
 <script src="assets/site.js?v=ec46ca6a68"></script>
+<script src="assets/upload.js?v=b69e369157"></script>
 </body>
 </html>
