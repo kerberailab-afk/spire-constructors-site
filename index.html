@@ -97,6 +97,48 @@
 .proof-note{text-align:center;max-width:720px;margin:-26px auto 40px;font-size:15px;color:var(--grey)}
 .reel-cap{margin-top:14px;text-align:center;font-size:14px;color:var(--grey)}
 .contact-sec{background:linear-gradient(180deg,var(--band2),var(--canvas))}
+
+/* ---------- powered by GC Level: the whole band is one link to /gc-level ---------- */
+.gcl-sec{position:relative;overflow:hidden;background:radial-gradient(55% 85% at 88% 25%,rgba(30,123,224,.28),transparent 62%),radial-gradient(45% 70% at 6% 95%,rgba(228,188,98,.14),transparent 70%),linear-gradient(115deg,var(--deep),#0A2F66)}
+.gcl{display:block;color:#fff;text-decoration:none;cursor:pointer}
+.gcl:focus-visible{outline:3px solid var(--metal1);outline-offset:-6px;border-radius:0}
+.gcl-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:64px;align-items:center;padding:96px 0}
+.wrap.gcl-grid{padding-left:40px;padding-right:40px}
+.gcl-badge{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#F2D07C;background:rgba(228,188,98,.1);border:1px solid rgba(228,188,98,.35);border-radius:999px;padding:8px 16px 8px 12px}
+.gcl-badge b{font-weight:500;color:#fff}
+.gcl h2{color:#fff;font-size:clamp(34px,4.2vw,56px);margin:22px 0 18px}
+.gcl p{color:#C9D7EA;font-size:18px;line-height:1.6;max-width:520px;margin-bottom:30px}
+.gcl-btn{pointer-events:none}
+.gcl-btn .arr{display:inline-block;transition:transform .25s var(--ease)}
+.gcl:hover .gcl-btn{transform:translateY(-2px)}
+.gcl:hover .gcl-btn .arr,.gcl:hover .gcl-foot .arr{transform:translateX(5px)}
+/* the example screen: a drawing being read, findings popping up */
+.gcl-screen{background:rgba(6,16,34,.72);border:1px solid rgba(143,195,234,.2);border-radius:20px;box-shadow:0 34px 70px -24px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03) inset;overflow:hidden;transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.gcl:hover .gcl-screen{transform:translateY(-6px);box-shadow:0 44px 80px -24px rgba(0,0,0,.7),0 0 0 1px rgba(228,188,98,.25) inset}
+.gcl-top{display:flex;align-items:center;gap:10px;padding:14px 18px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#9FB2CC;border-bottom:1px solid rgba(143,195,234,.14)}
+.gcl-top .live{width:8px;height:8px;border-radius:2px;background:#E4BC62;box-shadow:0 0 10px rgba(228,188,98,.8);animation:gclblink 1.6s ease-in-out infinite}
+.gcl-top .ex{margin-left:auto;color:#8FC3EA;background:rgba(143,195,234,.12);border-radius:999px;padding:4px 10px;letter-spacing:.12em}
+@keyframes gclblink{0%,100%{opacity:1}50%{opacity:.35}}
+.gcl-sheet{position:relative;height:300px;overflow:hidden;background:#0B2246}
+.gcl-sheet img{position:absolute;inset:-4% 0 0 0;width:100%;height:108%;object-fit:cover;object-position:50% 30%;filter:invert(1) sepia(1) saturate(2.2) hue-rotate(170deg) brightness(.95);mix-blend-mode:screen;opacity:.62}
+.gcl-scan{position:absolute;left:0;right:0;top:-40%;height:38%;background:linear-gradient(180deg,rgba(143,195,234,0),rgba(143,195,234,.16) 70%,rgba(228,188,98,.42) 100%);animation:gclscan 6s linear infinite}
+@keyframes gclscan{from{top:-40%}to{top:100%}}
+.gcl-pin{position:absolute;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:9px;box-shadow:0 10px 24px -8px rgba(0,0,0,.6);opacity:0;animation:6s ease-out infinite}
+.gcl-pin i{width:7px;height:7px;border-radius:2px;background:currentColor}
+.gcl-pin.p1{left:12%;top:28%;background:#FBEAE7;color:#8E2A1C;animation-name:gclpin1}
+.gcl-pin.p2{left:52%;top:52%;background:#FBF1DC;color:#7A5410;animation-name:gclpin2}
+.gcl-pin.p3{left:24%;top:75%;background:#E6EEF9;color:#103A73;animation-name:gclpin3}
+@keyframes gclpin1{0%,21%{opacity:0;transform:translateY(8px) scale(.92)}26%,90%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes gclpin2{0%,38%{opacity:0;transform:translateY(8px) scale(.92)}43%,90%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes gclpin3{0%,54%{opacity:0;transform:translateY(8px) scale(.92)}59%,90%{opacity:1;transform:none}100%{opacity:0}}
+.gcl-foot{display:flex;align-items:center;gap:10px;padding:15px 18px;font-size:14.5px;color:#DCE6F3;border-top:1px solid rgba(143,195,234,.14)}
+.gcl-foot b{color:#F2D07C;font-weight:700}
+.gcl-foot .arr{margin-left:auto;color:#F2D07C;transition:transform .25s var(--ease)}
+@media(prefers-reduced-motion:reduce){.gcl-scan{display:none}.gcl-pin{opacity:1!important;animation:none!important}.gcl-top .live{animation:none}}
+body.reduce .gcl-scan{display:none}
+body.reduce .gcl-pin{opacity:1!important;animation:none!important}
+@media(max-width:900px){.gcl-grid{grid-template-columns:1fr;gap:44px;padding:64px 0}.wrap.gcl-grid{padding-left:22px;padding-right:22px}.gcl-sheet{height:240px}}
+@media(max-width:560px){.gcl-pin{font-size:10px;padding:6px 9px}.gcl-pin.p2{left:44%}.gcl p{font-size:16.5px}.gcl-top{font-size:10px;letter-spacing:.1em;white-space:nowrap;padding:12px 14px}.gcl-top .ex{padding:3px 8px}}
 </style>
 </head>
 <body>
@@ -169,8 +211,35 @@
   </div>
 </div>
 
+<!-- ================= POWERED BY GC LEVEL (the whole band links to /gc-level) ================= -->
+<section class="gcl-sec" data-floor="02 · GC Level" id="gc-level">
+  <a class="gcl" href="gc-level.html" aria-label="Powered by GC Level. What's hiding in your drawings? See what GC Level finds.">
+    <div class="wrap gcl-grid">
+      <div class="gcl-copy rise">
+        <span class="gcl-badge"><svg width="22" height="12" viewBox="0 0 22 12" aria-hidden="true"><rect x="0.75" y="0.75" width="20.5" height="10.5" rx="5.25" fill="none" stroke="#E4BC62" stroke-width="1.5"/><rect x="8" y="3.5" width="6" height="5" rx="2.5" fill="#8FC3EA"/><path d="M7 2.5v7M15 2.5v7" stroke="#E4BC62" stroke-width="1.2"/></svg>Powered by <b>GC Level</b></span>
+        <h2>What's hiding in <span class="gold">your drawings?</span></h2>
+        <p>Before we give you a number, GC Level reads every sheet of your set and flags the conflicts, missing details and gaps between trades that usually turn into change orders. We settle them on paper, before you sign.</p>
+        <span class="btn btn-gold gcl-btn">See what GC Level finds <span class="arr" aria-hidden="true">&rarr;</span></span>
+      </div>
+      <div class="gcl-visual rise" aria-hidden="true">
+        <div class="gcl-screen">
+          <div class="gcl-top"><span class="live"></span>GC Level · Reading the set<span class="ex">Example</span></div>
+          <div class="gcl-sheet">
+            <img src="assets/images/projects/delray/plan-first-floor.jpg?v=ac200a1d20" alt="" width="1500" height="1312" loading="lazy">
+            <span class="gcl-scan"></span>
+            <span class="gcl-pin p1"><i></i>Conflict</span>
+            <span class="gcl-pin p2"><i></i>Missing size</span>
+            <span class="gcl-pin p3"><i></i>Nobody's job</span>
+          </div>
+          <div class="gcl-foot"><b>3 flagged</b> and settled before bid day <span class="arr">&rarr;</span></div>
+        </div>
+      </div>
+    </div>
+  </a>
+</section>
+
 <!-- ================= WHAT WE BUILD ================= -->
-<section class="sec" data-floor="02 · What we build" id="build">
+<section class="sec" data-floor="03 · What we build" id="build">
   <div class="wrap">
     <div class="sec-head rise"><div class="eyebrow">What we build</div><h2>Two specialties. One <span class="gold">standard</span>.</h2></div>
     <div class="two stagger">
@@ -197,7 +266,7 @@
 </section>
 
 <!-- ================= ADU MONEY BAND ================= -->
-<section class="money" data-floor="03 · ADUs" id="adu">
+<section class="money" data-floor="04 · ADUs" id="adu">
   <div class="wrap money-grid">
     <figure class="rise dim" data-dim="201 SW 2nd · Delray Beach · Rendering" style="margin:0">
       <img src="assets/images/projects/delray-201/hero.jpg?v=02791e4d02" alt="Rendering of a three-story modern residence with a detached rear ADU in Delray Beach" loading="lazy" width="1700" height="743">
@@ -222,7 +291,7 @@
 </section>
 
 <!-- ================= WHY SPIRE + THE LEVEL ================= -->
-<section class="sec why" data-floor="04 · Why Spire" id="why">
+<section class="sec why" data-floor="05 · Why Spire" id="why">
   <div class="wrap">
     <div class="sec-head rise">
       <div class="eyebrow">Why Spire</div>
@@ -239,7 +308,7 @@
 </section>
 
 <!-- ================= BEYOND BUILDING ================= -->
-<section class="sec svc-bg" data-floor="05 · Beyond building" id="services">
+<section class="sec svc-bg" data-floor="06 · Beyond building" id="services">
   <div class="wrap">
     <div class="sec-head rise"><div class="eyebrow">Beyond building</div><h2>Plan it <span class="gold">right</span> from the start.</h2></div>
     <div class="three stagger">
@@ -251,7 +320,7 @@
 </section>
 
 <!-- ================= THE WORK ================= -->
-<section class="sec" data-floor="06 · The work" id="work">
+<section class="sec" data-floor="07 · The work" id="work">
   <div class="wrap">
     <div class="sec-head rise"><div class="eyebrow">The work</div><h2>Proof over <span class="gold">promises</span>.</h2></div>
     <p class="proof-note rise">Projects delivered by Spire's owners, Bill Breunig and Gary Kerber, over their careers. Real photos, named jobs.</p>
@@ -272,7 +341,7 @@
 </section>
 
 <!-- ================= FAQ ================= -->
-<section class="sec svc-bg" data-floor="07 · Questions" id="faq">
+<section class="sec svc-bg" data-floor="08 · Questions" id="faq">
   <div class="wrap">
     <div class="sec-head rise"><div class="eyebrow">Straight answers</div><h2>The questions owners <span class="gold">actually</span> ask.</h2></div>
     <div class="faq rise">
@@ -289,7 +358,7 @@
 </section>
 
 <!-- ================= CTA BAND ================= -->
-<section class="cta" data-floor="08 · Start" id="start">
+<section class="cta" data-floor="09 · Start" id="start">
   <div class="wrap rise">
     <div class="eyebrow" style="color:#F2D07C">Ready to build?</div>
     <h2>Let's build something to a <span class="gold">higher standard</span>.</h2>
