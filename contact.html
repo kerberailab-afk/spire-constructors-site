@@ -20,17 +20,23 @@
 <link rel="stylesheet" href="assets/site.css?v=979b89c234">
 <!-- page-specific CSS only if the page truly needs a rule that is not in site.css -->
 <style>
-/* the office: address card beside a live Google map */
+/* the office: address card and live Google map beside a Street View of the building */
 .office-sec{background:linear-gradient(180deg,var(--canvas),var(--band2))}
-.office-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center;padding:20px 0 96px}
+.office-grid{display:grid;grid-template-columns:.8fr 1.2fr;grid-template-rows:auto 1fr;grid-template-areas:"card photo" "map photo";column-gap:56px;row-gap:28px;padding:20px 0 96px}
 .wrap.office-grid{padding-left:40px;padding-right:40px}
+.office-card{grid-area:card}
 .office-card h2{margin:12px 0 18px}
 .office-card address{font-style:normal;font-family:var(--display);font-stretch:106%;font-weight:700;font-size:22px;line-height:1.35;color:var(--ink);margin-bottom:10px}
 .office-card p{font-size:16px;margin-bottom:24px}
-.office-map{border-radius:22px;overflow:hidden;box-shadow:var(--shadow-lift);border:1px solid #EAEEF2;background:var(--band);height:420px}
-.office-map iframe{display:block;width:100%;height:100%;border:0}
+.office-map,.office-sv{position:relative;border-radius:22px;overflow:hidden;box-shadow:var(--shadow-lift);border:1px solid #EAEEF2;background:var(--band)}
+.office-map{grid-area:map;min-height:260px}
+.office-map iframe,.office-sv iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+.office-photo{grid-area:photo;margin:0;display:flex;flex-direction:column}
+.office-sv{flex:1;min-height:600px}
+.office-photo figcaption{margin-top:14px;font-size:14px;color:var(--grey2)}
+.office-photo figcaption b{color:var(--ink);font-weight:700}
 .info .line .v a{color:inherit}
-@media(max-width:900px){.office-grid{grid-template-columns:1fr;gap:32px;padding:0 0 64px}.wrap.office-grid{padding-left:22px;padding-right:22px}.office-map{height:340px}}
+@media(max-width:900px){.office-grid{grid-template-columns:1fr;grid-template-rows:none;grid-template-areas:"card" "photo" "map";row-gap:32px;padding:0 0 64px}.wrap.office-grid{padding-left:22px;padding-right:22px}.office-sv{flex:none;min-height:0;height:440px}.office-map{min-height:0;height:300px}}
 /* drawing upload: the drop zone and the file list */
 .form label .opt{font-weight:500;color:var(--grey2)}
 .drop{position:relative;border:1.5px dashed #B9C4D2;border-radius:14px;background:#F7FAFE;padding:24px 18px;text-align:center;color:var(--primary);transition:border-color .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease)}
@@ -133,7 +139,7 @@
   </div>
 </section>
 
-<!-- ================= OFFICE + MAP ================= -->
+<!-- ================= OFFICE: ADDRESS, MAP, STREET VIEW ================= -->
 <section class="office-sec" data-floor="02 · Office" id="office">
   <div class="wrap office-grid">
     <div class="office-card rise">
@@ -149,6 +155,12 @@
     <div class="office-map rise">
       <iframe title="Google map of Spire Constructors at 1555 Palm Beach Lakes Blvd, West Palm Beach, FL 33401" src="https://www.google.com/maps?q=1555+Palm+Beach+Lakes+Blvd,+West+Palm+Beach,+FL+33401&amp;z=16&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
+    <figure class="office-photo rise">
+      <div class="office-sv">
+        <iframe title="Google Street View of our office building at 1555 Palm Beach Lakes Blvd, West Palm Beach, FL 33401" src="https://www.google.com/maps/embed?pb=!4v1792800143332!6m8!1m7!1sSb4081UAsNWEoHMROP4Z7Q!2m2!1d26.7252167!2d-80.0795992!3f337!4f29!5f0.95" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+      <figcaption><b>Our building at 1555 Palm Beach Lakes Blvd.</b> Drag to look around.</figcaption>
+    </figure>
   </div>
 </section>
 
